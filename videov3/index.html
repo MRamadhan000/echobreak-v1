@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ECHOBREAK - AR Plane Test</title>
+
+    <!-- A-Frame -->
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+
+    <!-- MindAR -->
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #000;
+            font-family: Arial, sans-serif;
+        }
+
+        /* ==============================
+            LAYER STACKING
+            0    -> video kamera (paling belakang)
+            1    -> canvas AR / a-scene (transparan, di atas video)
+            10000+ -> UI (debug panel, start screen)
+        ============================== */
+
+        /* Video kamera dari MindAR = background full screen */
+        video {
+            object-fit: cover !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            z-index: 0 !important;
+        }
+
+        a-scene {
+            width: 100vw;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        /* Pastikan canvas yang dirender A-Frame transparan & selalu di atas video */
+        a-scene canvas {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            z-index: 1 !important;
+            background: transparent !important;
+        }
+
+        /* ==============================
+            START SCREEN
+        ============================== */
+        #start-screen {
+            position: fixed;
+            inset: 0;
+            background: #111;
+            color: white;
+            z-index: 20000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            text-align: center;
+        }
+
+        #startButton {
+            padding: 15px 40px;
+            font-size: 18px;
+            font-weight: bold;
+            background: #ff4757;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+        }
+
+        /* ==============================
+            DEBUG
+        ============================== */
+        #debug-panel {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 13px;
+            z-index: 10001;
+            pointer-events: none;
+            line-height: 1.6;
+        }
+
+        /* ==============================
+            TAP HINT
+        ============================== */
+        #tap-hint {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.75);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            z-index: 10001;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        #tap-hint.show {
+            opacity: 1;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ==============================
+          START SCREEN
+    ============================== -->
+    <div id="start-screen">
+        <h2>ECHOBREAK AR</h2>
+        <p>Arahkan kamera ke marker</p>
+        <button id="startButton">Mulai AR</button>
+    </div>
+
+    <!-- ==============================
+          DEBUG PANEL
+    ============================== -->
+    <div id="debug-panel">
+        STATUS AR
+        <br>
+        Marker: <span id="marker-status" style="color: yellow;">Menunggu</span>
+        <br>
+        Plane: <span id="plane-status" style="color: yellow;">Hidden</span>
+        <br>
+        Video: <span id="video-status" style="color: yellow;">Idle</span>
+    </div>
+
+    <!-- ==============================
+          TAP HINT
+    ============================== -->
+    <div id="tap-hint">Tap video untuk Play/Pause • Double tap untuk Mute/Unmute</div>
+
+    <!-- ==============================
+          AR SCENE
+    ============================== -->
+    <a-scene mindar-image="
+            imageTargetSrc: marker.mind;
+            autoStart: false;
+        " embedded color-space="sRGB" renderer="
+            colorManagement: true;
+            alpha: true;
+        " vr-mode-ui="
+            enabled: false
+        " device-orientation-permission-ui="
+            enabled: false
+        ">
+
+        <!-- ==============================
+              ASSETS
+        ============================== -->
+        <a-assets>
+            <video id="arVideo"
+                   src="video.mp4"
+                   preload="auto"
+                   loop="true"
+                   muted="true"
+                   playsinline
+                   webkit-playsinline
+                   crossorigin="anonymous"></video>
+        </a-assets>
+
+        <!-- ==============================
+              CAMERA
+        ============================== -->
+        <a-camera position="0 0 0" look-controls="enabled: false"
+                    raycaster="objects: .clickable; far: 10"
+                    cursor="fuse: false; rayOrigin: mouse">
+        </a-camera>
+
+        <!-- ==============================
+              MARKER
+        ============================== -->
+        <a-entity id="target" mindar-image-target="targetIndex: 0">
+
+            <!-- ==============================
+                  3D PLANE (VIDEO TEXTURE)
+            ============================== -->
+            <a-plane id="arPlane"
+                     class="clickable"
+                     position="0 0 0"
+                     rotation="0 0 0"
+                     width="1"
+                     height="0.6"
+                     color="#ffffff"
+                     material="
+                        shader: flat;
+                        src: #arVideo;
+                        side: double;
+                        depthTest: false;
+                        transparent: false;
+                     "
+                     visible="false">
+            </a-plane>
+
+        </a-entity>
+
+    </a-scene>
+
+    <!-- ==============================
+          JAVASCRIPT
+    ============================== -->
+    <script>
+        const scene = document.querySelector("a-scene");
+        const target = document.getElementById("target");
+        const plane = document.getElementById("arPlane");
+        const arVideo = document.getElementById("arVideo");
+        const startScreen = document.getElementById("start-screen");
+        const startButton = document.getElementById("startButton");
+        const markerStatus = document.getElementById("marker-status");
+        const planeStatus = document.getElementById("plane-status");
+        const videoStatus = document.getElementById("video-status");
+        const tapHint = document.getElementById("tap-hint");
+
+        function refreshVideoStatus() {
+            const playState = arVideo.paused ? "Paused" : "Playing";
+            const muteState = arVideo.muted ? "Muted" : "Unmuted";
+            videoStatus.innerText = `${playState} / ${muteState}`;
+            videoStatus.style.color = arVideo.paused ? "yellow" : "#00ff00";
+        }
+
+        arVideo.addEventListener("play", refreshVideoStatus);
+        arVideo.addEventListener("pause", refreshVideoStatus);
+        arVideo.addEventListener("volumechange", refreshVideoStatus);
+
+        // START AR & AUDIO PERMISSION
+        startButton.addEventListener("click", async () => {
+            console.log("Memulai AR & Izin Audio...");
+            startScreen.style.display = "none";
+
+            // Langsung buka mute (audio permission) memanfaatkan klik user di tombol
+            arVideo.muted = false;
+            console.log("Audio diaktifkan (Muted: false)");
+
+            const mindarSystem = scene.systems["mindar-image-system"];
+
+            try {
+                await mindarSystem.start();
+                console.log("MindAR berhasil dimulai.");
+                markerStatus.innerText = "Mencari...";
+
+                const video = document.querySelector("video:not(#arVideo)");
+                if (video) {
+                    video.style.zIndex = "0";
+                    video.style.position = "fixed";
+                    video.style.top = "0";
+                    video.style.left = "0";
+                    video.style.width = "100vw";
+                    video.style.height = "100vh";
+                    video.style.objectFit = "cover";
+                }
+            } catch (error) {
+                console.error("MindAR error:", error);
+                markerStatus.innerText = "ERROR";
+                markerStatus.style.color = "red";
+            }
+        });
+
+        // MARKER FOUND
+        target.addEventListener("targetFound", () => {
+            console.log("MARKER DITEMUKAN");
+            markerStatus.innerText = "Ditemukan ✓";
+            markerStatus.style.color = "#00ff00";
+
+            plane.setAttribute("visible", "true");
+            planeStatus.innerText = "Visible ✓";
+            planeStatus.style.color = "#00ff00";
+
+            // Putar video dengan audio aktif
+            arVideo.play().catch((err) => {
+                console.warn("Autoplay video ditolak:", err);
+            });
+
+            // Tampilkan hint interaksi sebentar
+            tapHint.classList.add("show");
+            setTimeout(() => tapHint.classList.remove("show"), 3000);
+        });
+
+        // MARKER LOST
+        target.addEventListener("targetLost", () => {
+            console.log("Marker hilang.");
+            markerStatus.innerText = "Hilang";
+            markerStatus.style.color = "yellow";
+
+            plane.setAttribute("visible", "false");
+            planeStatus.innerText = "Hidden";
+            planeStatus.style.color = "yellow";
+
+            // Video dijeda saat marker tidak terlihat
+            arVideo.pause();
+        });
+
+        // INTERAKSI: TAP -> play/pause & DOUBLE TAP -> mute/unmute
+        let tapTimer = null;
+        const DOUBLE_TAP_DELAY = 300;
+
+        plane.addEventListener("click", () => {
+            if (tapTimer !== null) {
+                clearTimeout(tapTimer);
+                tapTimer = null;
+
+                arVideo.muted = !arVideo.muted;
+                console.log("Suara:", arVideo.muted ? "OFF" : "ON");
+            } else {
+                tapTimer = setTimeout(() => {
+                    tapTimer = null;
+
+                    if (arVideo.paused) {
+                        arVideo.play();
+                    } else {
+                        arVideo.pause();
+                    }
+                    console.log("Video ditap. Playing:", !arVideo.paused);
+                }, DOUBLE_TAP_DELAY);
+            }
+        });
+
+        // SCENE LOADED
+        scene.addEventListener("loaded", () => {
+            console.log("A-Frame scene siap.");
+        });
+    </script>
+
+</body>
+</html>
