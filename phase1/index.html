@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>EchoBreak - Phase 1</title>
+    <!-- Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@500&amp;family=Plus+Jakarta+Sans:wght@600;700&amp;display=swap" rel="stylesheet"/>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Tailwind Configuration -->
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "tertiary": "#603b00",
+                        "surface": "#f7f9fb",
+                        "on-surface-variant": "#434654",
+                        "secondary-fixed": "#ebddff",
+                        "outline": "#737685",
+                        "surface-variant": "#e0e3e5",
+                        "primary-container": "#0052cc",
+                        "on-primary": "#ffffff",
+                        "on-primary-container": "#c4d2ff",
+                        "surface-dim": "#d8dadc",
+                        "surface-bright": "#f7f9fb",
+                        "on-tertiary-fixed": "#2a1700",
+                        "primary": "#003d9b",
+                        "surface-tint": "#0c56d0",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "on-secondary-fixed-variant": "#5b00c5",
+                        "error": "#ba1a1a",
+                        "on-primary-fixed-variant": "#0040a2",
+                        "on-secondary-fixed": "#250059",
+                        "surface-container-high": "#e6e8ea",
+                        "primary-fixed": "#dae2ff",
+                        "text-main": "#1E293B",
+                        "surface-container": "#eceef0",
+                        "inverse-primary": "#b2c5ff",
+                        "secondary": "#712edd",
+                        "on-surface": "#191c1e",
+                        "surface-container-highest": "#e0e3e5",
+                        "on-secondary-container": "#fffbff",
+                        "on-primary-fixed": "#001848",
+                        "tertiary-fixed-dim": "#ffb95f",
+                        "on-error-container": "#93000a",
+                        "outline-variant": "#c3c6d6",
+                        "digital-purple": "#6D28D9",
+                        "inverse-on-surface": "#eff1f3",
+                        "background": "#f7f9fb",
+                        "on-error": "#ffffff",
+                        "secondary-fixed-dim": "#d3bbff",
+                        "primary-fixed-dim": "#b2c5ff",
+                        "on-tertiary-fixed-variant": "#653e00",
+                        "surface-dark": "#0F172A",
+                        "democratic-blue": "#0052CC",
+                        "surface-container-low": "#f2f4f6",
+                        "inverse-surface": "#2d3133",
+                        "error-container": "#ffdad6",
+                        "on-tertiary-container": "#ffc988",
+                        "success-green": "#10B981",
+                        "surface-container-lowest": "#ffffff",
+                        "alert-amber": "#F59E0B",
+                        "tertiary-fixed": "#ffddb8",
+                        "on-background": "#191c1e",
+                        "secondary-container": "#8b4ef7",
+                        "tertiary-container": "#805000"
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.25rem",
+                        lg: "0.5rem",
+                        xl: "0.75rem",
+                        full: "9999px"
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .topic-card.selected {
+            border-color: #0052CC !important;
+            background-color: #dae2ff !important;
+        }
+        .topic-card.selected .icon-container {
+            background-color: #0052CC !important;
+            color: #ffffff !important;
+        }
+        body {
+            min-height: 100dvh;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface text-sm flex flex-col relative selection:bg-primary-fixed selection:text-primary">
+    
+    <!-- Progress Bar -->
+    <div class="w-full h-1 bg-surface-variant fixed top-0 left-0 z-50">
+        <div class="h-full bg-gradient-to-r from-digital-purple to-democratic-blue w-[15%] transition-all duration-500 ease-out"></div>
+    </div>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 flex flex-col pt-6 pb-20 w-full max-w-3xl mx-auto px-4 md:px-8">
+        
+        <!-- Header -->
+        <header class="mb-5">
+            <div class="flex items-center gap-1.5 mb-1">
+                <span class="material-symbols-outlined text-digital-purple text-base" style="font-variation-settings: 'FILL' 1;">radar</span>
+                <span class="text-xs font-semibold text-digital-purple uppercase tracking-widest">Fase 1: Eksposur</span>
+            </div>
+            <h1 class="text-xl md:text-2xl font-bold text-on-surface mb-1">
+                Pilih isu yang paling menarik bagi Anda.
+            </h1>
+            <p class="text-xs md:text-sm text-on-surface-variant">
+                Topik yang Anda pilih akan menentukan skenario simulasi misinformasi yang akan dihadapi.
+            </p>
+        </header>
+
+        <!-- Topic Grid -->
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-3 flex-1 content-start" id="topic-grid">
+            
+            <!-- Card: Pendidikan -->
+            <button class="topic-card flex flex-col items-start p-3.5 rounded-xl bg-surface-container-lowest border border-outline-variant shadow-sm hover:border-primary-fixed hover:shadow transition-all duration-200 text-left focus:outline-none focus:ring-2 focus:ring-digital-purple focus:ring-offset-1">
+                <div class="icon-container p-2 rounded-lg bg-surface-container text-democratic-blue mb-2.5 transition-colors duration-200">
+                    <span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">school</span>
+                </div>
+                <span class="text-xs md:text-sm font-bold text-on-surface">Pendidikan</span>
+            </button>
+
+            <!-- Card: Ekonomi -->
+            <button class="topic-card flex flex-col items-start p-3.5 rounded-xl bg-surface-container-lowest border border-outline-variant shadow-sm hover:border-primary-fixed hover:shadow transition-all duration-200 text-left focus:outline-none focus:ring-2 focus:ring-digital-purple focus:ring-offset-1">
+                <div class="icon-container p-2 rounded-lg bg-surface-container text-democratic-blue mb-2.5 transition-colors duration-200">
+                    <span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">payments</span>
+                </div>
+                <span class="text-xs md:text-sm font-bold text-on-surface">Ekonomi</span>
+            </button>
+
+            <!-- Card: Lingkungan -->
+            <button class="topic-card flex flex-col items-start p-3.5 rounded-xl bg-surface-container-lowest border border-outline-variant shadow-sm hover:border-primary-fixed hover:shadow transition-all duration-200 text-left focus:outline-none focus:ring-2 focus:ring-digital-purple focus:ring-offset-1">
+                <div class="icon-container p-2 rounded-lg bg-surface-container text-democratic-blue mb-2.5 transition-colors duration-200">
+                    <span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">eco</span>
+                </div>
+                <span class="text-xs md:text-sm font-bold text-on-surface">Lingkungan</span>
+            </button>
+
+            <!-- Card: Kesehatan -->
+            <button class="topic-card flex flex-col items-start p-3.5 rounded-xl bg-surface-container-lowest border border-outline-variant shadow-sm hover:border-primary-fixed hover:shadow transition-all duration-200 text-left focus:outline-none focus:ring-2 focus:ring-digital-purple focus:ring-offset-1">
+                <div class="icon-container p-2 rounded-lg bg-surface-container text-democratic-blue mb-2.5 transition-colors duration-200">
+                    <span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">medical_services</span>
+                </div>
+                <span class="text-xs md:text-sm font-bold text-on-surface">Kesehatan</span>
+            </button>
+
+            <!-- Card: Kebijakan Publik -->
+            <button class="topic-card flex flex-col items-start p-3.5 rounded-xl bg-surface-container-lowest border border-outline-variant shadow-sm hover:border-primary-fixed hover:shadow transition-all duration-200 text-left focus:outline-none focus:ring-2 focus:ring-digital-purple focus:ring-offset-1">
+                <div class="icon-container p-2 rounded-lg bg-surface-container text-democratic-blue mb-2.5 transition-colors duration-200">
+                    <span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">policy</span>
+                </div>
+                <span class="text-xs md:text-sm font-bold text-on-surface">Kebijakan Publik</span>
+            </button>
+
+            <!-- Card: Isu Sosial -->
+            <button class="topic-card flex flex-col items-start p-3.5 rounded-xl bg-surface-container-lowest border border-outline-variant shadow-sm hover:border-primary-fixed hover:shadow transition-all duration-200 text-left focus:outline-none focus:ring-2 focus:ring-digital-purple focus:ring-offset-1">
+                <div class="icon-container p-2 rounded-lg bg-surface-container text-democratic-blue mb-2.5 transition-colors duration-200">
+                    <span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">diversity_3</span>
+                </div>
+                <span class="text-xs md:text-sm font-bold text-on-surface">Isu Sosial</span>
+            </button>
+
+        </div>
+    </main>
+
+    <!-- Bottom Action Bar (Sticky) -->
+    <div class="fixed bottom-0 left-0 w-full bg-surface/95 backdrop-blur-md border-t border-surface-variant px-4 py-3 flex justify-center z-40">
+        <button class="w-full max-w-sm py-2.5 px-4 rounded-xl bg-surface-variant text-on-surface-variant text-xs md:text-sm font-semibold transition-all duration-300 flex items-center justify-center gap-1.5 cursor-not-allowed opacity-70 shadow-sm" disabled id="btn-continue">
+            <span>Mulai Simulasi</span>
+            <span class="material-symbols-outlined text-base" style="font-variation-settings: 'wght' 600;">arrow_forward</span>
+        </button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('.topic-card');
+            const btnContinue = document.getElementById('btn-continue');
+            let selectedTopic = null;
+
+            cards.forEach(card => {
+                card.addEventListener('click', () => {
+                    // Remove selected class from all
+                    cards.forEach(c => c.classList.remove('selected', 'ring-2', 'ring-democratic-blue'));
+                    
+                    // Add selected class to clicked
+                    card.classList.add('selected', 'ring-2', 'ring-democratic-blue');
+                    
+                    selectedTopic = card.querySelector('span:last-child').textContent;
+
+                    // Enable button
+                    btnContinue.disabled = false;
+                    btnContinue.classList.remove('bg-surface-variant', 'text-on-surface-variant', 'cursor-not-allowed', 'opacity-70');
+                    btnContinue.classList.add('bg-democratic-blue', 'text-on-primary', 'shadow-md', 'hover:bg-primary', 'cursor-pointer');
+                    
+                    // Haptic feedback simulation if supported
+                    if (window.navigator && window.navigator.vibrate) {
+                        window.navigator.vibrate(40);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

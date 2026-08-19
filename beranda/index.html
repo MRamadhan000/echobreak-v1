@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>EchoBreak - Beranda</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700&amp;family=Inter:wght@400;500&amp;family=JetBrains+Mono:wght@500&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary": "#603b00",
+                        "surface": "#f7f9fb",
+                        "on-surface-variant": "#434654",
+                        "secondary-fixed": "#ebddff",
+                        "outline": "#737685",
+                        "surface-variant": "#e0e3e5",
+                        "primary-container": "#0052cc",
+                        "on-primary": "#ffffff",
+                        "on-primary-container": "#c4d2ff",
+                        "surface-dim": "#d8dadc",
+                        "surface-bright": "#f7f9fb",
+                        "on-tertiary-fixed": "#2a1700",
+                        "primary": "#003d9b",
+                        "surface-tint": "#0c56d0",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "on-secondary-fixed-variant": "#5b00c5",
+                        "error": "#ba1a1a",
+                        "on-primary-fixed-variant": "#0040a2",
+                        "on-secondary-fixed": "#250059",
+                        "surface-container-high": "#e6e8ea",
+                        "primary-fixed": "#dae2ff",
+                        "text-main": "#1E293B",
+                        "surface-container": "#eceef0",
+                        "inverse-primary": "#b2c5ff",
+                        "secondary": "#712edd",
+                        "on-surface": "#191c1e",
+                        "surface-container-highest": "#e0e3e5",
+                        "on-secondary-container": "#fffbff",
+                        "on-primary-fixed": "#001848",
+                        "tertiary-fixed-dim": "#ffb95f",
+                        "on-error-container": "#93000a",
+                        "outline-variant": "#c3c6d6",
+                        "digital-purple": "#6D28D9",
+                        "inverse-on-surface": "#eff1f3",
+                        "background": "#f7f9fb",
+                        "on-error": "#ffffff",
+                        "secondary-fixed-dim": "#d3bbff",
+                        "primary-fixed-dim": "#b2c5ff",
+                        "on-tertiary-fixed-variant": "#653e00",
+                        "surface-dark": "#0F172A",
+                        "democratic-blue": "#0052CC",
+                        "surface-container-low": "#f2f4f6",
+                        "inverse-surface": "#2d3133",
+                        "error-container": "#ffdad6",
+                        "on-tertiary-container": "#ffc988",
+                        "success-green": "#10B981",
+                        "surface-container-lowest": "#ffffff",
+                        "alert-amber": "#F59E0B",
+                        "tertiary-fixed": "#ffddb8",
+                        "on-background": "#191c1e",
+                        "secondary-container": "#8b4ef7",
+                        "tertiary-container": "#805000"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.04);
+        }
+
+        .progress-gradient {
+            background: linear-gradient(90deg, #6D28D9 0%, #0052CC 100%);
+        }
+
+        body {
+            min-height: 100dvh;
+        }
+    </style>
+</head>
+
+<body class="bg-background text-on-surface text-sm pb-20 md:pb-10 pt-14 md:pt-16 overflow-x-hidden">
+    <!-- TopAppBar (Mobile) -->
+    <header
+        class="fixed top-0 left-0 w-full z-50 bg-surface-container/90 dark:bg-surface-container-high/90 backdrop-blur-md shadow-sm flex items-center justify-between px-4 h-14 md:hidden">
+        <button class="text-primary dark:text-primary-fixed hover:opacity-80 active:scale-95 transition-transform p-1">
+            <span class="material-symbols-outlined text-xl">arrow_back</span>
+        </button>
+        <h1 class="font-bold text-base text-democratic-blue">EchoBreak</h1>
+        <div class="w-5"></div>
+    </header>
+
+    <!-- TopNavbar (Desktop) -->
+    <header class="fixed top-0 left-0 w-full z-50 bg-surface-container/90 dark:bg-surface-container-high/90 backdrop-blur-md shadow-sm hidden md:flex items-center justify-between px-8 h-16">
+        <div class="flex items-center gap-2">
+            <button class="p-1 text-primary hover:opacity-80 active:scale-95 transition-transform">
+                <span class="material-symbols-outlined text-[24px]">arrow_back</span>
+            </button>
+            <h1 class="font-bold text-democratic-blue text-lg">EchoBreak</h1>
+        </div>
+        <nav class="flex items-center gap-2">
+            <a class="bg-secondary-fixed text-on-secondary-fixed-variant px-3 py-1.5 rounded-full transition-all flex items-center gap-2 text-sm font-medium" href="#">
+                <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">home</span>
+                <span>Beranda</span>
+            </a>
+            <a class="text-on-surface-variant hover:bg-surface-variant/50 px-3 py-1.5 rounded-full transition-all flex items-center gap-2 text-sm font-medium" href="#">
+                <span class="material-symbols-outlined text-[18px]">apps</span>
+                <span>Modul</span>
+            </a>
+            <a class="text-on-surface-variant hover:bg-surface-variant/50 px-3 py-1.5 rounded-full transition-all flex items-center gap-2 text-sm font-medium" href="#">
+                <span class="material-symbols-outlined text-[18px]">analytics</span>
+                <span>Progres</span>
+            </a>
+            <a class="text-on-surface-variant hover:bg-surface-variant/50 px-3 py-1.5 rounded-full transition-all flex items-center gap-2 text-sm font-medium" href="#">
+                <span class="material-symbols-outlined text-[18px]">person</span>
+                <span>Profil</span>
+            </a>
+        </nav>
+    </header>
+
+    <!-- Main Canvas -->
+    <main class="max-w-7xl mx-auto px-4 md:px-10 py-4 md:py-6">
+        <!-- Greeting Section -->
+        <section class="mb-4">
+            <h2 class="text-xl md:text-2xl font-bold text-democratic-blue mb-0.5">Halo, Budi! 👋</h2>
+            <p class="text-xs md:text-sm text-on-surface-variant">Selamat datang di pusat pelatihan literasi digitalmu.</p>
+        </section>
+
+        <!-- Progress Card -->
+        <section class="mb-4">
+            <div class="glass-panel rounded-xl p-3.5 md:p-5 relative overflow-hidden">
+                <div class="flex justify-between items-end mb-2 relative z-10">
+                    <div>
+                        <span
+                            class="text-[11px] md:text-xs font-medium text-digital-purple block mb-0.5 uppercase tracking-wider">Status
+                            Modul</span>
+                        <h3 class="text-sm md:text-base font-bold text-on-surface">Progres Belajar</h3>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-lg md:text-xl font-bold text-democratic-blue block">70%</span>
+                    </div>
+                </div>
+                <!-- Progress Bar -->
+                <div class="w-full bg-surface-variant rounded-full h-1.5 md:h-2 mb-2 relative z-10">
+                    <div class="progress-gradient h-1.5 md:h-2 rounded-full transition-all duration-1000 ease-out"
+                        style="width: 70%"></div>
+                </div>
+                <p class="text-[11px] md:text-xs text-on-surface-variant relative z-10">Selesaikan 1 modul lagi untuk mencapai
+                    level 'Kritis'.</p>
+                <!-- Decorative element -->
+                <div class="absolute -right-6 -bottom-6 opacity-5 pointer-events-none">
+                    <span class="material-symbols-outlined" style="font-size: 110px;">analytics</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Big Action Button -->
+        <section class="mb-5">
+            <button
+                class="w-full bg-democratic-blue text-on-primary text-sm md:text-base font-semibold rounded-lg py-3 px-4 shadow-sm flex items-center justify-center gap-2 active:scale-95 transition-transform hover:bg-primary">
+                <span class="material-symbols-outlined text-lg"
+                    style="font-variation-settings: 'FILL' 1;">view_in_ar</span>
+                MULAI SIMULASI
+            </button>
+        </section>
+
+        <!-- Bento Grid Menu -->
+        <section>
+            <h3 class="text-[11px] md:text-xs font-medium text-outline mb-2 uppercase tracking-wider">Menu Utama</h3>
+            <div class="grid grid-cols-2 gap-2.5 md:grid-cols-4 md:gap-4">
+                <!-- Learning Module -->
+                <a class="col-span-2 glass-panel rounded-xl p-3.5 md:p-5 flex flex-col justify-between min-h-[110px] md:min-h-[140px] hover:border-digital-purple transition-colors group"
+                    href="#">
+                    <div class="flex justify-between items-start">
+                        <div class="bg-secondary-fixed text-on-secondary-fixed p-1.5 md:p-2 rounded-lg inline-flex">
+                            <span class="material-symbols-outlined text-lg md:text-xl">menu_book</span>
+                        </div>
+                        <span
+                            class="material-symbols-outlined text-sm text-outline-variant group-hover:text-digital-purple transition-colors">arrow_forward</span>
+                    </div>
+                    <div class="mt-auto pt-2">
+                        <h4 class="text-sm md:text-base font-bold text-on-surface mb-0.5">Learning Module</h4>
+                        <p class="text-[11px] md:text-xs text-on-surface-variant">Akses materi dan studi kasus terbaru.</p>
+                    </div>
+                </a>
+                <!-- My Progress -->
+                <a class="col-span-1 glass-panel rounded-xl p-3 md:p-4 flex flex-col justify-between min-h-[95px] md:min-h-[140px] hover:border-democratic-blue transition-colors group"
+                    href="#">
+                    <div class="bg-primary-fixed text-on-primary-fixed p-1.5 md:p-2 rounded-lg inline-flex w-fit mb-2">
+                        <span class="material-symbols-outlined text-lg md:text-xl">bar_chart</span>
+                    </div>
+                    <div>
+                        <h4 class="text-xs md:text-sm font-semibold text-on-surface leading-tight">My Progress</h4>
+                    </div>
+                </a>
+                <!-- Achievement -->
+                <a class="col-span-1 glass-panel rounded-xl p-3 md:p-4 flex flex-col justify-between min-h-[95px] md:min-h-[140px] hover:border-alert-amber transition-colors group"
+                    href="#">
+                    <div class="bg-tertiary-fixed text-on-tertiary-fixed p-1.5 md:p-2 rounded-lg inline-flex w-fit mb-2">
+                        <span class="material-symbols-outlined text-lg md:text-xl">emoji_events</span>
+                    </div>
+                    <div>
+                        <h4 class="text-xs md:text-sm font-semibold text-on-surface leading-tight">Achievement</h4>
+                    </div>
+                </a>
+                <!-- About ECHOBREAK -->
+                <a class="col-span-2 md:col-span-4 glass-panel rounded-xl p-3.5 md:p-4 flex items-center justify-between hover:bg-surface-container-low transition-colors group border-t-4 border-t-democratic-blue"
+                    href="#">
+                    <div class="flex items-center gap-3">
+                        <div class="bg-surface-variant text-on-surface-variant p-2 rounded-full inline-flex">
+                            <span class="material-symbols-outlined text-base md:text-lg">info</span>
+                        </div>
+                        <div>
+                            <h4 class="text-xs md:text-sm font-bold text-on-surface">About ECHOBREAK</h4>
+                            <p class="text-[11px] md:text-xs text-on-surface-variant block">Pelajari lebih lanjut tentang misi dan teknologi kami.</p>
+                        </div>
+                    </div>
+                    <span
+                        class="material-symbols-outlined text-sm text-outline-variant group-hover:text-on-surface transition-colors">chevron_right</span>
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <!-- BottomNavBar (Mobile Only) -->
+    <nav
+        class="fixed bottom-0 left-0 w-full z-50 border-t border-outline-variant dark:border-outline bg-surface/90 backdrop-blur-lg shadow-lg flex justify-around items-center py-1.5 px-4 md:hidden">
+        <!-- Tab 1: Beranda -->
+        <a class="flex flex-col items-center justify-center bg-secondary-fixed text-on-secondary-fixed-variant rounded-full px-3 py-0.5 active:scale-90 transition-all duration-200"
+            href="#">
+            <span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' 1;">home</span>
+            <span class="text-[10px] font-medium mt-0.5">Beranda</span>
+        </a>
+        <!-- Tab 2: Modul -->
+        <a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant/50 px-3 py-0.5 rounded-full active:scale-90 transition-all duration-200"
+            href="#">
+            <span class="material-symbols-outlined text-lg">apps</span>
+            <span class="text-[10px] font-medium mt-0.5">Modul</span>
+        </a>
+        <!-- Tab 3: Progres -->
+        <a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant/50 px-3 py-0.5 rounded-full active:scale-90 transition-all duration-200"
+            href="#">
+            <span class="material-symbols-outlined text-lg">analytics</span>
+            <span class="text-[10px] font-medium mt-0.5">Progres</span>
+        </a>
+        <!-- Tab 4: Profil -->
+        <a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant/50 px-3 py-0.5 rounded-full active:scale-90 transition-all duration-200"
+            href="#">
+            <span class="material-symbols-outlined text-lg">person</span>
+            <span class="text-[10px] font-medium mt-0.5">Profil</span>
+        </a>
+    </nav>
+</body>
+
+</html>

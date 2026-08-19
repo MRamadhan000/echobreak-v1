@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Fase 4: Keputusan Demokratis</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed-variant": "#5b00c5",
+                        "outline": "#737685",
+                        "inverse-primary": "#b2c5ff",
+                        "on-primary-fixed-variant": "#0040a2",
+                        "on-primary": "#ffffff",
+                        "surface-dark": "#0F172A",
+                        "on-secondary-fixed": "#250059",
+                        "on-primary-fixed": "#001848",
+                        "secondary-container": "#8b4ef7",
+                        "on-tertiary": "#ffffff",
+                        "secondary-fixed-dim": "#d3bbff",
+                        "success-green": "#10B981",
+                        "error-container": "#ffdad6",
+                        "inverse-on-surface": "#eff1f3",
+                        "alert-amber": "#F59E0B",
+                        "primary": "#003d9b",
+                        "primary-container": "#0052cc",
+                        "on-tertiary-fixed-variant": "#653e00",
+                        "surface-container-highest": "#e0e3e5",
+                        "democratic-blue": "#0052CC",
+                        "surface-dim": "#d8dadc",
+                        "tertiary-fixed-dim": "#ffb95f",
+                        "on-tertiary-container": "#ffc988",
+                        "outline-variant": "#c3c6d6",
+                        "on-secondary": "#ffffff",
+                        "primary-fixed": "#dae2ff",
+                        "surface": "#f7f9fb",
+                        "on-surface-variant": "#434654",
+                        "surface-container-high": "#e6e8ea",
+                        "on-error": "#ffffff",
+                        "surface-tint": "#0c56d0",
+                        "surface-variant": "#e0e3e5",
+                        "digital-purple": "#6D28D9",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface": "#191c1e",
+                        "inverse-surface": "#2d3133",
+                        "tertiary-container": "#805000",
+                        "surface-container-low": "#f2f4f6",
+                        "tertiary": "#603b00",
+                        "background": "#f7f9fb",
+                        "on-tertiary-fixed": "#2a1700",
+                        "tertiary-fixed": "#ffddb8",
+                        "text-main": "#1E293B",
+                        "on-error-container": "#93000a",
+                        "secondary": "#712edd",
+                        "on-secondary-container": "#fffbff",
+                        "surface-container": "#eceef0",
+                        "secondary-fixed": "#ebddff",
+                        "primary-fixed-dim": "#b2c5ff",
+                        "on-primary-container": "#c4d2ff",
+                        "error": "#ba1a1a",
+                        "on-background": "#191c1e",
+                        "surface-bright": "#f7f9fb"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-mobile": "12px",
+                        "margin-desktop": "32px",
+                        "sm": "10px",
+                        "xl": "24px",
+                        "xs": "6px",
+                        "base": "4px",
+                        "md": "12px",
+                        "lg": "20px",
+                        "gutter": "16px"
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: theme('colors.background');
+            color: theme('colors.on-background');
+            min-height: 100dvh;
+            overflow-x: hidden;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        .gradient-progress {
+            background: linear-gradient(90deg, theme('colors.digital-purple') 0%, theme('colors.democratic-blue') 100%);
+        }
+    </style>
+</head>
+<body class="font-sans antialiased flex flex-col pb-20 md:pb-10 pt-16 md:pt-0">
+
+    <!-- TopAppBar -->
+    <header class="fixed top-0 w-full z-50 bg-surface-container/90 backdrop-blur-md shadow-sm">
+        <div class="flex items-center justify-between px-4 md:px-8 w-full h-16">
+            <div class="flex items-center gap-2">
+                <button class="p-1 text-primary hover:opacity-80 active:scale-95 transition-transform">
+                    <span class="material-symbols-outlined text-[20px] md:text-[24px]">arrow_back</span>
+                </button>
+                <h1 class="font-bold text-democratic-blue text-base md:text-lg">EchoBreak</h1>
+            </div>
+            <!-- Desktop Navigation -->
+            <nav class="hidden md:flex items-center gap-2">
+                <a class="text-on-surface-variant hover:bg-surface-variant/50 px-3 py-1.5 rounded-full transition-all flex items-center gap-2 text-sm font-medium" href="#">
+                    <span class="material-symbols-outlined text-[18px]">home</span>
+                    <span>Beranda</span>
+                </a>
+                <a class="bg-secondary-fixed text-on-secondary-fixed-variant px-3 py-1.5 rounded-full transition-all flex items-center gap-2 text-sm font-medium" href="#">
+                    <span class="material-symbols-outlined text-[18px]">apps</span>
+                    <span>Modul</span>
+                </a>
+                <a class="text-on-surface-variant hover:bg-surface-variant/50 px-3 py-1.5 rounded-full transition-all flex items-center gap-2 text-sm font-medium" href="#">
+                    <span class="material-symbols-outlined text-[18px]">analytics</span>
+                    <span>Progres</span>
+                </a>
+                <a class="text-on-surface-variant hover:bg-surface-variant/50 px-3 py-1.5 rounded-full transition-all flex items-center gap-2 text-sm font-medium" href="#">
+                    <span class="material-symbols-outlined text-[18px]">person</span>
+                    <span>Profil</span>
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="flex-grow px-4 md:px-8 py-4 md:py-8 w-full max-w-7xl mx-auto md:pt-24 grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-6">
+        
+        <!-- Page Header -->
+        <div class="md:col-span-12 mb-2 md:mb-4 text-center md:text-left">
+            <p class="text-digital-purple uppercase tracking-wider mb-1 text-[10px] md:text-xs font-semibold">Modul 1 • Kesimpulan</p>
+            <h2 class="text-primary font-bold text-xl md:text-3xl mb-1">Fase 4: Keputusan Demokratis</h2>
+            <p class="text-on-surface-variant max-w-3xl text-xs md:text-base">Tinjau kembali perjalanan Anda dari paparan awal hingga mencapai pemahaman yang komprehensif. Informasi yang berkualitas membentuk keputusan yang objektif.</p>
+        </div>
+
+        <!-- Decision Journey Timeline -->
+        <div class="md:col-span-8 space-y-4">
+            <h3 class="text-primary-fixed-variant font-bold text-sm md:text-lg">Perjalanan Keputusan Anda</h3>
+            <div class="glass-panel p-4 md:p-6 rounded-xl shadow-sm relative overflow-hidden">
+                <div class="absolute left-6 md:left-8 top-8 bottom-8 w-0.5 bg-surface-variant"></div>
+                <div class="absolute left-6 md:left-8 top-8 bottom-8 w-0.5 gradient-progress" style="height: 100%;"></div>
+                
+                <!-- Tahap 1 -->
+                <div class="relative flex items-start gap-3 md:gap-4 mb-5">
+                    <div class="w-7 h-7 md:w-8 md:h-8 rounded-full bg-surface-container flex-shrink-0 z-10 flex items-center justify-center border-2 border-surface-variant">
+                        <span class="material-symbols-outlined text-[14px] md:text-[16px] text-on-surface-variant">filter_alt</span>
+                    </div>
+                    <div class="flex-grow bg-surface p-3 md:p-4 rounded-lg border border-outline-variant/30 shadow-xs">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-1 gap-1">
+                            <h4 class="font-semibold text-on-surface text-xs md:text-sm">Fase 1: Informasi Terbatas</h4>
+                            <span class="bg-error-container text-on-error-container px-2 py-0.5 rounded text-[10px] md:text-xs font-medium">Bias Tinggi</span>
+                        </div>
+                        <p class="text-on-surface-variant mb-2 text-xs md:text-sm">Pendapat awal Anda berdasarkan paparan media sosial saja. Cenderung mendukung narasi populis tanpa verifikasi mendalam.</p>
+                        <div class="h-2 w-full bg-surface-container rounded-full overflow-hidden">
+                            <div class="h-full bg-alert-amber w-1/4 rounded-full"></div>
+                        </div>
+                        <p class="text-right mt-1 text-on-surface-variant text-[10px] md:text-xs">Skor Objektivitas: 25/100</p>
+                    </div>
+                </div>
+
+                <!-- Tahap 2 -->
+                <div class="relative flex items-start gap-3 md:gap-4 mb-5">
+                    <div class="w-7 h-7 md:w-8 md:h-8 rounded-full bg-surface-container flex-shrink-0 z-10 flex items-center justify-center border-2 border-digital-purple">
+                        <span class="material-symbols-outlined text-[14px] md:text-[16px] text-digital-purple">compare_arrows</span>
+                    </div>
+                    <div class="flex-grow bg-surface p-3 md:p-4 rounded-lg border border-digital-purple/30 shadow-xs">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-1 gap-1">
+                            <h4 class="font-semibold text-on-surface text-xs md:text-sm">Fase 2: Perspektif Alternatif</h4>
+                            <span class="bg-secondary-container text-on-secondary-container px-2 py-0.5 rounded text-[10px] md:text-xs font-medium">Eksplorasi</span>
+                        </div>
+                        <p class="text-on-surface-variant mb-2 text-xs md:text-sm">Anda mulai mempertimbangkan dampak ekonomi dan lingkungan. Keraguan muncul terhadap narasi awal yang terlalu sederhana.</p>
+                        <div class="h-2 w-full bg-surface-container rounded-full overflow-hidden">
+                            <div class="h-full bg-digital-purple w-2/4 rounded-full"></div>
+                        </div>
+                        <p class="text-right mt-1 text-on-surface-variant text-[10px] md:text-xs">Skor Objektivitas: 50/100</p>
+                    </div>
+                </div>
+
+                <!-- Tahap 3 -->
+                <div class="relative flex items-start gap-3 md:gap-4">
+                    <div class="w-7 h-7 md:w-8 md:h-8 rounded-full bg-democratic-blue flex-shrink-0 z-10 flex items-center justify-center shadow-md">
+                        <span class="material-symbols-outlined text-[14px] md:text-[16px] text-on-primary">verified</span>
+                    </div>
+                    <div class="flex-grow bg-primary-fixed p-3 md:p-4 rounded-lg border border-primary-container/20 shadow-xs">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-1 gap-1">
+                            <h4 class="font-semibold text-on-primary-fixed text-xs md:text-sm">Fase 3: Informasi Terverifikasi</h4>
+                            <span class="bg-success-green/20 text-success-green px-2 py-0.5 rounded flex items-center gap-1 text-[10px] md:text-xs font-medium">
+                                <span class="material-symbols-outlined text-[12px]">check_circle</span> Valid
+                            </span>
+                        </div>
+                        <p class="text-on-primary-fixed-variant mb-2 text-xs md:text-sm">Melalui analisis data independen dan filter AR, Anda mendapatkan gambaran utuh yang bebas dari misinformasi struktural.</p>
+                        <div class="h-2 w-full bg-surface-container rounded-full overflow-hidden">
+                            <div class="h-full bg-democratic-blue w-11/12 rounded-full"></div>
+                        </div>
+                        <p class="text-right mt-1 text-on-primary-fixed-variant text-[10px] md:text-xs">Skor Objektivitas: 92/100</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Decision Card Section -->
+        <div class="md:col-span-4 mt-4 md:mt-0">
+            <div class="md:sticky md:top-24">
+                <div class="bg-surface p-4 md:p-6 rounded-xl shadow-md border-t-4 border-t-democratic-blue">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="material-symbols-outlined text-democratic-blue text-[20px]">how_to_vote</span>
+                        <h3 class="text-primary font-bold text-sm md:text-lg">Keputusan Akhir</h3>
+                    </div>
+                    <p class="text-on-surface mb-4 text-xs md:text-sm">Berdasarkan seluruh informasi terverifikasi yang telah Anda kumpulkan, apakah Anda setuju dengan implementasi kebijakan ini secara penuh?</p>
+                    
+                    <div class="space-y-2.5 mb-4 decision-options">
+                        <button type="button" class="w-full flex items-center justify-between p-3 rounded-lg border border-outline-variant hover:border-democratic-blue hover:bg-primary-fixed transition-colors group">
+                            <span class="text-on-surface group-hover:text-primary font-medium text-left text-xs md:text-sm">Setuju</span>
+                            <span class="material-symbols-outlined text-outline-variant group-hover:text-democratic-blue text-[18px]">thumb_up</span>
+                        </button>
+                        <button type="button" class="w-full flex items-center justify-between p-3 rounded-lg border border-outline-variant hover:border-alert-amber hover:bg-error-container/30 transition-colors group">
+                            <span class="text-on-surface group-hover:text-tertiary font-medium text-left text-xs md:text-sm">Tidak Setuju</span>
+                            <span class="material-symbols-outlined text-outline-variant group-hover:text-alert-amber text-[18px]">thumb_down</span>
+                        </button>
+                        <button type="button" class="w-full flex items-center justify-between p-3 rounded-lg border border-outline-variant hover:border-digital-purple hover:bg-secondary-fixed transition-colors group">
+                            <span class="text-on-surface group-hover:text-on-secondary-fixed font-medium text-left text-xs md:text-sm">Setuju dengan Catatan (Revisi)</span>
+                            <span class="material-symbols-outlined text-outline-variant group-hover:text-digital-purple text-[18px]">edit_note</span>
+                        </button>
+                    </div>
+
+                    <button class="w-full bg-democratic-blue text-on-primary font-semibold py-2.5 rounded-lg hover:bg-primary-container transition-colors shadow-sm flex items-center justify-center gap-2 text-xs md:text-sm">
+                        Kirim Keputusan
+                        <span class="material-symbols-outlined text-[16px]">send</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- BottomNavBar (Mobile Only) -->
+    <nav class="fixed bottom-0 w-full z-50 md:hidden border-t border-outline-variant bg-surface/95 backdrop-blur-lg shadow-lg">
+        <div class="flex justify-around items-center w-full py-2 px-3">
+            <a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant/50 rounded-lg p-1 transition-all" href="#">
+                <span class="material-symbols-outlined mb-0.5 text-[20px]">home</span>
+                <span class="text-[10px]">Beranda</span>
+            </a>
+            <a class="flex flex-col items-center justify-center bg-secondary-fixed text-on-secondary-fixed-variant rounded-full px-4 py-1 active:scale-90 transition-all duration-200" href="#">
+                <span class="material-symbols-outlined mb-0.5 text-[20px]" style="font-variation-settings: 'FILL' 1;">apps</span>
+                <span class="text-[10px] font-medium">Modul</span>
+            </a>
+            <a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant/50 rounded-lg p-1 transition-all" href="#">
+                <span class="material-symbols-outlined mb-0.5 text-[20px]">analytics</span>
+                <span class="text-[10px]">Progres</span>
+            </a>
+            <a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant/50 rounded-lg p-1 transition-all" href="#">
+                <span class="material-symbols-outlined mb-0.5 text-[20px]">person</span>
+                <span class="text-[10px]">Profil</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Interactive Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const buttons = document.querySelectorAll('.decision-options button');
+            buttons.forEach(button => {
+                button.addEventListener('click', function() {
+                    buttons.forEach(btn => {
+                        btn.classList.remove('ring-2', 'ring-offset-2', 'ring-democratic-blue', 'ring-alert-amber', 'ring-digital-purple');
+                        btn.classList.add('border-outline-variant');
+                    });
+                    
+                    this.classList.add('ring-2', 'ring-offset-2');
+                    
+                    const text = this.textContent;
+                    if(text.includes('Tidak Setuju')) {
+                         this.classList.add('ring-alert-amber');
+                    } else if (text.includes('Catatan')) {
+                         this.classList.add('ring-digital-purple');
+                    } else {
+                         this.classList.add('ring-democratic-blue');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
