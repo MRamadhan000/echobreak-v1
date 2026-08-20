@@ -95,189 +95,265 @@
     </style>
 </head>
 
-<body class="bg-background text-on-surface text-sm pb-28 md:pb-16 pt-16 md:pt-20 overflow-x-hidden">
+<body class="bg-background text-on-surface text-xs md:text-sm pb-24 md:pb-16 pt-4 md:pt-20 overflow-x-hidden">
     
-    <!-- TopAppBar (Mobile) -->
-    <header class="fixed top-0 left-0 w-full z-50 bg-surface-container/95 backdrop-blur-md shadow-sm flex items-center justify-between px-4 h-16 md:hidden">
-        <a href="beranda.html" class="text-primary hover:opacity-80 active:scale-95 transition-transform p-2">
-            <span class="material-symbols-outlined text-2xl">arrow_back</span>
-        </a>
-        <h1 class="font-bold text-base sm:text-lg text-democratic-blue tracking-tight">EchoBreak - Progres</h1>
-        <div class="w-9"></div>
-    </header>
-
-    <!-- TopNavbar (Desktop) -->
-    <header class="fixed top-0 left-0 w-full z-50 bg-surface-container/95 backdrop-blur-md shadow-sm hidden md:flex items-center justify-between px-8 lg:px-12 h-20">
-        <div class="flex items-center gap-3">
-            <a href="beranda.html" class="p-2 text-primary hover:opacity-80 active:scale-95 transition-transform rounded-full hover:bg-surface-variant/50">
-                <span class="material-symbols-outlined text-2xl">arrow_back</span>
-            </a>
-            <h1 class="font-bold text-democratic-blue text-xl lg:text-2xl tracking-tight">EchoBreak</h1>
+    <!-- TopNavbar (Desktop Only) -->
+    <header class="fixed top-0 left-0 w-full z-50 bg-surface-container/95 backdrop-blur-md shadow-sm hidden md:flex items-center justify-between px-8 lg:px-12 h-16">
+        <div class="flex items-center gap-2">
+            <h1 class="font-bold text-democratic-blue text-base">EchoBreak</h1>
         </div>
-        <nav class="flex items-center gap-2 lg:gap-3">
-            <a class="text-on-surface-variant hover:bg-surface-variant/60 px-4 py-2 rounded-full transition-all flex items-center gap-2 text-sm lg:text-base font-medium" href="beranda.html">
-                <span class="material-symbols-outlined text-xl">home</span>
+        <nav class="flex items-center gap-2">
+            <a class="text-on-surface-variant hover:bg-surface-variant/50 px-3 py-1 rounded-full transition-all flex items-center gap-1.5 text-xs font-medium" href="beranda.html">
+                <span class="material-symbols-outlined text-[16px]">home</span>
                 <span>Beranda</span>
             </a>
-            <a class="text-on-surface-variant hover:bg-surface-variant/60 px-4 py-2 rounded-full transition-all flex items-center gap-2 text-sm lg:text-base font-medium" href="phase1.html">
-                <span class="material-symbols-outlined text-xl">apps</span>
+            <a class="text-on-surface-variant hover:bg-surface-variant/50 px-3 py-1 rounded-full transition-all flex items-center gap-1.5 text-xs font-medium" href="phase1.html">
+                <span class="material-symbols-outlined text-[16px]">apps</span>
                 <span>Modul</span>
             </a>
-            <a class="bg-secondary-fixed text-on-secondary-fixed-variant px-4 py-2 rounded-full transition-all flex items-center gap-2 text-sm lg:text-base font-medium shadow-sm" href="progres.html">
-                <span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">analytics</span>
+            <a class="bg-secondary-fixed text-on-secondary-fixed-variant px-3 py-1 rounded-full transition-all flex items-center gap-1.5 text-xs font-medium" href="progres.html">
+                <span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">analytics</span>
                 <span>Progres</span>
             </a>
-            <a class="text-on-surface-variant hover:bg-surface-variant/60 px-4 py-2 rounded-full transition-all flex items-center gap-2 text-sm lg:text-base font-medium" href="profil.html">
-                <span class="material-symbols-outlined text-xl">person</span>
+            <a class="text-on-surface-variant hover:bg-surface-variant/50 px-3 py-1 rounded-full transition-all flex items-center gap-1.5 text-xs font-medium" href="profil.html">
+                <span class="material-symbols-outlined text-[16px]">person</span>
                 <span>Profil</span>
             </a>
         </nav>
     </header>
 
     <!-- Main Canvas -->
-    <main class="max-w-4xl mx-auto px-4 sm:px-6 md:px-10 py-6 md:py-8">
+    <main class="max-w-4xl mx-auto px-3 sm:px-6 md:px-10 py-4 md:py-6">
         
         <!-- Section Judul Halaman -->
-        <section class="mb-6 md:mb-8">
-            <h2 class="text-xl sm:text-2xl md:text-3xl font-bold text-democratic-blue mb-1.5">Riwayat & Progres Belajar 📊</h2>
-            <p class="text-xs sm:text-sm md:text-base text-on-surface-variant">Pantau peningkatan skor pre-test dan post-test dari setiap modul yang telah kamu selesaikan.</p>
+        <section class="mb-5 md:mb-6">
+            <h2 class="text-base sm:text-xl md:text-2xl font-bold text-democratic-blue mb-1">Riwayat & Progres Belajar 📊</h2>
+            <p class="text-[11px] sm:text-xs md:text-sm text-on-surface-variant">Pantau skor tes serta profil literasi spesifik untuk setiap modul yang telah diselesaikan.</p>
         </section>
 
         <!-- Ringkasan Statistik Progres -->
-        <section class="mb-6 md:mb-8">
-            <div class="glass-panel rounded-2xl p-5 sm:p-6 md:p-7">
-                <div class="flex justify-between items-end mb-4">
+        <section class="mb-5 md:mb-6">
+            <div class="glass-panel rounded-xl p-4 sm:p-5">
+                <div class="flex justify-between items-end mb-3">
                     <div>
-                        <span class="text-xs sm:text-sm font-semibold text-digital-purple block mb-1 uppercase tracking-wider">Penyelesaian Keseluruhan</span>
-                        <h3 class="text-base sm:text-lg md:text-xl font-bold text-on-surface">Status Pelatihan</h3>
+                        <span class="text-[10px] sm:text-xs font-semibold text-digital-purple block mb-0.5 uppercase tracking-wider">Penyelesaian Keseluruhan</span>
+                        <h3 class="text-sm sm:text-base font-bold text-on-surface">Status Pelatihan</h3>
                     </div>
                     <div class="text-right">
-                        <span class="text-xl sm:text-2xl md:text-3xl font-bold text-democratic-blue">2 / 3 Modul</span>
+                        <span class="text-base sm:text-xl font-bold text-democratic-blue">2 / 2 Topik</span>
                     </div>
                 </div>
-                <div class="w-full bg-surface-variant rounded-full h-3 mb-3 overflow-hidden">
-                    <div class="progress-gradient h-3 rounded-full transition-all duration-500" style="width: 70%"></div>
+                <div class="w-full bg-surface-variant rounded-full h-2.5 mb-2 overflow-hidden">
+                    <div class="progress-gradient h-2.5 rounded-full transition-all duration-500" style="width: 100%"></div>
                 </div>
-                <p class="text-xs sm:text-sm text-on-surface-variant">Rata-rata peningkatan skor post-test dibanding pre-test: <strong class="text-success-green font-semibold">+32.5 poin</strong></p>
+                <p class="text-[11px] sm:text-xs text-on-surface-variant">Rata-rata peningkatan skor post-test: <strong class="text-success-green font-semibold">+32.5 poin</strong></p>
             </div>
         </section>
 
-        <!-- Container Riwayat Pre-Test & Post-Test -->
+        <!-- Container Riwayat Berdasarkan Tipe Topik -->
         <section>
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="text-xs sm:text-sm font-semibold text-outline uppercase tracking-wider">Riwayat Tes Per Modul (Urutan Terbaru)</h3>
-                <span class="text-xs sm:text-sm text-on-surface-variant italic">Menampilkan 2 Modul Selesai</span>
+            <div class="flex items-center justify-between mb-3">
+                <h3 class="text-[10px] sm:text-xs font-semibold text-outline uppercase tracking-wider">Riwayat Tes & Profil Literasi Per Modul</h3>
+                <span class="text-[10px] sm:text-xs text-on-surface-variant italic">2 Kategori Selesai</span>
             </div>
 
             <div class="flex flex-col gap-4 sm:gap-5">
                 
-                <!-- ================= MODUL TERBARU (MODUL 2) - POSISI PALING ATAS ================= -->
-                <div class="glass-panel rounded-2xl p-4 sm:p-6 border-l-4 border-l-democratic-blue relative transition-all hover:shadow-md">
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-4 border-b border-surface-container">
-                        <div class="flex items-start sm:items-center gap-3.5">
-                            <div class="bg-primary-fixed text-on-primary-fixed p-3 rounded-xl flex items-center justify-center shrink-0">
-                                <span class="material-symbols-outlined text-2xl">menu_book</span>
+                <!-- ================= TOPIK 1: EKONOMI (SUB-TOPIK: MBG) ================= -->
+                <div class="glass-panel rounded-xl p-3.5 sm:p-5 border-l-4 border-l-democratic-blue relative transition-all hover:shadow-md">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 mb-3 pb-3 border-b border-surface-container">
+                        <div class="flex items-start sm:items-center gap-3">
+                            <div class="bg-primary-fixed text-on-primary-fixed p-2.5 rounded-lg flex items-center justify-center shrink-0">
+                                <span class="material-symbols-outlined text-xl">payments</span>
                             </div>
                             <div>
-                                <span class="text-[10px] sm:text-xs bg-democratic-blue/10 text-democratic-blue px-2.5 py-0.5 rounded font-mono font-semibold">Modul Terbaru</span>
-                                <h4 class="text-sm sm:text-base md:text-lg font-bold text-on-surface mt-1">Modul 2: Deteksi & Verifikasi Disinformasi Visual</h4>
-                                <p class="text-xs sm:text-sm text-on-surface-variant mt-0.5">Diselesaikan pada: 19 Agustus 2026</p>
+                                <span class="text-[9px] sm:text-[10px] bg-democratic-blue/10 text-democratic-blue px-2 py-0.5 rounded font-mono font-semibold">Tipe: Ekonomi</span>
+                                <h4 class="text-xs sm:text-sm md:text-base font-bold text-on-surface mt-0.5">Sub-Topik: Program Makan Bergizi Gratis (MBG)</h4>
+                                <p class="text-[10px] sm:text-xs text-on-surface-variant mt-0.5">Diselesaikan pada: 19 Agustus 2026</p>
                             </div>
                         </div>
-                        <span class="bg-success-green/10 text-success-green text-xs sm:text-sm font-semibold px-3 py-1.5 rounded-full flex items-center gap-1.5 self-start sm:self-center shrink-0">
-                            <span class="material-symbols-outlined text-[16px]">check_circle</span> Tuntas
+                        <span class="bg-success-green/10 text-success-green text-[10px] sm:text-xs font-semibold px-2.5 py-1 rounded-full flex items-center gap-1 self-start sm:self-center shrink-0">
+                            <span class="material-symbols-outlined text-[14px]">check_circle</span> Tuntas
                         </span>
                     </div>
 
-                    <!-- 2 Gelembung Hasil: Pre-Test & Post-Test -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                        <!-- Gelembung Pre-Test -->
-                        <div class="bg-surface-container-low rounded-xl p-3.5 sm:p-4 flex items-center justify-between border border-surface-variant">
-                            <div class="flex items-center gap-3">
-                                <div class="bg-amber-100 text-alert-amber p-2.5 rounded-full">
-                                    <span class="material-symbols-outlined text-base">history</span>
+                    <!-- Gelembung Pre-Test & Post-Test -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-4">
+                        <div class="bg-surface-container-low rounded-lg p-3 flex items-center justify-between border border-surface-variant">
+                            <div class="flex items-center gap-2.5">
+                                <div class="bg-amber-100 text-alert-amber p-2 rounded-full">
+                                    <span class="material-symbols-outlined text-sm">history</span>
                                 </div>
                                 <div>
-                                    <span class="text-xs sm:text-sm text-outline block">Pre-Test Modul 2</span>
-                                    <span class="text-xs sm:text-sm font-medium text-on-surface">Sebelum Membaca</span>
+                                    <span class="text-[10px] sm:text-xs text-outline block">Pre-Test MBG</span>
+                                    <span class="text-[11px] sm:text-xs font-medium text-on-surface">Sebelum Membaca</span>
                                 </div>
                             </div>
                             <div class="text-right">
-                                <span class="text-lg sm:text-xl font-bold text-alert-amber">65</span>
-                                <span class="text-xs sm:text-sm text-outline">/100</span>
+                                <span class="text-sm sm:text-base font-bold text-alert-amber">65</span>
+                                <span class="text-[10px] text-outline">/100</span>
                             </div>
                         </div>
 
-                        <!-- Gelembung Post-Test -->
-                        <div class="bg-surface-container-low rounded-xl p-3.5 sm:p-4 flex items-center justify-between border border-surface-variant">
-                            <div class="flex items-center gap-3">
-                                <div class="bg-emerald-100 text-success-green p-2.5 rounded-full">
-                                    <span class="material-symbols-outlined text-base">assignment_turned_in</span>
+                        <div class="bg-surface-container-low rounded-lg p-3 flex items-center justify-between border border-surface-variant">
+                            <div class="flex items-center gap-2.5">
+                                <div class="bg-emerald-100 text-success-green p-2 rounded-full">
+                                    <span class="material-symbols-outlined text-sm">assignment_turned_in</span>
                                 </div>
                                 <div>
-                                    <span class="text-xs sm:text-sm text-outline block">Post-Test Modul 2</span>
-                                    <span class="text-xs sm:text-sm font-medium text-on-surface">Setelah Membaca</span>
+                                    <span class="text-[10px] sm:text-xs text-outline block">Post-Test MBG</span>
+                                    <span class="text-[11px] sm:text-xs font-medium text-on-surface">Setelah Membaca</span>
                                 </div>
                             </div>
                             <div class="text-right">
-                                <span class="text-lg sm:text-xl font-bold text-success-green">92</span>
-                                <span class="text-xs sm:text-sm text-outline">/100</span>
+                                <span class="text-sm sm:text-base font-bold text-success-green">92</span>
+                                <span class="text-[10px] text-outline">/100</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Personal Literacy Profile Khusus Modul Ini -->
+                    <div class="bg-surface-container-low/60 rounded-lg p-3 border border-surface-variant/70">
+                        <div class="flex items-center gap-1.5 mb-2.5">
+                            <span class="material-symbols-outlined text-digital-purple text-sm">bar_chart</span>
+                            <span class="text-[11px] sm:text-xs font-bold text-on-surface">Personal Literacy Profile (MBG)</span>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2.5">
+                            <div>
+                                <div class="flex justify-between items-center mb-0.5 text-[11px]">
+                                    <span class="text-on-surface-variant">Critical Thinking</span>
+                                    <span class="font-bold text-democratic-blue">90%</span>
+                                </div>
+                                <div class="w-full bg-surface-variant rounded-full h-1.5 overflow-hidden">
+                                    <div class="progress-gradient h-1.5 rounded-full" style="width: 90%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between items-center mb-0.5 text-[11px]">
+                                    <span class="text-on-surface-variant">Info Verification</span>
+                                    <span class="font-bold text-democratic-blue">85%</span>
+                                </div>
+                                <div class="w-full bg-surface-variant rounded-full h-1.5 overflow-hidden">
+                                    <div class="progress-gradient h-1.5 rounded-full" style="width: 85%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between items-center mb-0.5 text-[11px]">
+                                    <span class="text-on-surface-variant">Perspective Openness</span>
+                                    <span class="font-bold text-alert-amber">70%</span>
+                                </div>
+                                <div class="w-full bg-surface-variant rounded-full h-1.5 overflow-hidden">
+                                    <div class="bg-alert-amber h-1.5 rounded-full" style="width: 70%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between items-center mb-0.5 text-[11px]">
+                                    <span class="text-on-surface-variant">Algorithm Awareness</span>
+                                    <span class="font-bold text-democratic-blue">95%</span>
+                                </div>
+                                <div class="w-full bg-surface-variant rounded-full h-1.5 overflow-hidden">
+                                    <div class="progress-gradient h-1.5 rounded-full" style="width: 95%"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- ================= MODUL SEBELUMNYA (MODUL 1) ================= -->
-                <div class="glass-panel rounded-2xl p-4 sm:p-6 border-l-4 border-l-surface-variant relative transition-all hover:shadow-md opacity-95">
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-4 border-b border-surface-container">
-                        <div class="flex items-start sm:items-center gap-3.5">
-                            <div class="bg-surface-variant text-on-surface-variant p-3 rounded-xl flex items-center justify-center shrink-0">
-                                <span class="material-symbols-outlined text-2xl">school</span>
+                <!-- ================= TOPIK 2: PENDIDIKAN (SUB-TOPIK: AI) ================= -->
+                <div class="glass-panel rounded-xl p-3.5 sm:p-5 border-l-4 border-l-digital-purple relative transition-all hover:shadow-md">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 mb-3 pb-3 border-b border-surface-container">
+                        <div class="flex items-start sm:items-center gap-3">
+                            <div class="bg-secondary-fixed text-on-secondary-fixed-variant p-2.5 rounded-lg flex items-center justify-center shrink-0">
+                                <span class="material-symbols-outlined text-xl">psychology</span>
                             </div>
                             <div>
-                                <span class="text-[10px] sm:text-xs bg-surface-variant text-on-surface-variant px-2.5 py-0.5 rounded font-mono font-semibold">Modul Selesai</span>
-                                <h4 class="text-sm sm:text-base md:text-lg font-bold text-on-surface mt-1">Modul 1: Fondasi Berpikir Kritis & Algoritma Echo Chamber</h4>
-                                <p class="text-xs sm:text-sm text-on-surface-variant mt-0.5">Diselesaikan pada: 10 Agustus 2026</p>
+                                <span class="text-[9px] sm:text-[10px] bg-digital-purple/10 text-digital-purple px-2 py-0.5 rounded font-mono font-semibold">Tipe: Pendidikan</span>
+                                <h4 class="text-xs sm:text-sm md:text-base font-bold text-on-surface mt-0.5">Sub-Topik: Artificial Intelligence (AI) di Sekolah</h4>
+                                <p class="text-[10px] sm:text-xs text-on-surface-variant mt-0.5">Diselesaikan pada: 10 Agustus 2026</p>
                             </div>
                         </div>
-                        <span class="bg-success-green/10 text-success-green text-xs sm:text-sm font-semibold px-3 py-1.5 rounded-full flex items-center gap-1.5 self-start sm:self-center shrink-0">
-                            <span class="material-symbols-outlined text-[16px]">check_circle</span> Tuntas
+                        <span class="bg-success-green/10 text-success-green text-[10px] sm:text-xs font-semibold px-2.5 py-1 rounded-full flex items-center gap-1 self-start sm:self-center shrink-0">
+                            <span class="material-symbols-outlined text-[14px]">check_circle</span> Tuntas
                         </span>
                     </div>
 
-                    <!-- 2 Gelembung Hasil: Pre-Test & Post-Test -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                        <!-- Gelembung Pre-Test -->
-                        <div class="bg-surface-container-low rounded-xl p-3.5 sm:p-4 flex items-center justify-between border border-surface-variant">
-                            <div class="flex items-center gap-3">
-                                <div class="bg-amber-100 text-alert-amber p-2.5 rounded-full">
-                                    <span class="material-symbols-outlined text-base">history</span>
+                    <!-- Gelembung Pre-Test & Post-Test -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-4">
+                        <div class="bg-surface-container-low rounded-lg p-3 flex items-center justify-between border border-surface-variant">
+                            <div class="flex items-center gap-2.5">
+                                <div class="bg-amber-100 text-alert-amber p-2 rounded-full">
+                                    <span class="material-symbols-outlined text-sm">history</span>
                                 </div>
                                 <div>
-                                    <span class="text-xs sm:text-sm text-outline block">Pre-Test Modul 1</span>
-                                    <span class="text-xs sm:text-sm font-medium text-on-surface">Sebelum Membaca</span>
+                                    <span class="text-[10px] sm:text-xs text-outline block">Pre-Test AI</span>
+                                    <span class="text-[11px] sm:text-xs font-medium text-on-surface">Sebelum Membaca</span>
                                 </div>
                             </div>
                             <div class="text-right">
-                                <span class="text-lg sm:text-xl font-bold text-alert-amber">50</span>
-                                <span class="text-xs sm:text-sm text-outline">/100</span>
+                                <span class="text-sm sm:text-base font-bold text-alert-amber">50</span>
+                                <span class="text-[10px] text-outline">/100</span>
                             </div>
                         </div>
 
-                        <!-- Gelembung Post-Test -->
-                        <div class="bg-surface-container-low rounded-xl p-3.5 sm:p-4 flex items-center justify-between border border-surface-variant">
-                            <div class="flex items-center gap-3">
-                                <div class="bg-emerald-100 text-success-green p-2.5 rounded-full">
-                                    <span class="material-symbols-outlined text-base">assignment_turned_in</span>
+                        <div class="bg-surface-container-low rounded-lg p-3 flex items-center justify-between border border-surface-variant">
+                            <div class="flex items-center gap-2.5">
+                                <div class="bg-emerald-100 text-success-green p-2 rounded-full">
+                                    <span class="material-symbols-outlined text-sm">assignment_turned_in</span>
                                 </div>
                                 <div>
-                                    <span class="text-xs sm:text-sm text-outline block">Post-Test Modul 1</span>
-                                    <span class="text-xs sm:text-sm font-medium text-on-surface">Setelah Membaca</span>
+                                    <span class="text-[10px] sm:text-xs text-outline block">Post-Test AI</span>
+                                    <span class="text-[11px] sm:text-xs font-medium text-on-surface">Setelah Membaca</span>
                                 </div>
                             </div>
                             <div class="text-right">
-                                <span class="text-lg sm:text-xl font-bold text-success-green">85</span>
-                                <span class="text-xs sm:text-sm text-outline">/100</span>
+                                <span class="text-sm sm:text-base font-bold text-success-green">85</span>
+                                <span class="text-[10px] text-outline">/100</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Personal Literacy Profile Khusus Modul Ini -->
+                    <div class="bg-surface-container-low/60 rounded-lg p-3 border border-surface-variant/70">
+                        <div class="flex items-center gap-1.5 mb-2.5">
+                            <span class="material-symbols-outlined text-digital-purple text-sm">bar_chart</span>
+                            <span class="text-[11px] sm:text-xs font-bold text-on-surface">Personal Literacy Profile (AI di Sekolah)</span>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2.5">
+                            <div>
+                                <div class="flex justify-between items-center mb-0.5 text-[11px]">
+                                    <span class="text-on-surface-variant">Critical Thinking</span>
+                                    <span class="font-bold text-democratic-blue">88%</span>
+                                </div>
+                                <div class="w-full bg-surface-variant rounded-full h-1.5 overflow-hidden">
+                                    <div class="progress-gradient h-1.5 rounded-full" style="width: 88%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between items-center mb-0.5 text-[11px]">
+                                    <span class="text-on-surface-variant">Info Verification</span>
+                                    <span class="font-bold text-democratic-blue">80%</span>
+                                </div>
+                                <div class="w-full bg-surface-variant rounded-full h-1.5 overflow-hidden">
+                                    <div class="progress-gradient h-1.5 rounded-full" style="width: 80%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between items-center mb-0.5 text-[11px]">
+                                    <span class="text-on-surface-variant">Perspective Openness</span>
+                                    <span class="font-bold text-alert-amber">75%</span>
+                                </div>
+                                <div class="w-full bg-surface-variant rounded-full h-1.5 overflow-hidden">
+                                    <div class="bg-alert-amber h-1.5 rounded-full" style="width: 75%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between items-center mb-0.5 text-[11px]">
+                                    <span class="text-on-surface-variant">Algorithm Awareness</span>
+                                    <span class="font-bold text-democratic-blue">92%</span>
+                                </div>
+                                <div class="w-full bg-surface-variant rounded-full h-1.5 overflow-hidden">
+                                    <div class="progress-gradient h-1.5 rounded-full" style="width: 92%"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -288,22 +364,22 @@
     </main>
 
     <!-- BottomNavBar (Mobile Only) -->
-    <nav class="fixed bottom-0 left-0 w-full z-50 border-t border-outline-variant bg-surface/95 backdrop-blur-lg shadow-lg flex justify-around items-center py-2.5 px-3 md:hidden">
+    <nav class="fixed bottom-0 left-0 w-full z-50 border-t border-outline-variant bg-surface/95 backdrop-blur-lg shadow-lg flex justify-around items-center py-2 px-3 md:hidden">
         <a class="flex flex-col items-center justify-center text-on-surface-variant px-3 py-1 rounded-full transition-all" href="beranda.html">
-            <span class="material-symbols-outlined text-xl">home</span>
-            <span class="text-[11px] font-medium mt-0.5 tracking-tight">Beranda</span>
+            <span class="material-symbols-outlined text-lg">home</span>
+            <span class="text-[10px] font-medium mt-0.5 tracking-tight">Beranda</span>
         </a>
         <a class="flex flex-col items-center justify-center text-on-surface-variant px-3 py-1 rounded-full transition-all" href="phase1.html">
-            <span class="material-symbols-outlined text-xl">apps</span>
-            <span class="text-[11px] font-medium mt-0.5 tracking-tight">Modul</span>
+            <span class="material-symbols-outlined text-lg">apps</span>
+            <span class="text-[10px] font-medium mt-0.5 tracking-tight">Modul</span>
         </a>
         <a class="flex flex-col items-center justify-center bg-secondary-fixed text-on-secondary-fixed-variant px-3.5 py-1 rounded-full transition-all shadow-sm" href="progres.html">
-            <span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">analytics</span>
-            <span class="text-[11px] font-medium mt-0.5 tracking-tight">Progres</span>
+            <span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' 1;">analytics</span>
+            <span class="text-[10px] font-medium mt-0.5 tracking-tight">Progres</span>
         </a>
         <a class="flex flex-col items-center justify-center text-on-surface-variant px-3 py-1 rounded-full transition-all" href="profil.html">
-            <span class="material-symbols-outlined text-xl">person</span>
-            <span class="text-[11px] font-medium mt-0.5 tracking-tight">Profil</span>
+            <span class="material-symbols-outlined text-lg">person</span>
+            <span class="text-[10px] font-medium mt-0.5 tracking-tight">Profil</span>
         </a>
     </nav>
 </body>

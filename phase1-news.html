@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>EchoBreak - Berita: Polemik Jam Masak MBG</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+            rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@600;700&amp;display=swap"
+            rel="stylesheet" />
+
+    <script id="tailwind-config">
+            tailwind.config = {
+                darkMode: "class",
+                theme: {
+                    extend: {
+                        colors: {
+                            "primary": "#003d9b",
+                            "democratic-blue": "#0052CC",
+                            "secondary": "#712edd",
+                            "secondary-fixed": "#ebddff",
+                            "on-secondary-fixed-variant": "#5b00c5",
+                            "surface": "#f7f9fb",
+                            "surface-container": "#eceef0",
+                            "on-surface": "#191c1e",
+                            "on-surface-variant": "#434654",
+                            "outline-variant": "#c3c6d6",
+                            "on-primary": "#ffffff",
+                        }
+                    }
+                }
+            }
+    </script>
+    <style>
+            body {
+                -webkit-tap-highlight-color: transparent;
+                min-height: 100dvh;
+            }
+            .glass-panel {
+                background: rgba(247, 249, 251, 0.9);
+                backdrop-filter: blur(12px);
+                -webkit-backdrop-filter: blur(12px);
+                border-top: 1px solid rgba(195, 198, 214, 0.3);
+            }
+            .ambient-shadow {
+                box-shadow: 0 4px 20px -4px rgba(0, 82, 204, 0.05);
+            }
+    </style>
+</head>
+
+<body class="bg-surface text-on-surface flex flex-col antialiased">
+
+    <!-- TopAppBar -->
+    <header class="bg-surface-container/90 backdrop-blur-md fixed top-0 w-full z-50 shadow-xs">
+        <div class="flex items-center justify-between px-4 w-full h-14 md:h-16 max-w-3xl mx-auto">
+            <a href="phase1.html" aria-label="Go back"
+                class="text-primary hover:opacity-80 active:scale-95 transition-transform p-2 -ml-2 rounded-full cursor-pointer no-underline flex items-center justify-center">
+                <span class="material-symbols-outlined text-xl"
+                    style="font-variation-settings: 'FILL' 0;">arrow_back</span>
+            </a>
+            <h1 class="font-bold text-democratic-blue text-base md:text-xl tracking-tight">EchoBreak News</h1>
+            <div class="w-8"></div>
+        </div>
+    </header>
+
+    <!-- Main Content Canvas -->
+    <main class="flex-grow pt-20 pb-40 md:pb-28 flex flex-col max-w-3xl mx-auto w-full px-4 md:px-8">
+
+        <!-- Article Header -->
+        <div class="mb-4">
+            <span class="inline-block px-2.5 py-1 rounded-md bg-democratic-blue/10 text-democratic-blue text-xs font-semibold mb-2">
+                Analisis Kebijakan • 4 Min Read
+            </span>
+            <h2 class="text-xl md:text-3xl font-bold text-primary tracking-tight leading-snug mb-2">
+                Menakar Efisiensi Jam Masak dan Logistik dalam Program Makan Bergizi Gratis (MBG)
+            </h2>
+            <div class="flex items-center gap-2 text-xs text-on-surface-variant">
+                <span>Oleh Redaksi EchoBreak</span>
+                <span>•</span>
+                <span>Diperbarui Hari Ini</span>
+            </div>
+        </div>
+
+        <!-- Article Featured Image -->
+        <div class="mb-6 rounded-2xl overflow-hidden ambient-shadow border border-outline-variant/50">
+            <img src="gambar.jpg" alt="Ilustrasi Dapur Umum MBG" class="w-full h-52 md:h-72 object-cover" />
+        </div>
+
+        <!-- Article Body (4 Paragraphs) -->
+        <div class="space-y-4 text-sm md:text-base text-on-surface leading-relaxed">
+            <p>
+                Program Makan Bergizi Gratis (MBG) kembali memicu perdebatan hangat di tengah masyarakat, terutama terkait efisiensi teknis penjadwalan memasak di dapur-dapur umum. Sejumlah pengelola dapur umum menerapkan shift memasak sejak dini hari guna memastikan seluruh paket makanan matang tepat waktu sebelum didistribusikan ke sekolah-sekolah menjelang jam istirahat siang.
+            </p>
+            <p>
+                Di satu sisi, para pendukung program menilai bahwa sistem shift dini hari adalah langkah taktis yang teruji untuk mengimbangi skala volume produksi yang masif. Pendekatan ini juga dinilai mampu membuka peluang rantai pasok bagi UMKM lokal sebagai penyedia bahan baku harian, sehingga roda perekonomian mikro di sekitar wilayah dapur turut tergerak secara positif.
+            </p>
+            <p>
+                Namun di sisi lain, kelompok kontra dan para ahli gizi melontarkan kritik tajam mengenai isu *holding time* atau batas aman konsumsi makanan matang. Muncul kekhawatiran bahwa rentang waktu yang terlalu panjang antara proses memasak di pagi buta hingga makanan dikonsumsi pada siang hari berisiko menurunkan kandungan nutrisi, mengubah cita rasa, atau memicu potensi kerentanan keamanan pangan.
+            </p>
+            <p>
+                Menanggapi dinamika ini, para pembuat kebijakan dituntut untuk segera mengevaluasi radius wilayah distribusi serta memperketat standar operasional prosedur (SOP) logistik. Solusi berbasis teknologi pemantauan rantai pasok dingin (*cold chain management*) dan pembatasan jarak tempuh dapur umum menjadi kunci mutlak agar tujuan utama perbaikan gizi anak bangsa tercapai tanpa kompromi.
+            </p>
+        </div>
+
+        <!-- Proceed Section / Button to Phase 1 AR -->
+        <div class="mt-8 pt-6 border-t border-outline-variant/40 flex flex-col gap-3">
+            <div class="bg-democratic-blue/5 border border-democratic-blue/20 rounded-xl p-4 text-center">
+                <p class="text-xs text-on-surface-variant mb-2">Ingin melihat simulasi data dan visualisasi interaktif dari berita ini?</p>
+                <a href="pretest.html"
+                    class="w-full py-3 px-5 rounded-xl bg-democratic-blue text-on-primary font-semibold text-sm hover:opacity-90 active:scale-[0.98] transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer no-underline">
+                    <span>Lanjut ke Simulasi AR</span>
+                    <span class="material-symbols-outlined text-base">arrow_forward</span>
+                </a>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- BottomNavBar (Mobile Only - Beranda & Modul Aktif) -->
+    <nav class="md:hidden flex justify-around items-center w-full px-4 border-t border-outline-variant bg-surface/95 backdrop-blur-lg fixed bottom-0 z-50 shadow-lg h-16">
+        <button class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant/50 active:scale-90 transition-all duration-200 p-2 rounded-lg cursor-pointer">
+            <span class="material-symbols-outlined text-xl mb-0.5" style="font-variation-settings: 'FILL' 0;">home</span>
+            <span class="text-[10px] font-medium">Beranda</span>
+        </button>
+        <button class="flex flex-col items-center justify-center bg-secondary-fixed text-on-secondary-fixed-variant rounded-full px-4 py-1.5 active:scale-90 transition-all duration-200 cursor-pointer shadow-2xs">
+            <span class="material-symbols-outlined text-xl mb-0.5" style="font-variation-settings: 'FILL' 1;">apps</span>
+            <span class="text-[10px] font-medium">Modul</span>
+        </button>
+    </nav>
+
+</body>
+
+</html>

@@ -102,14 +102,14 @@
                         "label-md": ["JetBrains Mono"]
                     },
                     "fontSize": {
-                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
-                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
-                        "headline-lg-mobile": ["22px", { "lineHeight": "30px", "fontWeight": "700" }],
-                        "headline-md": ["18px", { "lineHeight": "26px", "fontWeight": "600" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "body-sm": ["12px", { "lineHeight": "18px", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["18px", { "lineHeight": "24px", "fontWeight": "700" }],
+                        "headline-md": ["15px", { "lineHeight": "22px", "fontWeight": "600" }],
                         "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
-                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
-                        "label-sm": ["12px", { "lineHeight": "14px", "letterSpacing": "0.05em", "fontWeight": "500" }],
-                        "label-md": ["14px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }]
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-sm": ["11px", { "lineHeight": "13px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "label-md": ["12px", { "lineHeight": "14px", "letterSpacing": "0.05em", "fontWeight": "500" }]
                     }
                 }
             }
@@ -159,10 +159,10 @@
     <section class="w-full relative overflow-hidden bg-surface-dark text-on-primary rounded-b-3xl shadow-md mb-lg">
         <div class="absolute inset-0 opacity-20 pointer-events-none"
             style="background-image: radial-gradient(#6D28D9 1px, transparent 1px); background-size: 20px 20px;"></div>
-        <div class="relative z-10 px-4 md:px-margin-desktop py-12 md:py-20 flex flex-col items-center text-center">
+        <div class="relative z-10 px-4 md:px-margin-desktop py-10 md:py-20 flex flex-col items-center text-center">
             <div
-                class="inline-flex items-center justify-center w-14 h-14 md:w-16 md:h-16 rounded-full bg-success-green/20 text-success-green mb-sm animate-float">
-                <span class="material-symbols-outlined text-[28px] md:text-[32px]">workspace_premium</span>
+                class="inline-flex items-center justify-center w-12 h-12 md:w-16 md:h-16 rounded-full bg-success-green/20 text-success-green mb-sm animate-float">
+                <span class="material-symbols-outlined text-[24px] md:text-[32px]">workspace_premium</span>
             </div>
             <h1
                 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg mb-xs px-2">
@@ -170,8 +170,7 @@
             </h1>
             <p
                 class="font-body-sm md:font-body-md text-body-sm md:text-body-md text-primary-fixed-dim max-w-md mx-auto px-4">
-                Luar biasa! Anda telah berhasil menavigasi arus informasi dan membuktikan kemampuan literasi digital
-                Anda.
+                Luar biasa! Anda telah berhasil menavigasi arus informasi dan membuktikan kemampuan literasi digital Anda.
             </p>
         </div>
     </section>
@@ -195,7 +194,7 @@
                             class="text-body-sm text-outline">%</span></span>
                 </div>
                 <div class="flex flex-col items-center justify-center text-success-green px-sm">
-                    <span class="material-symbols-outlined mb-base animate-pulse">trending_up</span>
+                    <span class="material-symbols-outlined mb-base animate-pulse text-[18px] md:text-[24px]">trending_up</span>
                     <span class="font-label-md text-label-md bg-success-green/10 px-2 py-0.5 rounded-full">+24%</span>
                 </div>
                 <div class="text-center">
@@ -211,63 +210,58 @@
         <div
             class="md:col-span-12 bg-surface-container-lowest rounded-xl shadow-sm border border-surface-variant p-md md:p-lg">
             <div class="flex items-center gap-xs mb-md md:mb-lg">
-                <span class="material-symbols-outlined text-digital-purple">analytics</span>
+                <span class="material-symbols-outlined text-digital-purple text-[20px] md:text-[24px]">analytics</span>
                 <h3 class="font-headline-md text-headline-md text-text-main">Personal Literacy Profile</h3>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-x-lg gap-y-md">
                 <!-- Metric 1 -->
                 <div class="flex flex-col gap-xs">
                     <div class="flex justify-between items-end">
-                        <span class="font-label-md text-label-md text-on-surface">Critical Thinking</span>
-                        <span class="font-label-sm text-label-sm text-democratic-blue font-bold">90%</span>
+                        <span class="text-xs md:text-base font-medium text-on-surface">Critical Thinking</span>
+                        <span class="text-xs md:text-base font-bold text-democratic-blue">90%</span>
                     </div>
-                    <div class="w-full bg-surface-container-highest rounded-full h-2.5 overflow-hidden">
-                        <div class="metric-bar-fill h-2.5 rounded-full" style="width: 90%"></div>
+                    <div class="w-full bg-surface-container-highest rounded-full h-2.5 md:h-3 overflow-hidden">
+                        <div class="metric-bar-fill h-2.5 md:h-3 rounded-full" style="width: 90%"></div>
                     </div>
                 </div>
                 <!-- Metric 2 -->
                 <div class="flex flex-col gap-xs">
                     <div class="flex justify-between items-end">
-                        <span class="font-label-md text-label-md text-on-surface">Info Verification</span>
-                        <span class="font-label-sm text-label-sm text-democratic-blue font-bold">85%</span>
+                        <span class="text-xs md:text-base font-medium text-on-surface">Info Verification</span>
+                        <span class="text-xs md:text-base font-bold text-democratic-blue">85%</span>
                     </div>
-                    <div class="w-full bg-surface-container-highest rounded-full h-2.5 overflow-hidden">
-                        <div class="metric-bar-fill h-2.5 rounded-full" style="width: 85%"></div>
+                    <div class="w-full bg-surface-container-highest rounded-full h-2.5 md:h-3 overflow-hidden">
+                        <div class="metric-bar-fill h-2.5 md:h-3 rounded-full" style="width: 85%"></div>
                     </div>
                 </div>
                 <!-- Metric 3 -->
                 <div class="flex flex-col gap-xs">
                     <div class="flex justify-between items-end">
-                        <span class="font-label-md text-label-md text-on-surface">Perspective Openness</span>
-                        <span class="font-label-sm text-label-sm text-alert-amber font-bold">70%</span>
+                        <span class="text-xs md:text-base font-medium text-on-surface">Perspective Openness</span>
+                        <span class="text-xs md:text-base font-bold text-alert-amber">70%</span>
                     </div>
-                    <div class="w-full bg-surface-container-highest rounded-full h-2.5 overflow-hidden">
-                        <div class="bg-alert-amber h-2.5 rounded-full" style="width: 70%"></div>
+                    <div class="w-full bg-surface-container-highest rounded-full h-2.5 md:h-3 overflow-hidden">
+                        <div class="bg-alert-amber h-2.5 md:h-3 rounded-full" style="width: 70%"></div>
                     </div>
                 </div>
                 <!-- Metric 4 -->
                 <div class="flex flex-col gap-xs">
                     <div class="flex justify-between items-end">
-                        <span class="font-label-md text-label-md text-on-surface">Algorithm Awareness</span>
-                        <span class="font-label-sm text-label-sm text-democratic-blue font-bold">95%</span>
+                        <span class="text-xs md:text-base font-medium text-on-surface">Algorithm Awareness</span>
+                        <span class="text-xs md:text-base font-bold text-democratic-blue">95%</span>
                     </div>
-                    <div class="w-full bg-surface-container-highest rounded-full h-2.5 overflow-hidden">
-                        <div class="metric-bar-fill h-2.5 rounded-full" style="width: 95%"></div>
+                    <div class="w-full bg-surface-container-highest rounded-full h-2.5 md:h-3 overflow-hidden">
+                        <div class="metric-bar-fill h-2.5 md:h-3 rounded-full" style="width: 95%"></div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Action Buttons -->
-        <div class="md:col-span-12 flex flex-col md:flex-row gap-sm md:gap-md justify-center mt-2 w-full">
-            <button
-                class="flex items-center justify-center gap-xs px-lg py-3 bg-democratic-blue text-on-primary rounded-lg font-headline-md text-headline-md font-semibold hover:bg-primary transition-colors w-full md:w-auto shadow-sm">
-                <span class="material-symbols-outlined text-[20px]">share</span>
-                Bagikan Pencapaian
-            </button>
+        <!-- Action Button -->
+        <div class="md:col-span-12 flex justify-center mt-2 w-full">
             <a href="beranda.html"
-                class="flex items-center justify-center gap-xs px-lg py-3 border-2 border-democratic-blue text-democratic-blue bg-transparent rounded-lg font-headline-md text-headline-md font-semibold hover:bg-democratic-blue/5 transition-colors w-full md:w-auto text-center">
-                <span class="material-symbols-outlined text-[20px]">dashboard</span>
+                class="flex items-center justify-center gap-xs px-lg py-3 bg-democratic-blue text-on-primary rounded-lg font-headline-md text-sm md:text-headline-md font-semibold hover:bg-primary transition-colors w-full md:w-1/2 text-center shadow-sm">
+                <span class="material-symbols-outlined text-[18px] md:text-[20px]">dashboard</span>
                 Kembali ke Dashboard
             </a>
         </div>

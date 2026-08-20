@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Post-Test Evaluasi - EchoBreak</title>
+    <title>Post-Test Evaluasi MBG - EchoBreak</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
@@ -133,7 +133,7 @@
                     <span class="material-symbols-outlined text-[20px]">arrow_back</span>
                 </a>
                 <h1 class="font-headline-md text-base md:text-lg font-bold text-democratic-blue truncate">
-                    Post-Test Evaluasi</h1>
+                    Post-Test Analisis Berita MBG</h1>
             </div>
         </div>
     </header>
@@ -143,16 +143,16 @@
         <!-- Header Section -->
         <section class="mb-8 text-center md:text-left">
             <div
-                class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed-variant text-[11px] md:text-xs font-medium mb-3">
-                <span class="material-symbols-outlined text-[14px]">quiz</span>
+                class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-success-green/15 text-success-green text-[11px] md:text-xs font-medium mb-3">
+                <span class="material-symbols-outlined text-[14px]">task_alt</span>
                 Evaluasi Akhir Modul
             </div>
             <h2 class="text-xl md:text-3xl font-bold text-text-main mb-2 tracking-tight">
-                Uji Pemahaman Anda
+                Uji Pemahaman Akhir: Isu Jam Masak & Logistik MBG
             </h2>
             <p class="text-xs md:text-base text-on-surface-variant max-w-2xl mx-auto md:mx-0">
-                Jawablah 3 pertanyaan pilihan ganda berikut untuk mengukur seberapa baik Anda memahami materi pemecahan
-                bias informasi.
+                Setelah menyelesaikan simulasi dan materi, jawablah 8 pertanyaan berikut untuk mengukur peningkatan
+                kemampuan literasi digital dan analisis kritis Anda terhadap disinformasi.
             </p>
         </section>
 
@@ -161,93 +161,262 @@
 
             <!-- Pertanyaan 1 -->
             <div class="glass-panel p-5 md:p-lg rounded-xl shadow-sm border border-surface-variant">
-                <span class="text-xs font-semibold text-primary uppercase tracking-wider">Pertanyaan 1 dari 3</span>
+                <span class="text-xs font-semibold text-primary uppercase tracking-wider">Pertanyaan 1 dari 8</span>
                 <h3 class="text-sm md:text-base font-bold text-text-main mt-1 mb-4">
-                    Apa ciri utama dari berita atau informasi yang bersifat sensasional?
+                    Sebuah akun media sosial mengunggah argumen: "Waktu persiapan subuh membuktikan program ini tidak
+                    matang." Manakah respons kritis yang paling tepat?
                 </h3>
                 <div class="space-y-2.5">
                     <label
                         class="flex items-start gap-3 p-3 rounded-lg border border-outline-variant/60 hover:bg-surface-container-low cursor-pointer transition-colors">
-                        <input type="radio" name="q1" value="A" required
+                        <input type="radio" name="post_q1" value="A" required
                             class="mt-0.5 text-democratic-blue focus:ring-democratic-blue" />
-                        <span class="text-xs md:text-sm text-on-surface"><strong>A.</strong> Menggunakan bahasa yang
-                            provokatif dan memancing emosi pembaca.</span>
+                        <span class="text-xs md:text-sm text-on-surface"><strong>A.</strong> Menilai secara objektif
+                            bahwa jam masak dini hari merupakan konsekuensi logistik skala besar yang menuntut manajemen
+                            rantai pasok ketat, bukan sekadar vonis gagal total.</span>
                     </label>
                     <label
                         class="flex items-start gap-3 p-3 rounded-lg border border-outline-variant/60 hover:bg-surface-container-low cursor-pointer transition-colors">
-                        <input type="radio" name="q1" value="B"
+                        <input type="radio" name="post_q1" value="B"
                             class="mt-0.5 text-democratic-blue focus:ring-democratic-blue" />
-                        <span class="text-xs md:text-sm text-on-surface"><strong>B.</strong> Selalu menyertakan data
-                            riset dari lembaga resmi yang terverifikasi.</span>
+                        <span class="text-xs md:text-sm text-on-surface"><strong>B.</strong> Menganggap semua dapur umum
+                            pasti memproduksi racun makanan otomatis.</span>
                     </label>
                     <label
                         class="flex items-start gap-3 p-3 rounded-lg border border-outline-variant/60 hover:bg-surface-container-low cursor-pointer transition-colors">
-                        <input type="radio" name="q1" value="C"
+                        <input type="radio" name="post_q1" value="C"
                             class="mt-0.5 text-democratic-blue focus:ring-democratic-blue" />
-                        <span class="text-xs md:text-sm text-on-surface"><strong>C.</strong> Menuliskan sudut pandang
-                            yang netral dan berimbang.</span>
+                        <span class="text-xs md:text-sm text-on-surface"><strong>C.</strong> Menyetujui klaim tersebut
+                            tanpa verifikasi lanjutan karena terlihat meyakinkan.</span>
                     </label>
                 </div>
             </div>
 
             <!-- Pertanyaan 2 -->
             <div class="glass-panel p-5 md:p-lg rounded-xl shadow-sm border border-surface-variant">
-                <span class="text-xs font-semibold text-primary uppercase tracking-wider">Pertanyaan 2 dari 3</span>
+                <span class="text-xs font-semibold text-primary uppercase tracking-wider">Pertanyaan 2 dari 8</span>
                 <h3 class="text-sm md:text-base font-bold text-text-main mt-1 mb-4">
-                    Mengapa penting untuk melakukan verifikasi silang (*cross-checking*) pada berita yang kita baca?
+                    Apa fungsi dari kontrol standar suhu dan batas waktu simpan (*holding time*) dalam operasional
+                    distribusi makanan massal?
                 </h3>
                 <div class="space-y-2.5">
                     <label
                         class="flex items-start gap-3 p-3 rounded-lg border border-outline-variant/60 hover:bg-surface-container-low cursor-pointer transition-colors">
-                        <input type="radio" name="q2" value="A" required
+                        <input type="radio" name="post_q2" value="A" required
                             class="mt-0.5 text-democratic-blue focus:ring-democratic-blue" />
-                        <span class="text-xs md:text-sm text-on-surface"><strong>A.</strong> Agar kita bisa langsung
-                            membagikannya ke media sosial lebih cepat.</span>
+                        <span class="text-xs md:text-sm text-on-surface"><strong>A.</strong> Formalitas administratif
+                            tanpa pengaruh nyata pada kualitas makanan.</span>
                     </label>
                     <label
                         class="flex items-start gap-3 p-3 rounded-lg border border-outline-variant/60 hover:bg-surface-container-low cursor-pointer transition-colors">
-                        <input type="radio" name="q2" value="B"
+                        <input type="radio" name="post_q2" value="B"
                             class="mt-0.5 text-democratic-blue focus:ring-democratic-blue" />
-                        <span class="text-xs md:text-sm text-on-surface"><strong>B.</strong> Menghindari jebakan bias
-                            informasi dan mendapatkan fakta yang utuh.</span>
+                        <span class="text-xs md:text-sm text-on-surface"><strong>B.</strong> Menjaga keamanan pangan,
+                            mencegah penurunan mutu nutrisi, dan menghindari risiko kontaminasi bakteri.</span>
                     </label>
                     <label
                         class="flex items-start gap-3 p-3 rounded-lg border border-outline-variant/60 hover:bg-surface-container-low cursor-pointer transition-colors">
-                        <input type="radio" name="q2" value="C"
+                        <input type="radio" name="post_q2" value="C"
                             class="mt-0.5 text-democratic-blue focus:ring-democratic-blue" />
-                        <span class="text-xs md:text-sm text-on-surface"><strong>C.</strong> Supaya jumlah pembaca
-                            berita tersebut meningkat.</span>
+                        <span class="text-xs md:text-sm text-on-surface"><strong>C.</strong> Menghentikan sepenuhnya
+                            seluruh aktivitas distribusi katering lokal.</span>
                     </label>
                 </div>
             </div>
 
             <!-- Pertanyaan 3 -->
             <div class="glass-panel p-5 md:p-lg rounded-xl shadow-sm border border-surface-variant">
-                <span class="text-xs font-semibold text-primary uppercase tracking-wider">Pertanyaan 3 dari 3</span>
+                <span class="text-xs font-semibold text-primary uppercase tracking-wider">Pertanyaan 3 dari 8</span>
                 <h3 class="text-sm md:text-base font-bold text-text-main mt-1 mb-4">
-                    Apa langkah awal terbaik saat Anda menemukan klaim informasi yang terkesan sangat berlebihan?
+                    Bagaimana cara mengenali ciri-ciri berita hoaks berjenis *clickbait* ekstrem pada isu kebijakan
+                    publik?
                 </h3>
                 <div class="space-y-2.5">
                     <label
                         class="flex items-start gap-3 p-3 rounded-lg border border-outline-variant/60 hover:bg-surface-container-low cursor-pointer transition-colors">
-                        <input type="radio" name="q3" value="A" required
+                        <input type="radio" name="post_q3" value="A" required
                             class="mt-0.5 text-democratic-blue focus:ring-democratic-blue" />
-                        <span class="text-xs md:text-sm text-on-surface"><strong>A.</strong> Langsung percaya karena
-                            judulnya menarik perhatian.</span>
+                        <span class="text-xs md:text-sm text-on-surface"><strong>A.</strong> Menggunakan judul
+                            provokatif berlebihan, huruf kapital penuh, dan memancing kepanikan emosional pembaca tanpa
+                            isi yang berimbang.</span>
                     </label>
                     <label
                         class="flex items-start gap-3 p-3 rounded-lg border border-outline-variant/60 hover:bg-surface-container-low cursor-pointer transition-colors">
-                        <input type="radio" name="q3" value="B"
+                        <input type="radio" name="post_q3" value="B"
                             class="mt-0.5 text-democratic-blue focus:ring-democratic-blue" />
-                        <span class="text-xs md:text-sm text-on-surface"><strong>B.</strong> Marah dan meninggalkan
-                            komentar negatif di postingan tersebut.</span>
+                        <span class="text-xs md:text-sm text-on-surface"><strong>B.</strong> Menyertakan data statistik
+                            resmi dari lembaga riset terakreditasi.</span>
                     </label>
                     <label
                         class="flex items-start gap-3 p-3 rounded-lg border border-outline-variant/60 hover:bg-surface-container-low cursor-pointer transition-colors">
-                        <input type="radio" name="q3" value="C"
+                        <input type="radio" name="post_q3" value="C"
                             class="mt-0.5 text-democratic-blue focus:ring-democratic-blue" />
-                        <span class="text-xs md:text-sm text-on-surface"><strong>C.</strong> Memeriksa sumber kredibel
-                            lain dan menganalisis bukti pendukungnya.</span>
+                        <span class="text-xs md:text-sm text-on-surface"><strong>C.</strong> Menampilkan transkrip
+                            wawancara lengkap dengan narasumber ahli yang kompeten.</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Pertanyaan 4 -->
+            <div class="glass-panel p-5 md:p-lg rounded-xl shadow-sm border border-surface-variant">
+                <span class="text-xs font-semibold text-primary uppercase tracking-wider">Pertanyaan 4 dari 8</span>
+                <h3 class="text-sm md:text-base font-bold text-text-main mt-1 mb-4">
+                    Langkah preventif apa yang paling efektif untuk meredam dampak negatif disinformasi terkait insiden
+                    dapur umum di tengah masyarakat?
+                </h3>
+                <div class="space-y-2.5">
+                    <label
+                        class="flex items-start gap-3 p-3 rounded-lg border border-outline-variant/60 hover:bg-surface-container-low cursor-pointer transition-colors">
+                        <input type="radio" name="post_q4" value="A" required
+                            class="mt-0.5 text-democratic-blue focus:ring-democratic-blue" />
+                        <span class="text-xs md:text-sm text-on-surface"><strong>A.</strong> Langsung membagikan ulang
+                            berita tersebut ke grup pesan singkat untuk memperingatkan orang lain.</span>
+                    </label>
+                    <label
+                        class="flex items-start gap-3 p-3 rounded-lg border border-outline-variant/60 hover:bg-surface-container-low cursor-pointer transition-colors">
+                        <input type="radio" name="post_q4" value="B"
+                            class="mt-0.5 text-democratic-blue focus:ring-democratic-blue" />
+                        <span class="text-xs md:text-sm text-on-surface"><strong>B.</strong> Melakukan *cross-check*
+                            (cek silang) dengan portal klarifikasi resmi atau pemberitaan media kredibel sebelum
+                            menyebarkannya.</span>
+                    </label>
+                    <label
+                        class="flex items-start gap-3 p-3 rounded-lg border border-outline-variant/60 hover:bg-surface-container-low cursor-pointer transition-colors">
+                        <input type="radio" name="post_q4" value="C"
+                            class="mt-0.5 text-democratic-blue focus:ring-democratic-blue" />
+                        <span class="text-xs md:text-sm text-on-surface"><strong>C.</strong> Mengabaikan semua informasi
+                            tanpa membedakan mana berita valid atau palsu.</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Pertanyaan 5 -->
+            <div class="glass-panel p-5 md:p-lg rounded-xl shadow-sm border border-surface-variant">
+                <span class="text-xs font-semibold text-primary uppercase tracking-wider">Pertanyaan 5 dari 8</span>
+                <h3 class="text-sm md:text-base font-bold text-text-main mt-1 mb-4">
+                    Jika ditemukan video lama kejadian keracunan makanan dari luar negeri yang dinarasikan sebagai
+                    insiden dapur MBG lokal hari ini, tindakan manipulasi ini disebut sebagai...
+                </h3>
+                <div class="space-y-2.5">
+                    <label
+                        class="flex items-start gap-3 p-3 rounded-lg border border-outline-variant/60 hover:bg-surface-container-low cursor-pointer transition-colors">
+                        <input type="radio" name="post_q5" value="A" required
+                            class="mt-0.5 text-democratic-blue focus:ring-democratic-blue" />
+                        <span class="text-xs md:text-sm text-on-surface"><strong>A.</strong> Jurnalisme investigasi
+                            visual standar internasional.</span>
+                    </label>
+                    <label
+                        class="flex items-start gap-3 p-3 rounded-lg border border-outline-variant/60 hover:bg-surface-container-low cursor-pointer transition-colors">
+                        <input type="radio" name="post_q5" value="B"
+                            class="mt-0.5 text-democratic-blue focus:ring-democratic-blue" />
+                        <span class="text-xs md:text-sm text-on-surface"><strong>B.</strong> Konteks palsu (*false
+                            context*) atau disinformasi arsip visual.</span>
+                    </label>
+                    <label
+                        class="flex items-start gap-3 p-3 rounded-lg border border-outline-variant/60 hover:bg-surface-container-low cursor-pointer transition-colors">
+                        <input type="radio" name="post_q5" value="C"
+                            class="mt-0.5 text-democratic-blue focus:ring-democratic-blue" />
+                        <span class="text-xs md:text-sm text-on-surface"><strong>C.</strong> Laporan transparan hasil
+                            audit independen.</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Pertanyaan 6 -->
+            <div class="glass-panel p-5 md:p-lg rounded-xl shadow-sm border border-surface-variant">
+                <span class="text-xs font-semibold text-primary uppercase tracking-wider">Pertanyaan 6 dari 8</span>
+                <h3 class="text-sm md:text-base font-bold text-text-main mt-1 mb-4">
+                    Mengapa analisis kerangka berpikir kritis sangat penting dalam menyikapi perdebatan kebijakan publik
+                    di era digital?
+                </h3>
+                <div class="space-y-2.5">
+                    <label
+                        class="flex items-start gap-3 p-3 rounded-lg border border-outline-variant/60 hover:bg-surface-container-low cursor-pointer transition-colors">
+                        <input type="radio" name="post_q6" value="A" required
+                            class="mt-0.5 text-democratic-blue focus:ring-democratic-blue" />
+                        <span class="text-xs md:text-sm text-on-surface"><strong>A.</strong> Agar tidak mudah
+                            terprovokasi oleh narasi ekstrem dan mampu membedakan kritik konstruktif dari hoaks
+                            destruktif.</span>
+                    </label>
+                    <label
+                        class="flex items-start gap-3 p-3 rounded-lg border border-outline-variant/60 hover:bg-surface-container-low cursor-pointer transition-colors">
+                        <input type="radio" name="post_q6" value="B"
+                            class="mt-0.5 text-democratic-blue focus:ring-democratic-blue" />
+                        <span class="text-xs md:text-sm text-on-surface"><strong>B.</strong> Untuk mempercepat
+                            penyebaran informasi tanpa perlu membaca isinya.</span>
+                    </label>
+                    <label
+                        class="flex items-start gap-3 p-3 rounded-lg border border-outline-variant/60 hover:bg-surface-container-low cursor-pointer transition-colors">
+                        <input type="radio" name="post_q6" value="C"
+                            class="mt-0.5 text-democratic-blue focus:ring-democratic-blue" />
+                        <span class="text-xs md:text-sm text-on-surface"><strong>C.</strong> Agar menjadi pihak yang
+                            paling sering mendebat orang lain di kolom komentar.</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Pertanyaan 7 -->
+            <div class="glass-panel p-5 md:p-lg rounded-xl shadow-sm border border-surface-variant">
+                <span class="text-xs font-semibold text-primary uppercase tracking-wider">Pertanyaan 7 dari 8</span>
+                <h3 class="text-sm md:text-base font-bold text-text-main mt-1 mb-4">
+                    Dalam simulasi manajemen logistik dapur MBG, apa hasil evaluasi operasional terbaik yang disarankan
+                    untuk menjaga kualitas makanan?
+                </h3>
+                <div class="space-y-2.5">
+                    <label
+                        class="flex items-start gap-3 p-3 rounded-lg border border-outline-variant/60 hover:bg-surface-container-low cursor-pointer transition-colors">
+                        <input type="radio" name="post_q7" value="A" required
+                            class="mt-0.5 text-democratic-blue focus:ring-democratic-blue" />
+                        <span class="text-xs md:text-sm text-on-surface"><strong>A.</strong> Menghapus seluruh
+                            pengawasan higienitas karena memakan waktu lama.</span>
+                    </label>
+                    <label
+                        class="flex items-start gap-3 p-3 rounded-lg border border-outline-variant/60 hover:bg-surface-container-low cursor-pointer transition-colors">
+                        <input type="radio" name="post_q7" value="B"
+                            class="mt-0.5 text-democratic-blue focus:ring-democratic-blue" />
+                        <span class="text-xs md:text-sm text-on-surface"><strong>B.</strong> Mengoptimalkan manajemen
+                            rantai dingin (*cold chain*), desentralisasi titik masak, dan pengetatan SOP
+                            kebersihan.</span>
+                    </label>
+                    <label
+                        class="flex items-start gap-3 p-3 rounded-lg border border-outline-variant/60 hover:bg-surface-container-low cursor-pointer transition-colors">
+                        <input type="radio" name="post_q7" value="C"
+                            class="mt-0.5 text-democratic-blue focus:ring-democratic-blue" />
+                        <span class="text-xs md:text-sm text-on-surface"><strong>C.</strong> Melakukan proses memasak 24
+                            jam sebelum waktu makan tanpa pendingin.</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Pertanyaan 8 -->
+            <div class="glass-panel p-5 md:p-lg rounded-xl shadow-sm border border-surface-variant">
+                <span class="text-xs font-semibold text-primary uppercase tracking-wider">Pertanyaan 8 dari 8</span>
+                <h3 class="text-sm md:text-base font-bold text-text-main mt-1 mb-4">
+                    Kesimpulan apa yang paling matang setelah Anda mempelajari dinamika isu jam masak dan logistik MBG
+                    melalui modul ini?
+                </h3>
+                <div class="space-y-2.5">
+                    <label
+                        class="flex items-start gap-3 p-3 rounded-lg border border-outline-variant/60 hover:bg-surface-container-low cursor-pointer transition-colors">
+                        <input type="radio" name="post_q8" value="A" required
+                            class="mt-0.5 text-democratic-blue focus:ring-democratic-blue" />
+                        <span class="text-xs md:text-sm text-on-surface"><strong>A.</strong> Kebijakan publik besar
+                            rentan terhadap distorsi informasi, sehingga membutuhkan literasi kritis, transparansi data,
+                            dan perbaikan sistem berkelanjutan.</span>
+                    </label>
+                    <label
+                        class="flex items-start gap-3 p-3 rounded-lg border border-outline-variant/60 hover:bg-surface-container-low cursor-pointer transition-colors">
+                        <input type="radio" name="post_q8" value="B"
+                            class="mt-0.5 text-democratic-blue focus:ring-democratic-blue" />
+                        <span class="text-xs md:text-sm text-on-surface"><strong>B.</strong> Semua berita negatif di
+                            internet pasti sepenuhnya benar tanpa perlu diuji kebenarannya.</span>
+                    </label>
+                    <label
+                        class="flex items-start gap-3 p-3 rounded-lg border border-outline-variant/60 hover:bg-surface-container-low cursor-pointer transition-colors">
+                        <input type="radio" name="post_q8" value="C"
+                            class="mt-0.5 text-democratic-blue focus:ring-democratic-blue" />
+                        <span class="text-xs md:text-sm text-on-surface"><strong>C.</strong> Teknologi digital tidak
+                            berpengaruh sama sekali terhadap pemahaman isu sosial.</span>
                     </label>
                 </div>
             </div>
@@ -255,9 +424,9 @@
             <!-- Submit Button -->
             <div class="flex justify-end pt-2">
                 <button type="submit"
-                    class="w-full sm:w-auto bg-democratic-blue hover:bg-primary-container text-on-primary text-xs md:text-sm font-semibold py-3 px-8 rounded-xl shadow-md transition-all active:scale-95 flex items-center justify-center gap-2">
-                    Submit Jawaban
-                    <span class="material-symbols-outlined text-[18px]">send</span>
+                    class="w-full sm:w-auto bg-success-green hover:bg-success-green/90 text-on-primary text-xs md:text-sm font-semibold py-3 px-8 rounded-xl shadow-md transition-all active:scale-95 flex items-center justify-center gap-2">
+                    Kirim Post-Test & Lihat Hasil Akhir
+                    <span class="material-symbols-outlined text-[18px]">verified</span>
                 </button>
             </div>
 
@@ -265,4 +434,5 @@
     </main>
 
 </body>
+
 </html>
