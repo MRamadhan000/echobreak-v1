@@ -112,7 +112,6 @@
     <header class="fixed top-0 w-full z-50 bg-surface-container/90 backdrop-blur-md shadow-sm">
         <div class="flex items-center justify-between px-4 md:px-8 w-full h-16">
             <div class="flex items-center gap-2">
-                <!-- Tombol kembali yang diarahkan ke phase3.html -->
                 <button onclick="location.href='phase3.html'" class="p-1 text-primary hover:opacity-80 active:scale-95 transition-transform cursor-pointer">
                     <span class="material-symbols-outlined text-[20px] md:text-[24px]">arrow_back</span>
                 </button>
@@ -259,8 +258,7 @@
                         </button>
                     </div>
 
-                    <!-- Tombol Kirim Keputusan diarahkan ke result.html -->
-                    <button onclick="location.href='result.html'" class="w-full bg-democratic-blue text-on-primary font-semibold py-2.5 rounded-lg hover:bg-primary-container transition-colors shadow-sm flex items-center justify-center gap-2 text-xs md:text-sm cursor-pointer">
+                    <button type="button" onclick="submitDecision()" class="w-full bg-democratic-blue text-on-primary font-semibold py-2.5 rounded-lg hover:bg-primary-container transition-colors shadow-sm flex items-center justify-center gap-2 text-xs md:text-sm cursor-pointer">
                         Kirim Keputusan
                         <span class="material-symbols-outlined text-[16px]">send</span>
                     </button>
@@ -294,6 +292,8 @@
 
     <!-- Interactive Script -->
     <script>
+        let selectedDecision = null;
+
         document.addEventListener('DOMContentLoaded', () => {
             const buttons = document.querySelectorAll('.decision-options button');
             buttons.forEach(button => {
@@ -305,7 +305,10 @@
                     
                     this.classList.add('ring-2', 'ring-offset-2');
                     
-                    const text = this.textContent;
+                    // Ambil teks keputusan dari tombol yang ditekan
+                    const text = this.querySelector('span').textContent.trim();
+                    selectedDecision = text; // Simpan ke variabel
+
                     if(text.includes('Tidak Setuju')) {
                          this.classList.add('ring-alert-amber');
                     } else if (text.includes('Catatan')) {
@@ -316,6 +319,20 @@
                 });
             });
         });
+
+        // Fungsi validasi dan pindah halaman
+        function submitDecision() {
+            if (!selectedDecision) {
+                alert('Harap pilih salah satu keputusan terlebih dahulu sebelum mengirim!');
+                return;
+            }
+
+            // Opsional: Simpan pilihan ke localStorage agar bisa dibaca di halaman posttest.html
+            localStorage.setItem('userDecision', selectedDecision);
+
+            // Pindah ke halaman posttest.html
+            window.location.href = 'posttest.html';
+        }
     </script>
 </body>
 </html>
