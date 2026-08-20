@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>ECHOBREAK — AR Investigation Board</title>
+
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+
+    <style>
+        * { box-sizing: border-box; }
+
+        html, body {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            overflow: hidden; background: #000;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* LAYER STACKING: 0 kamera, 1 a-scene (3D/AR), 10000+ UI */
+        video.mindar-camera-video, video.camFeed {
+            object-fit: cover !important;
+            width: 100vw !important; height: 100vh !important;
+            position: fixed !important; top: 0 !important; left: 0 !important;
+            z-index: 0 !important;
+        }
+
+        a-scene {
+            width: 100vw; height: 100vh;
+            position: fixed; top: 0; left: 0; z-index: 1;
+        }
+
+        a-scene canvas {
+            position: fixed !important; top: 0 !important; left: 0 !important;
+            width: 100vw !important; height: 100vh !important;
+            z-index: 1 !important; background: transparent !important;
+        }
+
+        #start-screen {
+            position: fixed; inset: 0;
+            background: radial-gradient(ellipse at center, #171310 0%, #0a0806 100%);
+            color: #efe6d2; z-index: 20000;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            gap: 18px; text-align: center; padding: 24px;
+        }
+        #start-screen h2 {
+            font-family: 'Oswald', sans-serif; font-size: 32px; letter-spacing: 4px;
+            margin: 0; color: #ff4d3d; text-shadow: 0 0 18px rgba(255,77,61,.45);
+        }
+        #start-screen p { margin: 0; font-size: 13px; color: #a89c86; max-width: 260px; }
+        #startButton {
+            padding: 15px 42px; font-family: 'Oswald', sans-serif; font-size: 16px;
+            font-weight: 600; letter-spacing: 2px; background: #ff4d3d; color: #120a08;
+            border: none; border-radius: 4px; cursor: pointer;
+        }
+
+        #debug-panel {
+            position: fixed; top: 10px; left: 10px;
+            background: rgba(10,8,6,0.85); border: 1px solid #3a2c1c; color: #efe6d2;
+            padding: 10px 15px; border-radius: 4px; font-size: 12px;
+            z-index: 10001; pointer-events: none; line-height: 1.7;
+        }
+
+        #tap-hint {
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+            background: rgba(10,8,6,0.85); border: 1px solid #3a2c1c; color: #efe6d2;
+            padding: 8px 16px; border-radius: 20px; font-size: 12px;
+            z-index: 10001; pointer-events: none; opacity: 0; transition: opacity .4s ease;
+        }
+        #tap-hint.show { opacity: 1; }
+    </style>
+</head>
+
+<body>
+
+    <div id="start-screen">
+        <h2>ECHOBREAK</h2>
+        <p>Arahkan kamera ke marker untuk membuka papan investigasi</p>
+        <button id="startButton">Mulai AR</button>
+    </div>
+
+    <div id="debug-panel">
+        STATUS AR
+        <br>Marker: <span id="marker-status" style="color: yellow;">Menunggu</span>
+        <br>Plane: <span id="plane-status" style="color: yellow;">Hidden</span>
+        <br>Video: <span id="video-status" style="color: yellow;">Idle</span>
+    </div>
+
+    <div id="tap-hint">Tap video untuk Play/Pause • Double tap untuk Mute/Unmute</div>
+
+    <a-scene mindar-image="
+            imageTargetSrc: marker.mind;
+            autoStart: false;
+        " embedded color-space="sRGB" renderer="
+            colorManagement: true;
+            alpha: true;
+        " vr-mode-ui="
+            enabled: false
+        " device-orientation-permission-ui="
+            enabled: false
+        ">
+
+        <a-assets>
+            <video id="mainVideo"
+                   src="video.mp4"
+                   preload="auto"
+                   loop="true"
+                   muted="true"
+                   playsinline
+                   webkit-playsinline
+                   crossorigin="anonymous"></video>
+        </a-assets>
+
+        <a-camera position="0 0 0" look-controls="enabled: false"
+                  raycaster="objects: .clickable; far: 10"
+                  cursor="fuse: false; rayOrigin: mouse">
+        </a-camera>
+
+        <!-- ============================== MARKER TARGET ============================== -->
+        <a-entity id="target" mindar-image-target="targetIndex: 0">
+
+            <!-- Semua konten disatukan di sini supaya bisa di-scale-in bareng saat marker ketemu -->
+            <a-entity id="ar-content" visible="false" scale="0.01 0.01 0.01">
+
+                <!-- ---------- BUBBLE CHAT UTAMA (Ekor di Kanan Bawah & Lebih Besar) ---------- -->
+                <a-plane id="bubblePlane" position="0 0 -0.01" width="0.52" height="0.42"
+                         material="shader: flat; transparent: true; side: double"></a-plane>
+
+                <!-- ---------- VIDEO DI DALAM BUBBLE ---------- -->
+                <a-plane id="videoPlane" class="clickable" position="0 0 0.002" width="0.40" height="0.28"
+                         material="shader: flat; src: #mainVideo; side: double; transparent: false"></a-plane>
+
+                <!-- ---------- 4 KARTU BERITA DENGAN EFEK KETABRAK / MENTAL BERANTAKAN ---------- -->
+                <!-- Top-Left -->
+                <a-plane id="card-tl" class="news-card" 
+                         position="-0.65 0.55 -0.01" rotation="0 0 5" width="0.34" height="0.24"
+                         material="shader: flat; transparent: true; side: double"
+                         animation="property: position; from: -0.65 0.55 -0.01; to: -0.34 0.28 -0.01; dur: 2200; dir: alternate; loop: true; easing: easeInOutBack"></a-plane>
+                
+                <!-- Top-Right -->
+                <a-plane id="card-tr" class="news-card" 
+                         position="0.65 0.55 -0.01" rotation="0 0 -4" width="0.34" height="0.24"
+                         material="shader: flat; transparent: true; side: double"
+                         animation="property: position; from: 0.65 0.55 -0.01; to: 0.29 0.33 -0.01; dur: 2400; dir: alternate; loop: true; easing: easeInOutBack"></a-plane>
+                
+                <!-- Bottom-Left -->
+                <a-plane id="card-bl" class="news-card" 
+                         position="-0.65 -0.55 -0.01" rotation="0 0 -3" width="0.34" height="0.24"
+                         material="shader: flat; transparent: true; side: double"
+                         animation="property: position; from: -0.65 -0.55 -0.01; to: -0.31 -0.31 -0.01; dur: 2300; dir: alternate; loop: true; easing: easeInOutBack"></a-plane>
+                
+                <!-- Bottom-Right -->
+                <a-plane id="card-br" class="news-card" 
+                         position="0.65 -0.55 -0.01" rotation="0 0 4" width="0.34" height="0.24"
+                         material="shader: flat; transparent: true; side: double"
+                         animation="property: position; from: 0.65 -0.55 -0.01; to: 0.35 -0.27 -0.01; dur: 2500; dir: alternate; loop: true; easing: easeInOutBack"></a-plane>
+
+            </a-entity>
+        </a-entity>
+
+    </a-scene>
+
+    <!-- ============================== JAVASCRIPT ============================== -->
+    <script>
+        const scene = document.querySelector("a-scene");
+        const target = document.getElementById("target");
+        const content = document.getElementById("ar-content");
+        const mainVideo = document.getElementById("mainVideo");
+        const startScreen = document.getElementById("start-screen");
+        const startButton = document.getElementById("startButton");
+        const markerStatus = document.getElementById("marker-status");
+        const planeStatus = document.getElementById("plane-status");
+        const videoStatus = document.getElementById("video-status");
+        const tapHint = document.getElementById("tap-hint");
+
+        // ---------- Data 4 berita ----------
+        const NEWS = {
+            "card-tl": { tag: "BERITA — 01", title: "Sinyal Aneh Terdeteksi di Jaringan Kota", body: "Warga melaporkan gangguan tak biasa sesaat sebelum video ini beredar." },
+            "card-tr": { tag: "BERITA — 02", title: "Saksi Mata: \u201CAda yang Mengawasi\u201D", body: "Keterangan saksi belum bisa dikonfirmasi pihak berwenang." },
+            "card-bl": { tag: "BERITA — 03", title: "Rekaman CCTV Hilang Sebelum Dirilis", body: "Arsip rekaman dilaporkan terhapus dari server pusat." },
+            "card-br": { tag: "BERITA — 04", title: "Otoritas Bungkam Soal Insiden Ini", body: "Belum ada pernyataan resmi hingga berita ini diturunkan." }
+        };
+
+        function refreshVideoStatus() {
+            const playState = mainVideo.paused ? "Paused" : "Playing";
+            const muteState = mainVideo.muted ? "Muted" : "Unmuted";
+            videoStatus.innerText = `${playState} / ${muteState}`;
+            videoStatus.style.color = mainVideo.paused ? "yellow" : "#00ff00";
+        }
+        mainVideo.addEventListener("play", refreshVideoStatus);
+        mainVideo.addEventListener("pause", refreshVideoStatus);
+        mainVideo.addEventListener("volumechange", refreshVideoStatus);
+
+        // ---------- Canvas helpers ----------
+        function roundRect(ctx, x, y, w, h, r) {
+            ctx.beginPath();
+            ctx.moveTo(x + r, y);
+            ctx.arcTo(x + w, y, x + w, y + h, r);
+            ctx.arcTo(x + w, y + h, x, y + h, r);
+            ctx.arcTo(x, y + h, x, y, r);
+            ctx.arcTo(x, y, x + w, y, r);
+            ctx.closePath();
+        }
+
+        function wrapText(ctx, text, x, y, maxWidth, lineHeight, maxLines) {
+            const words = text.split(" ");
+            let line = "", lines = 0;
+            for (let i = 0; i < words.length; i++) {
+                const test = line + words[i] + " ";
+                if (ctx.measureText(test).width > maxWidth && line !== "") {
+                    ctx.fillText(line.trim(), x, y);
+                    line = words[i] + " ";
+                    y += lineHeight;
+                    lines++;
+                    if (maxLines && lines >= maxLines - 1) {
+                        ctx.fillText(line.trim() + "…", x, y);
+                        return;
+                    }
+                } else {
+                    line = test;
+                }
+            }
+            ctx.fillText(line.trim(), x, y);
+        }
+
+        // ---------- MEMBUAT BUBBLE CHAT (EKOR DI KANAN BAWAH, UKURAN BESAR, FULL ABU-ABU) ----------
+        function makeBubbleCanvas() {
+            const w = 640, h = 520;
+            const c = document.createElement("canvas");
+            c.width = w; c.height = h;
+            const ctx = c.getContext("2d");
+
+            const x = 15, y = 15, bw = w - 30, bh = h - 60, r = 38;
+
+            // 1. Path kustom gelembung chat dengan ekor besar di sisi kanan bawah
+            ctx.beginPath();
+            ctx.moveTo(x + r, y);
+            ctx.lineTo(x + bw - r, y);
+            ctx.arcTo(x + bw, y, x + bw, y + r, r);
+            ctx.lineTo(x + bw, y + bh - r);
+            ctx.arcTo(x + bw, y + bh, x + bw - r, y + bh, r);
+            
+            // Ekor bubble chat besar di sebelah kanan bawah
+            ctx.lineTo(x + bw - 85, y + bh);
+            ctx.lineTo(x + bw - 55, y + bh + 55); // Ujung ekor lebih panjang/besar keluar
+            ctx.lineTo(x + bw - 145, y + bh);
+
+            ctx.lineTo(x + r, y + bh);
+            ctx.arcTo(x, y + bh, x, y + bh - r, r);
+            ctx.lineTo(x, y + r);
+            ctx.arcTo(x, y, x + r, y, r);
+            ctx.closePath();
+
+            // Isi utama dan border luar bubble
+            ctx.fillStyle = "#26252b"; 
+            ctx.fill();
+            ctx.lineWidth = 6;
+            ctx.strokeStyle = "#ff4d3d";
+            ctx.stroke();
+
+            // 2. Area penuh di dalam tanpa header teks (bersih untuk video)
+            const padX = 30, padY = 30, padW = w - 60, padH = h - 90;
+            
+            ctx.fillStyle = "#26252b"; 
+            roundRect(ctx, padX, padY, padW, padH, 20);
+            ctx.fill();
+
+            return c;
+        }
+
+        function makeCardCanvas(data) {
+            const w = 640, h = 460;
+            const c = document.createElement("canvas");
+            c.width = w; c.height = h;
+            const ctx = c.getContext("2d");
+
+            ctx.fillStyle = "#efe6d2";
+            roundRect(ctx, 4, 4, w - 8, h - 8, 10);
+            ctx.fill();
+            ctx.lineWidth = 4;
+            ctx.strokeStyle = "rgba(0,0,0,0.15)";
+            ctx.stroke();
+
+            ctx.fillStyle = "#d3392b";
+            ctx.font = "600 22px 'JetBrains Mono', monospace";
+            ctx.textBaseline = "alphabetic";
+            ctx.fillText(data.tag, 32, 60);
+
+            ctx.fillStyle = "#201a12";
+            ctx.font = "600 40px Oswald, sans-serif";
+            wrapText(ctx, data.title, 32, 120, w - 64, 46, 3);
+
+            ctx.fillStyle = "#5a4f3d";
+            ctx.font = "400 24px 'JetBrains Mono', monospace";
+            wrapText(ctx, data.body, 32, 300, w - 64, 32, 4);
+
+            return c;
+        }
+
+        function applyTexture(entity, canvas) {
+            const THREE = AFRAME.THREE;
+            const setTex = () => {
+                const mesh = entity.getObject3D("mesh");
+                if (!mesh) return;
+                const tex = new THREE.CanvasTexture(canvas);
+                tex.needsUpdate = true;
+                mesh.material.map = tex;
+                mesh.material.transparent = true;
+                mesh.material.needsUpdate = true;
+            };
+            if (entity.getObject3D("mesh")) setTex();
+            else entity.addEventListener("loaded", setTex, { once: true });
+        }
+
+        async function buildTextures() {
+            if (document.fonts && document.fonts.ready) await document.fonts.ready;
+
+            applyTexture(document.getElementById("bubblePlane"), makeBubbleCanvas());
+            Object.keys(NEWS).forEach((id) => {
+                applyTexture(document.getElementById(id), makeCardCanvas(NEWS[id]));
+            });
+        }
+        buildTextures();
+
+        // ---------- START AR & IZIN AUDIO ----------
+        startButton.addEventListener("click", async () => {
+            startScreen.style.display = "none";
+            mainVideo.muted = false;
+
+            const mindarSystem = scene.systems["mindar-image-system"];
+            try {
+                await mindarSystem.start();
+                markerStatus.innerText = "Mencari...";
+
+                const camVideo = document.querySelector("video:not(#mainVideo)");
+                if (camVideo) camVideo.classList.add("camFeed");
+            } catch (error) {
+                console.error("MindAR error:", error);
+                markerStatus.innerText = "ERROR";
+                markerStatus.style.color = "red";
+            }
+        });
+
+        // ---------- MARKER FOUND ----------
+        target.addEventListener("targetFound", () => {
+            markerStatus.innerText = "Ditemukan ✓";
+            markerStatus.style.color = "#00ff00";
+
+            content.setAttribute("visible", "true");
+            content.setAttribute("animation", "property: scale; from: 0.01 0.01 0.01; to: 1 1 1; dur: 450; easing: easeOutBack");
+
+            planeStatus.innerText = "Visible ✓";
+            planeStatus.style.color = "#00ff00";
+
+            mainVideo.play().catch((err) => console.warn("Autoplay video ditolak:", err));
+
+            tapHint.classList.add("show");
+            setTimeout(() => tapHint.classList.remove("show"), 3000);
+        });
+
+        // ---------- MARKER LOST ----------
+        target.addEventListener("targetLost", () => {
+            markerStatus.innerText = "Hilang";
+            markerStatus.style.color = "yellow";
+
+            content.setAttribute("visible", "false");
+            planeStatus.innerText = "Hidden";
+            planeStatus.style.color = "yellow";
+
+            mainVideo.pause();
+        });
+
+        // ---------- TAP & DOUBLE TAP ----------
+        let tapTimer = null;
+        const DOUBLE_TAP_DELAY = 300;
+        const videoPlane = document.getElementById("videoPlane");
+
+        videoPlane.addEventListener("click", () => {
+            if (tapTimer !== null) {
+                clearTimeout(tapTimer);
+                tapTimer = null;
+                mainVideo.muted = !mainVideo.muted;
+            } else {
+                tapTimer = setTimeout(() => {
+                    tapTimer = null;
+                    mainVideo.paused ? mainVideo.play() : mainVideo.pause();
+                }, DOUBLE_TAP_DELAY);
+            }
+        });
+    </script>
+
+</body>
+</html>

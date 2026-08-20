@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>ECHOBREAK — AR Investigation Board</title>
+
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+
+    <style>
+        * { box-sizing: border-box; }
+
+        html, body {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            overflow: hidden; background: #000;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* LAYER STACKING: 0 kamera, 1 a-scene (3D/AR), 10000+ UI */
+        video.mindar-camera-video, video.camFeed {
+            object-fit: cover !important;
+            width: 100vw !important; height: 100vh !important;
+            position: fixed !important; top: 0 !important; left: 0 !important;
+            z-index: 0 !important;
+        }
+
+        a-scene {
+            width: 100vw; height: 100vh;
+            position: fixed; top: 0; left: 0; z-index: 1;
+        }
+
+        a-scene canvas {
+            position: fixed !important; top: 0 !important; left: 0 !important;
+            width: 100vw !important; height: 100vh !important;
+            z-index: 1 !important; background: transparent !important;
+        }
+
+        #start-screen {
+            position: fixed; inset: 0;
+            background: radial-gradient(ellipse at center, #171310 0%, #0a0806 100%);
+            color: #efe6d2; z-index: 20000;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            gap: 18px; text-align: center; padding: 24px;
+        }
+        #start-screen h2 {
+            font-family: 'Oswald', sans-serif; font-size: 32px; letter-spacing: 4px;
+            margin: 0; color: #ff4d3d; text-shadow: 0 0 18px rgba(255,77,61,.45);
+        }
+        #start-screen p { margin: 0; font-size: 13px; color: #a89c86; max-width: 260px; }
+        #startButton {
+            padding: 15px 42px; font-family: 'Oswald', sans-serif; font-size: 16px;
+            font-weight: 600; letter-spacing: 2px; background: #ff4d3d; color: #120a08;
+            border: none; border-radius: 4px; cursor: pointer;
+        }
+
+        #debug-panel {
+            position: fixed; top: 10px; left: 10px;
+            background: rgba(10,8,6,0.85); border: 1px solid #3a2c1c; color: #efe6d2;
+            padding: 10px 15px; border-radius: 4px; font-size: 12px;
+            z-index: 10001; pointer-events: none; line-height: 1.7;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="start-screen">
+        <h2>ECHOBREAK</h2>
+        <p>Arahkan kamera ke marker untuk membuka dokumen investigasi</p>
+        <button id="startButton">Mulai AR</button>
+    </div>
+
+    <div id="debug-panel">
+        STATUS AR
+        <br>Marker: <span id="marker-status" style="color: yellow;">Menunggu</span>
+        <br>Plane: <span id="plane-status" style="color: yellow;">Hidden</span>
+    </div>
+
+    <a-scene mindar-image="
+            imageTargetSrc: marker.mind;
+            autoStart: false;
+        " embedded color-space="sRGB" renderer="
+            colorManagement: true;
+            alpha: true;
+        " vr-mode-ui="
+            enabled: false
+        " device-orientation-permission-ui="
+            enabled: false
+        ">
+
+        <a-camera position="0 0 0" look-controls="enabled: false"
+                  raycaster="objects: .clickable; far: 10"
+                  cursor="fuse: false; rayOrigin: mouse">
+        </a-camera>
+
+        <!-- ============================== MARKER TARGET ============================== -->
+        <a-entity id="target" mindar-image-target="targetIndex: 0">
+
+            <!-- Konten Utama AR (Warning, VS, Danger) -->
+            <a-entity id="ar-content" visible="false" scale="0.01 0.01 0.01">
+
+                <!-- ---------- PERSPEKTIF 1: WARNING (KIRI) ---------- -->
+                <a-entity position="-0.32 0 0"
+                          animation="property: scale; from: 0.95 0.95 0.95; to: 1.05 1.05 1.05; dur: 1600; dir: alternate; loop: true; easing: easeInOutSine">
+                    <a-plane id="warningPlane" position="0 0 0" width="0.34" height="0.46"
+                             material="shader: flat; transparent: true; side: double"></a-plane>
+                </a-entity>
+
+                <!-- ---------- TEKS 3D VS DI TENGAH ---------- -->
+                <a-entity position="0 0 0.03"
+                          animation="property: scale; from: 0.9 0.9 0.9; to: 1.15 1.15 1.15; dur: 900; dir: alternate; loop: true; easing: easeInOutSine">
+                    <a-text value="VS"
+                            align="center"
+                            anchor="center"
+                            color="#ff4d3d"
+                            width="5"
+                            shader="msdf">
+                    </a-text>
+                </a-entity>
+
+                <!-- ---------- PERSPEKTIF 2: DANGER (KANAN) ---------- -->
+                <a-entity position="0.32 0 0"
+                          animation="property: scale; from: 0.96 0.96 0.96; to: 1.04 1.04 1.04; dur: 1100; dir: alternate; loop: true; easing: easeInOutSine">
+                    <a-plane id="dangerPlane" position="0 0 0" width="0.34" height="0.46"
+                             material="shader: flat; transparent: true; side: double"></a-plane>
+                </a-entity>
+
+            </a-entity>
+        </a-entity>
+
+    </a-scene>
+
+    <!-- ============================== JAVASCRIPT ============================== -->
+    <script>
+        const scene = document.querySelector("a-scene");
+        const target = document.getElementById("target");
+        const content = document.getElementById("ar-content");
+        const startScreen = document.getElementById("start-screen");
+        const startButton = document.getElementById("startButton");
+        const markerStatus = document.getElementById("marker-status");
+        const planeStatus = document.getElementById("plane-status");
+
+        function wrapText(ctx, text, x, y, maxWidth, lineHeight, maxLines) {
+            const words = text.split(" ");
+            let line = "", lines = 0;
+            for (let i = 0; i < words.length; i++) {
+                const test = line + words[i] + " ";
+                if (ctx.measureText(test).width > maxWidth && line !== "") {
+                    ctx.fillText(line.trim(), x, y);
+                    line = words[i] + " ";
+                    y += lineHeight;
+                    lines++;
+                    if (maxLines && lines >= maxLines) {
+                        ctx.fillText(line.trim() + "…", x, y);
+                        return;
+                    }
+                } else {
+                    line = test;
+                }
+            }
+            ctx.fillText(line.trim(), x, y);
+        }
+
+        // ---------- CANVAS 1: WARNING (KUNING TEBAL DENGAN GLOW KUAT) ----------
+        function makeWarningCanvas() {
+            const w = 500, h = 650;
+            const c = document.createElement("canvas");
+            c.width = w; c.height = h;
+            const ctx = c.getContext("2d");
+
+            const x = 15, y = 15, bw = w - 30, bh = h - 30, r = 32;
+
+            ctx.beginPath();
+            ctx.moveTo(x + r, y);
+            ctx.lineTo(x + bw - r, y);
+            ctx.arcTo(x + bw, y, x + bw, y + r, r);
+            ctx.lineTo(x + bw, y + bh - r);
+            ctx.arcTo(x + bw, y + bh, x + bw - r, y + bh, r);
+            ctx.lineTo(x + r, y + bh);
+            ctx.arcTo(x, y + bh, x, y + bh - r, r);
+            ctx.lineTo(x, y + r);
+            ctx.arcTo(x, y, x + r, y, r);
+            ctx.closePath();
+
+            // Background lebih padat
+            ctx.fillStyle = "#2d2a20";
+            ctx.fill();
+
+            // Border & Glow Kuning Jauh Lebih Tebal & Kuat
+            ctx.lineWidth = 12;
+            ctx.strokeStyle = "#ffe100";
+            ctx.shadowColor = "#ffbb00";
+            ctx.shadowBlur = 45;
+            ctx.stroke();
+            
+            // Lapis ulang untuk ketajaman glow ekstra
+            ctx.stroke();
+            ctx.shadowBlur = 0;
+
+            ctx.fillStyle = "#ffe100";
+            ctx.font = "700 22px 'JetBrains Mono', monospace";
+            ctx.textBaseline = "top";
+            ctx.fillText("⚠ STATUS: WARNING", 35, 35);
+
+            ctx.fillStyle = "#fff8e8";
+            ctx.font = "600 24px Oswald, sans-serif";
+            wrapText(ctx, "Potensi Gangguan Sinyal Publik", 35, 70, w - 70, 30, 2);
+
+            ctx.strokeStyle = "#5a4522";
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(35, 135);
+            ctx.lineTo(w - 35, 135);
+            ctx.stroke();
+
+            ctx.fillStyle = "#d1c2a5";
+            ctx.font = "400 16px 'JetBrains Mono', monospace";
+            const desc = "Frekuensi anomali terdeteksi di sektor publik timur. Lonjakan fluktuasi sinyal mulai mempengaruhi komunikasi nirkabel lokal. Tim investigasi diinstruksikan untuk memantau pergerakan data dan bersiap menghadapi eskalasi lanjutan jika protokol pengamanan gagal diterapkan.";
+            wrapText(ctx, desc, 35, 160, w - 70, 24, 13);
+
+            return c;
+        }
+
+        // ---------- CANVAS 2: DANGER (MERAH TEBAL DENGAN GLOW KUAT) ----------
+        function makeDangerCanvas() {
+            const w = 500, h = 650;
+            const c = document.createElement("canvas");
+            c.width = w; c.height = h;
+            const ctx = c.getContext("2d");
+
+            const x = 15, y = 15, bw = w - 30, bh = h - 30, r = 32;
+
+            ctx.beginPath();
+            ctx.moveTo(x + r, y);
+            ctx.lineTo(x + bw - r, y);
+            ctx.arcTo(x + bw, y, x + bw, y + r, r);
+            ctx.lineTo(x + bw, y + bh - r);
+            ctx.arcTo(x + bw, y + bh, x + bw - r, y + bh, r);
+            ctx.lineTo(x + r, y + bh);
+            ctx.arcTo(x, y + bh, x, y + bh - r, r);
+            ctx.lineTo(x, y + r);
+            ctx.arcTo(x, y, x + r, y, r);
+            ctx.closePath();
+
+            // Background lebih padat
+            ctx.fillStyle = "#331c1c";
+            ctx.fill();
+
+            // Border & Glow Merah Jauh Lebih Tebal & Kuat
+            ctx.lineWidth = 12;
+            ctx.strokeStyle = "#ff1a1a";
+            ctx.shadowColor = "#ff0000";
+            ctx.shadowBlur = 50;
+            ctx.stroke();
+
+            // Lapis ulang untuk ketajaman glow ekstra
+            ctx.stroke();
+            ctx.shadowBlur = 0;
+
+            ctx.fillStyle = "#ff3333";
+            ctx.font = "700 22px 'JetBrains Mono', monospace";
+            ctx.textBaseline = "top";
+            ctx.fillText("🚨 STATUS: DANGER", 35, 35);
+
+            ctx.fillStyle = "#fff0f0";
+            ctx.font = "600 24px Oswald, sans-serif";
+            wrapText(ctx, "Ancaman Sistem & Pelanggaran Data", 35, 70, w - 70, 30, 2);
+
+            ctx.strokeStyle = "#5a2222";
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(35, 135);
+            ctx.lineTo(w - 35, 135);
+            ctx.stroke();
+
+            ctx.fillStyle = "#d1a5a5";
+            ctx.font = "400 16px 'JetBrains Mono', monospace";
+            const desc = "Pelanggaran keamanan kritis terkonfirmasi pada mainframe pusat. Enkripsi file rahasia telah disusupi oleh entitas tak dikenal. Seluruh terminal wajib diputuskan dari jaringan lokal seketika untuk mencegah kebocoran arsip investigasi lebih luas.";
+            wrapText(ctx, desc, 35, 160, w - 70, 24, 13);
+
+            return c;
+        }
+
+        function applyTexture(entity, canvas) {
+            const THREE = AFRAME.THREE;
+            const setTex = () => {
+                const mesh = entity.getObject3D("mesh");
+                if (!mesh) return;
+                const tex = new THREE.CanvasTexture(canvas);
+                tex.needsUpdate = true;
+                mesh.material.map = tex;
+                mesh.material.transparent = true;
+                mesh.material.needsUpdate = true;
+            };
+            if (entity.getObject3D("mesh")) setTex();
+            else entity.addEventListener("loaded", setTex, { once: true });
+        }
+
+        async function buildTextures() {
+            if (document.fonts && document.fonts.ready) await document.fonts.ready;
+
+            applyTexture(document.getElementById("warningPlane"), makeWarningCanvas());
+            applyTexture(document.getElementById("dangerPlane"), makeDangerCanvas());
+        }
+        buildTextures();
+
+        // ---------- START AR ----------
+        startButton.addEventListener("click", async () => {
+            startScreen.style.display = "none";
+
+            const mindarSystem = scene.systems["mindar-image-system"];
+            try {
+                await mindarSystem.start();
+                markerStatus.innerText = "Mencari...";
+
+                const camVideo = document.querySelector("video");
+                if (camVideo) camVideo.classList.add("camFeed");
+            } catch (error) {
+                console.error("MindAR error:", error);
+                markerStatus.innerText = "ERROR";
+                markerStatus.style.color = "red";
+            }
+        });
+
+        // ---------- MARKER FOUND ----------
+        target.addEventListener("targetFound", () => {
+            markerStatus.innerText = "Ditemukan ✓";
+            markerStatus.style.color = "#00ff00";
+
+            content.setAttribute("visible", "true");
+            content.setAttribute("animation", "property: scale; from: 0.01 0.01 0.01; to: 1 1 1; dur: 450; easing: easeOutBack");
+
+            planeStatus.innerText = "Visible ✓";
+            planeStatus.style.color = "#00ff00";
+        });
+
+        // ---------- MARKER LOST ----------
+        target.addEventListener("targetLost", () => {
+            markerStatus.innerText = "Hilang";
+            markerStatus.style.color = "yellow";
+
+            content.setAttribute("visible", "false");
+            planeStatus.innerText = "Hidden";
+            planeStatus.style.color = "yellow";
+        });
+    </script>
+
+</body>
+</html>
