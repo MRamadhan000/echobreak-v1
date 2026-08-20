@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>ECHOBREAK — AR Investigation Board</title>
+    <title>ECHOBREAK — AR Echo Chamber Unlock (Phase 4)</title>
 
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
@@ -39,172 +39,228 @@
             z-index: 1 !important; background: transparent !important;
         }
 
-        /* Start Screen dengan background putih */
+        /* ============================================================
+           SKENARIO 1 — LAYAR AWAL & KONTEKS
+           Layar pembuka sebelum kamera AR aktif, sekaligus meminta izin
+           kamera. Tombol "MULAI AR" hanya aktif jika izin kamera berhasil.
+           ============================================================ */
         #start-screen {
             position: fixed; inset: 0;
             background: #ffffff;
-            color: #1f2937; z-index: 20000;
+            color: #191c1e; z-index: 20000;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            gap: 16px; text-align: center; padding: 24px;
+            gap: 16px; text-align: center; padding: 20px;
         }
         #start-screen h2 {
-            font-family: 'Oswald', sans-serif; font-size: 32px; letter-spacing: 4px;
-            margin: 0; color: #2563eb; text-shadow: 0 0 12px rgba(37,99,235,0.2);
-        }
-        #start-screen p { margin: 0; font-size: 13px; color: #4b5563; max-width: 280px; }
-
-        .btn-group {
-            display: flex;
-            gap: 12px;
-            margin-top: 8px;
-        }
-
-        .blue-btn {
-            padding: 14px 28px;
             font-family: 'Oswald', sans-serif;
-            font-size: 15px;
+            font-size: clamp(24px, 7vw, 32px);
+            letter-spacing: 3px;
+            margin: 0; color: #0052cc;
+            text-shadow: 0 0 10px rgba(0,82,204,.15);
+        }
+        #start-screen p {
+            margin: 0;
+            font-size: clamp(11px, 3.5vw, 13px);
+            color: #434654;
+            max-width: 300px;
+            line-height: 1.4;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-top: 6px;
+            width: 100%;
+            max-width: 320px;
+            justify-content: center;
+        }
+
+        #backButton {
+            padding: 12px 20px;
+            font-family: 'Oswald', sans-serif;
+            font-size: clamp(13px, 4vw, 15px);
             font-weight: 600;
             letter-spacing: 1px;
-            background: #2563eb;
-            color: #ffffff;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
-            transition: opacity 0.2s, transform 0.15s;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .blue-btn:active { transform: scale(0.96); }
-        .blue-btn:disabled {
-            background: #9ca3af;
-            box-shadow: none;
-            cursor: not-allowed;
-            opacity: 0.6;
-        }
-
-        #debug-panel {
-            position: fixed; top: 10px; left: 10px;
-            background: rgba(10,8,6,0.85); border: 1px solid #3a2c1c; color: #efe6d2;
-            padding: 10px 15px; border-radius: 4px; font-size: 12px;
-            z-index: 10001; pointer-events: none; line-height: 1.7;
-        }
-
-        #tap-hint {
-            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-            background: rgba(10,8,6,0.85); border: 1px solid #3a2c1c; color: #efe6d2;
-            padding: 8px 16px; border-radius: 20px; font-size: 12px;
-            z-index: 10001; pointer-events: none; opacity: 0; transition: opacity .4s ease;
-        }
-        #tap-hint.show { opacity: 1; }
-
-        /* Tombol Kembali Permanen di Layar Scan (Pojok Kanan Atas / Sesuai Kebutuhan) */
-        #scan-back-btn {
-            position: fixed;
-            top: 15px;
-            right: 15px;
-            z-index: 10051;
-            padding: 8px 16px;
-            font-size: 13px;
-            display: none;
-        }
-        #scan-back-btn.show {
-            display: block;
-        }
-
-        /* ===== TOMBOL OVERLAY (HTML) ===== */
-        .overlay-btn-wrap {
-            position: fixed;
-            left: 50%;
-            bottom: 100px;
-            transform: translateX(-50%);
-            z-index: 10050;
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            pointer-events: none;
-        }
-        .overlay-btn-wrap.show {
-            display: flex;
-            pointer-events: auto;
-        }
-
-        .overlay-btn {
-            font-family: 'Oswald', sans-serif;
-            font-size: 20px;
-            font-weight: 700;
-            letter-spacing: 2px;
-            padding: 14px 40px;
-            border: none;
+            background: #ffffff;
+            color: #0052cc;
+            border: 2px solid #0052cc;
             border-radius: 8px;
             cursor: pointer;
-            -webkit-tap-highlight-color: transparent;
-            user-select: none;
-            transition: transform 0.15s ease, box-shadow 0.15s ease;
+            text-decoration: none;
+            display: inline-flex; align-items: center; justify-content: center;
+            flex: 1;
+            transition: all 0.2s ease;
         }
-        .overlay-btn:active { transform: scale(0.96); }
+        #backButton:hover { background: #f0f6ff; }
+        #backButton:active { transform: scale(0.96); }
 
-        #unlockBtn {
-            background: #ff4d3d;
-            color: #120a08;
-            box-shadow: 0 0 0 3px rgba(255,77,61,0.35), 0 8px 24px rgba(0,0,0,0.45);
-        }
-        #unlockBtn:hover {
-            box-shadow: 0 0 0 4px rgba(255,77,61,0.5), 0 10px 28px rgba(0,0,0,0.5);
-        }
-
-        #backBtnHtml {
-            background: #2563eb;
-            color: #ffffff;
-            box-shadow: 0 0 0 2px rgba(37,99,235,0.25), 0 8px 24px rgba(0,0,0,0.45);
-        }
-        #backBtnHtml:hover {
-            box-shadow: 0 0 0 3px rgba(37,99,235,0.4), 0 10px 28px rgba(0,0,0,0.5);
-        }
-
-        .overlay-label {
+        #arBackButton {
+            position: fixed; bottom: 16px; left: 16px;
+            z-index: 20005;
+            background: #ffffff;
+            color: #0052cc;
+            border: 2px solid #0052cc;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
             font-size: 11px;
-            color: #a89c86;
-            letter-spacing: 1px;
-            text-align: center;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: none;
+            align-items: center; gap: 6px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transition: background 0.2s ease, transform 0.1s ease;
         }
+        #arBackButton:hover { background: #f0f6ff; }
+        #arBackButton:active { transform: scale(0.96); }
+
+        /* Header konteks AR — teksnya berubah otomatis mengikuti skenario aktif */
+        #ar-header-context {
+            position: fixed; top: 12px; left: 50%; transform: translateX(-50%);
+            width: 92%; max-width: 420px;
+            background: rgba(15, 23, 42, 0.88);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(220, 38, 38, 0.4);
+            box-shadow: 0 0 12px rgba(220, 38, 38, 0.2);
+            color: #f8fafc; padding: 10px 14px; border-radius: 8px;
+            z-index: 20005; display: none; text-align: center;
+            pointer-events: none;
+            transition: border-color 0.4s ease, box-shadow 0.4s ease;
+        }
+        #ar-header-context.unlocked {
+            border: 1px solid rgba(34, 197, 94, 0.5);
+            box-shadow: 0 0 12px rgba(34, 197, 94, 0.25);
+        }
+        #ar-header-context h4 {
+            font-family: 'Oswald', sans-serif; font-size: 13px; letter-spacing: 0.5px;
+            margin: 0 0 3px 0; color: #f87171; text-transform: uppercase;
+            transition: color 0.4s ease;
+        }
+        #ar-header-context.unlocked h4 { color: #4ade80; }
+        #ar-header-context p {
+            font-size: 10px; margin: 0; color: #cbd5e1; line-height: 1.35;
+        }
+
+        #startButton {
+            padding: 12px 24px;
+            font-family: 'Oswald', sans-serif;
+            font-size: clamp(13px, 4vw, 15px);
+            font-weight: 600;
+            letter-spacing: 1px;
+            background: #0052cc;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            cursor: not-allowed;
+            opacity: 0.5;
+            flex: 1.2;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,82,204,0.25);
+        }
+        #startButton.active {
+            cursor: pointer;
+            opacity: 1;
+        }
+
+        /* ============================================================
+           SKENARIO 2 — TOMBOL UNLOCK (UI HTML DI LAPISAN PALING DEPAN)
+           Muncul begitu marker terdeteksi. Nonaktif (abu-abu) sampai
+           marker ketemu, lalu berubah warna merah->hijau saat diklik.
+           ============================================================ */
+        #unlockPanel {
+            position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
+            z-index: 20005; display: none;
+            flex-direction: column; align-items: center; gap: 6px;
+        }
+        #unlockButton {
+            padding: 14px 30px;
+            font-family: 'Oswald', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            background: linear-gradient(135deg, #dc2626, #991b1b);
+            color: #ffffff;
+            border: none;
+            border-radius: 999px;
+            cursor: not-allowed;
+            opacity: 0.4;
+            display: flex; align-items: center; gap: 8px;
+            box-shadow: 0 4px 16px rgba(220, 38, 38, 0.4);
+            transition: all 0.35s ease;
+        }
+        #unlockButton.ready {
+            cursor: pointer;
+            opacity: 1;
+            animation: pulseLock 1.4s ease-in-out infinite;
+        }
+        #unlockButton.unlocked {
+            background: linear-gradient(135deg, #16a34a, #15803d);
+            box-shadow: 0 4px 16px rgba(22, 163, 74, 0.45);
+            cursor: default;
+            animation: none;
+            opacity: 1;
+        }
+        @keyframes pulseLock {
+            0%, 100% { box-shadow: 0 4px 16px rgba(220, 38, 38, 0.4); }
+            50% { box-shadow: 0 4px 26px rgba(220, 38, 38, 0.75); }
+        }
+        #unlockHint {
+            font-size: 10px; color: #cbd5e1; background: rgba(15,23,42,0.75);
+            padding: 4px 10px; border-radius: 6px; letter-spacing: 0.5px;
+        }
+
+        /* Debug panel kecil, aman di layar mobile */
+        #debug-panel {
+            position: fixed; top: 85px; left: 16px;
+            background: rgba(15,23,42,0.85); border: 1px solid #ff1744; color: #e2e8f0;
+            padding: 6px 10px; border-radius: 4px; font-size: 9px;
+            z-index: 10001; pointer-events: none; line-height: 1.5;
+            max-width: 190px;
+            transition: border-color 0.4s ease;
+        }
+        #debug-panel.unlocked { border-color: #22c55e; }
     </style>
 </head>
 
 <body>
 
-    <!-- Tombol Kembali di UI Scan AR -->
-    <button id="scan-back-btn" class="blue-btn">← Kembali</button>
+    <!-- Header konteks AR (teks berubah sesuai skenario) -->
+    <div id="ar-header-context">
+        <h4 id="ctxTitle">Fase 4: Tembok Algoritma Terkunci</h4>
+        <p id="ctxBody">Hologram menampilkan berita utama yang terkunci oleh algoritma echo chamber. Komentar dari luar sudut pandang gagal menembus.</p>
+    </div>
 
+    <!-- Tombol kembali saat AR aktif -->
+    <a id="arBackButton" href="phase3.html">← KEMBALI</a>
+
+    <!-- ============================================================
+         SKENARIO 3 — TOMBOL KEMBALI (UI HTML)
+         Selalu tersedia baik sebelum maupun sesudah unlock, supaya user
+         bisa keluar dari halaman AR kapan saja tanpa tergantung state.
+         ============================================================ -->
     <div id="start-screen">
-        <h2>ECHOBREAK</h2>
-        <p id="cam-status-text">Memeriksa izin kamera...</p>
-        <div class="btn-group">
-            <button id="backStartBtn" class="blue-btn">Kembali</button>
-            <button id="startButton" class="blue-btn" disabled>Lanjut Scan</button>
+        <h2>ECHOBREAK AR</h2>
+        <p>Arahkan kamera ke marker untuk melihat simulasi Echo Chamber. Setelah marker terkunci, cari tombol UNLOCK untuk membongkar tembok algoritma dan mengungkap data asli.</p>
+
+        <div class="button-group">
+            <a id="backButton" href="phase3.html">KEMBALI</a>
+            <button id="startButton" disabled>MENUNGGU...</button>
         </div>
     </div>
 
     <div id="debug-panel">
-        STATUS AR
+        ECHO CHAMBER AR — P4
         <br>Marker: <span id="marker-status" style="color: yellow;">Menunggu</span>
-        <br>Plane: <span id="plane-status" style="color: yellow;">Hidden</span>
-        <br>Video: <span id="video-status" style="color: yellow;">Idle</span>
-        <br>Skenario: <span id="scenario-status" style="color: #efe6d2;">1 — Terkunci</span>
+        <br>Core State: <span id="plane-status" style="color: yellow;">Hidden</span>
+        <br>Lock: <span id="lock-status" style="color: #f87171;">🔒 TERKUNCI</span>
     </div>
 
-    <div id="tap-hint">Tap tombol UNLOCK untuk membuka data</div>
-
-    <!-- ===== TOMBOL UNLOCK (HTML Overlay) ===== -->
-    <div id="unlock-overlay" class="overlay-btn-wrap">
-        <button id="unlockBtn" class="overlay-btn">UNLOCK</button>
-        <div class="overlay-label">TAP / KLIK UNTUK MEMBUKA DATA</div>
-    </div>
-
-    <!-- ===== TOMBOL KEMBALI (HTML Overlay) → redirect ke phase4.html ===== -->
-    <div id="back-overlay" class="overlay-btn-wrap">
-        <button id="backBtnHtml" class="overlay-btn">← KEMBALI</button>
-        <div class="overlay-label">SELESAI & KELUAR</div>
+    <!-- Tombol UNLOCK — lapisan HTML paling depan (z-index tertinggi) -->
+    <div id="unlockPanel">
+        <button id="unlockButton" disabled>🔒 UNLOCK</button>
+        <span id="unlockHint">Arahkan kamera ke marker dulu</span>
     </div>
 
     <a-scene mindar-image="
@@ -213,164 +269,117 @@
         " embedded color-space="sRGB" renderer="
             colorManagement: true;
             alpha: true;
-        " vr-mode-ui="
-            enabled: false
-        " device-orientation-permission-ui="
-            enabled: false
-        ">
-
-        <a-assets>
-            <video id="mainVideo"
-                   src="video.mp4"
-                   preload="auto"
-                   loop="true"
-                   muted="true"
-                   playsinline
-                   webkit-playsinline
-                   crossorigin="anonymous"></video>
-            <img id="imgLeft" src="left.jpg" crossorigin="anonymous">
-            <img id="imgRight" src="right.jpg" crossorigin="anonymous">
-        </a-assets>
+        " vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
 
         <a-camera position="0 0 0" look-controls="enabled: false"
-                  cursor="fuse: false; rayOrigin: mouse"
-                  raycaster="objects: .clickable; far: 10">
+                  raycaster="objects: .clickable; far: 10"
+                  cursor="fuse: false; rayOrigin: mouse">
         </a-camera>
 
+        <!-- ============================== MARKER TARGET ============================== -->
         <a-entity id="target" mindar-image-target="targetIndex: 0">
 
             <a-entity id="ar-content" visible="false" scale="0.01 0.01 0.01">
 
-                <!-- ========== SKENARIO 1 ELEMENTS ========== -->
-                <a-entity id="scenario1-group">
+                <!--
+                    SKENARIO 1 — CORE BERITA TERKUNCI
+                    Plane utama menampilkan versi "terkunci": judul buram,
+                    badge merah "TERKUNCI". Ikon gembok terpisah (lockIcon)
+                    ditumpuk di depannya supaya bisa dianimasikan sendiri
+                    tanpa mengganggu tekstur bubble utama.
+                -->
+                <a-plane id="bubblePlane" position="0 0 -0.01" width="0.52" height="0.42"
+                         material="shader: flat; transparent: true; side: double"></a-plane>
 
-                    <!-- Bubble -->
-                    <a-plane id="bubblePlane" position="0 0 -0.01" width="0.52" height="0.42"
-                             material="shader: flat; transparent: true; side: double"></a-plane>
+                <a-plane id="lockIcon" position="0 0 -0.005" width="0.14" height="0.14"
+                         material="shader: flat; transparent: true; side: double"></a-plane>
 
-                    <!-- Video -->
-                    <a-plane id="videoPlane" class="clickable" position="0 -0.01 0.002" width="0.38" height="0.25"
-                             material="shader: flat; src: #mainVideo; side: double; transparent: false"></a-plane>
+                <!-- Kartu komentar yang gagal menembus tembok (6 buah, tersebar di sekeliling) -->
+                <a-plane id="card-tl" class="blocked-card"
+                         position="-0.45 0.38 -0.01" rotation="0 0 3" width="0.30" height="0.19"
+                         material="shader: flat; transparent: true; side: double"
+                         animation="property: position; from: -0.45 0.38 -0.01; to: -0.28 0.24 -0.01; dur: 2000; dir: alternate; loop: true; easing: easeInOutBack"></a-plane>
 
-                    <!-- Lock Shield -->
-                    <a-plane id="lockShield" position="0 -0.01 0.006" width="0.38" height="0.25"
-                             material="shader: flat; transparent: true; side: double"
-                             animation__pulse="property: material.opacity; from: 1; to: 0.88; dir: alternate; loop: true; dur: 900; easing: easeInOutSine"></a-plane>
+                <a-plane id="card-tr" class="blocked-card"
+                         position="0.45 0.38 -0.01" rotation="0 0 -3" width="0.30" height="0.19"
+                         material="shader: flat; transparent: true; side: double"
+                         animation="property: position; from: 0.45 0.38 -0.01; to: 0.28 0.24 -0.01; dur: 2200; dir: alternate; loop: true; easing: easeInOutBack"></a-plane>
 
-                    <!-- 4 Kartu Berita -->
-                    <a-plane id="card-tl" class="news-card" 
-                             position="-0.65 0.55 -0.01" rotation="0 0 5" width="0.34" height="0.24"
-                             material="shader: flat; transparent: true; side: double"
-                             animation="property: position; from: -0.65 0.55 -0.01; to: -0.34 0.28 -0.01; dur: 2200; dir: alternate; loop: true; easing: easeInOutBack"></a-plane>
-                    
-                    <a-plane id="card-tr" class="news-card" 
-                             position="0.65 0.55 -0.01" rotation="0 0 -4" width="0.34" height="0.24"
-                             material="shader: flat; transparent: true; side: double"
-                             animation="property: position; from: 0.65 0.55 -0.01; to: 0.29 0.33 -0.01; dur: 2400; dir: alternate; loop: true; easing: easeInOutBack"></a-plane>
-                    
-                    <a-plane id="card-bl" class="news-card" 
-                             position="-0.65 -0.55 -0.01" rotation="0 0 -3" width="0.34" height="0.24"
-                             material="shader: flat; transparent: true; side: double"
-                             animation="property: position; from: -0.65 -0.55 -0.01; to: -0.31 -0.31 -0.01; dur: 2300; dir: alternate; loop: true; easing: easeInOutBack"></a-plane>
-                    
-                    <a-plane id="card-br" class="news-card" 
-                             position="0.65 -0.55 -0.01" rotation="0 0 4" width="0.34" height="0.24"
-                             material="shader: flat; transparent: true; side: double"
-                             animation="property: position; from: 0.65 -0.55 -0.01; to: 0.35 -0.27 -0.01; dur: 2500; dir: alternate; loop: true; easing: easeInOutBack"></a-plane>
+                <a-plane id="card-ml" class="blocked-card"
+                         position="-0.48 0.02 -0.01" rotation="0 0 2" width="0.30" height="0.19"
+                         material="shader: flat; transparent: true; side: double"
+                         animation="property: position; from: -0.48 0.02 -0.01; to: -0.30 0.02 -0.01; dur: 2400; dir: alternate; loop: true; easing: easeInOutBack"></a-plane>
 
-                </a-entity>
+                <a-plane id="card-mr" class="blocked-card"
+                         position="0.48 0.02 -0.01" rotation="0 0 -2" width="0.30" height="0.19"
+                         material="shader: flat; transparent: true; side: double"
+                         animation="property: position; from: 0.48 0.02 -0.01; to: 0.30 0.02 -0.01; dur: 2100; dir: alternate; loop: true; easing: easeInOutBack"></a-plane>
 
-                <!-- ========== SKENARIO 2 ELEMENTS ========== -->
-                <a-entity id="scenario2-group" visible="false">
+                <a-plane id="card-bl" class="blocked-card"
+                         position="-0.45 -0.38 -0.01" rotation="0 0 -2" width="0.30" height="0.19"
+                         material="shader: flat; transparent: true; side: double"
+                         animation="property: position; from: -0.45 -0.38 -0.01; to: -0.28 -0.22 -0.01; dur: 2300; dir: alternate; loop: true; easing: easeInOutBack"></a-plane>
 
-                    <!-- Gambar Kiri -->
-                    <a-plane id="imgLeftPlane" position="-0.22 0.08 0.002" width="0.38" height="0.28"
-                             material="shader: flat; src: #imgLeft; side: double; transparent: false"></a-plane>
-
-                    <!-- Divider garis tengah -->
-                    <a-plane id="dividerLine" position="0 0.08 0.004" width="0.012" height="0.32"
-                             material="shader: flat; color: #ff4d3d; side: double; transparent: true; opacity: 0.9"></a-plane>
-
-                    <!-- Gambar Kanan -->
-                    <a-plane id="imgRightPlane" position="0.22 0.08 0.002" width="0.38" height="0.28"
-                             material="shader: flat; src: #imgRight; side: double; transparent: false"></a-plane>
-
-                </a-entity>
+                <a-plane id="card-br" class="blocked-card"
+                         position="0.45 -0.38 -0.01" rotation="0 0 2" width="0.30" height="0.19"
+                         material="shader: flat; transparent: true; side: double"
+                         animation="property: position; from: 0.45 -0.38 -0.01; to: 0.28 -0.22 -0.01; dur: 2500; dir: alternate; loop: true; easing: easeInOutBack"></a-plane>
 
             </a-entity>
         </a-entity>
 
     </a-scene>
 
+    <!-- ============================== JAVASCRIPT ============================== -->
     <script>
         const scene = document.querySelector("a-scene");
         const target = document.getElementById("target");
         const content = document.getElementById("ar-content");
-        const mainVideo = document.getElementById("mainVideo");
         const startScreen = document.getElementById("start-screen");
         const startButton = document.getElementById("startButton");
-        const backStartBtn = document.getElementById("backStartBtn");
-        const scanBackBtn = document.getElementById("scan-back-btn");
-        const camStatusText = document.getElementById("cam-status-text");
-
+        const arBackButton = document.getElementById("arBackButton");
+        const arHeaderContext = document.getElementById("ar-header-context");
+        const ctxTitle = document.getElementById("ctxTitle");
+        const ctxBody = document.getElementById("ctxBody");
         const markerStatus = document.getElementById("marker-status");
         const planeStatus = document.getElementById("plane-status");
-        const videoStatus = document.getElementById("video-status");
-        const scenarioStatus = document.getElementById("scenario-status");
-        const tapHint = document.getElementById("tap-hint");
+        const lockStatus = document.getElementById("lock-status");
+        const debugPanel = document.getElementById("debug-panel");
+        const unlockPanel = document.getElementById("unlockPanel");
+        const unlockButton = document.getElementById("unlockButton");
+        const unlockHint = document.getElementById("unlockHint");
 
-        const scenario1Group = document.getElementById("scenario1-group");
-        const scenario2Group = document.getElementById("scenario2-group");
-        const lockShield = document.getElementById("lockShield");
-        const bubblePlane = document.getElementById("bubblePlane");
-        const videoPlane = document.getElementById("videoPlane");
+        const CARD_IDS = ["card-tl", "card-tr", "card-ml", "card-mr", "card-bl", "card-br"];
 
-        const unlockOverlay = document.getElementById("unlock-overlay");
-        const backOverlay = document.getElementById("back-overlay");
-        const unlockBtn = document.getElementById("unlockBtn");
-        const backBtnHtml = document.getElementById("backBtnHtml");
-
-        let currentScenario = 1;
-        let isUnlocked = false;
-        let isAnimating = false;
+        // appState: 'locked' -> 'unlocking' -> 'unlocked'
+        let appState = "locked";
         let markerVisible = false;
 
-        const NEWS = {
-            "card-tl": { tag: "BERITA — 01", title: "Sinyal Aneh Terdeteksi di Jaringan Kota", body: "Warga melaporkan gangguan tak biasa sesaat sebelum video ini beredar." },
-            "card-tr": { tag: "BERITA — 02", title: "Saksi Mata: \u201CAda yang Mengawasi\u201D", body: "Keterangan saksi belum bisa dikonfirmasi pihak berwenang." },
-            "card-bl": { tag: "BERITA — 03", title: "Rekaman CCTV Hilang Sebelum Dirilis", body: "Arsip rekaman dilaporkan terhapus dari server pusat." },
-            "card-br": { tag: "BERITA — 04", title: "Otoritas Bungkam Soal Insiden Ini", body: "Belum ada pernyataan resmi hingga berita ini diturunkan." }
-        };
-
-        // Fungsi Cek Akses Kamera di Awal (agar tombol Lanjut Scan bisa aktif jika diizinkan)
-        async function checkCameraAccess() {
+        window.addEventListener("DOMContentLoaded", async () => {
             try {
-                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-                // Hentikan stream sementara sebelum AR benar-benar dimulai agar tidak konflik
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: "environment" },
+                    audio: false
+                });
                 stream.getTracks().forEach(track => track.stop());
-                
-                camStatusText.innerText = "Kamera siap. Silakan mulai scan.";
-                startButton.disabled = false;
-            } catch (error) {
-                console.warn("Izin kamera ditolak/gagal:", error);
-                camStatusText.innerText = "Izin kamera diperlukan untuk melanjutkan.";
-                startButton.disabled = true;
-            }
-        }
 
-        window.addEventListener("DOMContentLoaded", () => {
-            checkCameraAccess();
+                startButton.removeAttribute("disabled");
+                startButton.classList.add("active");
+                startButton.innerText = "MULAI AR";
+            } catch (error) {
+                console.warn("Izin kamera ditolak:", error);
+                startButton.innerText = "IZIN DITOLAK";
+            }
         });
 
-        function refreshVideoStatus() {
-            const playState = mainVideo.paused ? "Paused" : "Playing";
-            const muteState = mainVideo.muted ? "Muted" : "Unmuted";
-            videoStatus.innerText = `${playState} / ${muteState}`;
-            videoStatus.style.color = mainVideo.paused ? "yellow" : "#00ff00";
-        }
-        mainVideo.addEventListener("play", refreshVideoStatus);
-        mainVideo.addEventListener("pause", refreshVideoStatus);
-        mainVideo.addEventListener("volumechange", refreshVideoStatus);
+        const COMMENTS = {
+            "card-tl": { author: "Dr. Siti Rahma", tag: "[KONTRA] TERPENTAL", text: "Nutrisi bisa rusak jika holding time terlalu lama!" },
+            "card-tr": { author: "Budi Santoso", tag: "[PRO] TERPENTAL", text: "Shift dini hari sangat taktis mengejar volume masif." },
+            "card-ml": { author: "Rian Pratama", tag: "[KONTRA] TERPENTAL", text: "Takutnya basi karena jarak sekolah terlalu jauh." },
+            "card-mr": { author: "Dewi Lestari", tag: "[PRO] TERPENTAL", text: "Bagus untuk pasokan bahan baku rutin UMKM harian." },
+            "card-bl": { author: "Ahmad Fauzi", tag: "[NETRAL] TERPENTAL", text: "Radius distribusi dan SOP jam masak wajib dievaluasi." },
+            "card-br": { author: "Eko Prasetyo", tag: "[NETRAL] TERPENTAL", text: "Kuncinya di manajemen cold chain yang ketat." }
+        };
 
         function roundRect(ctx, x, y, w, h, r) {
             ctx.beginPath();
@@ -403,330 +412,315 @@
             ctx.fillText(line.trim(), x, y);
         }
 
-        function makeBubbleCanvas() {
+        // ---------- SKENARIO 1: Canvas bubble versi TERKUNCI ----------
+        function makeLockedBubbleCanvas() {
             const w = 640, h = 520;
             const c = document.createElement("canvas");
             c.width = w; c.height = h;
             const ctx = c.getContext("2d");
 
-            const x = 15, y = 15, bw = w - 30, bh = h - 60, r = 38;
-
-            ctx.beginPath();
-            ctx.moveTo(x + r, y);
-            ctx.lineTo(x + bw - r, y);
-            ctx.arcTo(x + bw, y, x + bw, y + r, r);
-            ctx.lineTo(x + bw, y + bh - r);
-            ctx.arcTo(x + bw, y + bh, x + bw - r, y + bh, r);
-            ctx.lineTo(w / 2 + 25, y + bh);
-            ctx.lineTo(w / 2, y + bh + 35);
-            ctx.lineTo(w / 2 - 25, y + bh);
-            ctx.lineTo(x + r, y + bh);
-            ctx.arcTo(x, y + bh, x, y + bh - r, r);
-            ctx.lineTo(x, y + r);
-            ctx.arcTo(x, y, x + r, y, r);
-            ctx.closePath();
-
-            ctx.fillStyle = "#26252b";
+            ctx.shadowColor = "#ff1744";
+            ctx.shadowBlur = 35;
+            ctx.fillStyle = "#ffffff";
+            roundRect(ctx, 24, 24, w - 48, h - 64, 32);
             ctx.fill();
-            ctx.lineWidth = 6;
-            ctx.strokeStyle = "#ff4d3d";
+
+            ctx.lineWidth = 8;
+            ctx.strokeStyle = "#ff1744";
             ctx.stroke();
 
-            ctx.fillStyle = "#ff4d3d";
             ctx.beginPath();
-            ctx.arc(45, 48, 8, 0, Math.PI * 2);
+            ctx.moveTo(w / 2 - 22, h - 40);
+            ctx.lineTo(w / 2, h - 4);
+            ctx.lineTo(w / 2 + 22, h - 40);
+            ctx.fillStyle = "#ffffff";
             ctx.fill();
-
-            ctx.fillStyle = "#ff4d3d";
-            ctx.font = "600 24px Oswald, sans-serif";
-            ctx.textBaseline = "middle";
-            ctx.fillText("LIVE — ECHOBREAK", 65, 48);
-
-            const padX = 35, padY = 80, padW = w - 70, padH = h - 120;
-            ctx.fillStyle = "#26252b";
-            roundRect(ctx, padX, padY, padW, padH, 20);
-            ctx.fill();
-
-            return c;
-        }
-
-        function makeCardCanvas(data, greenGlow = false) {
-            const w = 640, h = 460;
-            const c = document.createElement("canvas");
-            c.width = w; c.height = h;
-            const ctx = c.getContext("2d");
-
-            ctx.fillStyle = "#efe6d2";
-            roundRect(ctx, 8, 8, w - 16, h - 16, 12);
-            ctx.fill();
-
-            if (greenGlow) {
-                ctx.shadowColor = "rgba(0, 255, 120, 0.75)";
-                ctx.shadowBlur = 30;
-                ctx.lineWidth = 8;
-                ctx.strokeStyle = "#00ff78";
-                roundRect(ctx, 8, 8, w - 16, h - 16, 12);
-                ctx.stroke();
-
-                ctx.shadowBlur = 14;
-                ctx.lineWidth = 4;
-                ctx.strokeStyle = "#7dffb3";
-                roundRect(ctx, 12, 12, w - 24, h - 24, 10);
-                ctx.stroke();
-                ctx.shadowBlur = 0;
-            } else {
-                ctx.lineWidth = 4;
-                ctx.strokeStyle = "rgba(0,0,0,0.15)";
-                roundRect(ctx, 8, 8, w - 16, h - 16, 12);
-                ctx.stroke();
-            }
-
-            ctx.fillStyle = greenGlow ? "#00aa55" : "#d3392b";
-            ctx.font = "600 22px 'JetBrains Mono', monospace";
-            ctx.textBaseline = "alphabetic";
-            ctx.fillText(data.tag, 36, 64);
-
-            ctx.fillStyle = "#201a12";
-            ctx.font = "600 38px Oswald, sans-serif";
-            wrapText(ctx, data.title, 36, 124, w - 72, 44, 3);
-
-            ctx.fillStyle = "#5a4f3d";
-            ctx.font = "400 22px 'JetBrains Mono', monospace";
-            wrapText(ctx, data.body, 36, 300, w - 72, 30, 4);
-
-            return c;
-        }
-
-        function makeShieldCanvas() {
-            const w = 640, h = 420;
-            const c = document.createElement("canvas");
-            c.width = w; c.height = h;
-            const ctx = c.getContext("2d");
-
-            ctx.fillStyle = "rgba(18,15,12,0.92)";
-            roundRect(ctx, 6, 6, w - 12, h - 12, 16);
-            ctx.fill();
-            ctx.lineWidth = 4;
-            ctx.strokeStyle = "#ff4d3d";
+            ctx.lineWidth = 8;
+            ctx.strokeStyle = "#ff1744";
             ctx.stroke();
+            ctx.clearRect(w / 2 - 20, h - 8, 40, 12);
 
-            ctx.save();
-            roundRect(ctx, 6, 6, w - 12, h - 12, 16);
-            ctx.clip();
-            ctx.strokeStyle = "rgba(255,77,61,0.07)";
+            ctx.shadowBlur = 0;
+
+            ctx.fillStyle = "#ff1744";
+            ctx.font = "bold 20px 'JetBrains Mono', monospace";
+            ctx.fillText("📢 BERITA UTAMA — TERKUNCI", 45, 65);
+
+            ctx.fillStyle = "#1e293b";
+            ctx.font = "bold 32px Oswald, sans-serif";
+            wrapText(ctx, "Menakar Efisiensi Jam Masak dan Logistik dalam Program MBG", 45, 120, w - 90, 40, 2);
+
+            ctx.strokeStyle = "#e2e8f0";
             ctx.lineWidth = 2;
-            for (let y = 0; y < h; y += 6) {
-                ctx.beginPath();
-                ctx.moveTo(0, y);
-                ctx.lineTo(w, y);
-                ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(45, 220);
+            ctx.lineTo(w - 45, 220);
+            ctx.stroke();
+
+            // Teks isi disamarkan (blok abu-abu) untuk kesan "terkunci/tersensor"
+            ctx.fillStyle = "#cbd5e1";
+            for (let i = 0; i < 4; i++) {
+                const yy = 250 + i * 34;
+                const ww = i === 3 ? w - 240 : w - 90;
+                roundRect(ctx, 45, yy, ww, 18, 6);
+                ctx.fill();
             }
-            ctx.restore();
 
-            const cx = w / 2, cy = h / 2 - 20;
-
-            const glow = ctx.createRadialGradient(cx, cy, 10, cx, cy, 160);
-            glow.addColorStop(0, "rgba(255,77,61,0.35)");
-            glow.addColorStop(1, "rgba(255,77,61,0)");
-            ctx.fillStyle = glow;
-            ctx.beginPath();
-            ctx.arc(cx, cy, 160, 0, Math.PI * 2);
-            ctx.fill();
-
-            const sw = 150, sh = 175;
-            ctx.beginPath();
-            ctx.moveTo(cx, cy - sh / 2);
-            ctx.lineTo(cx + sw / 2, cy - sh / 2 + 28);
-            ctx.lineTo(cx + sw / 2, cy + 12);
-            ctx.quadraticCurveTo(cx + sw / 2, cy + sh / 2, cx, cy + sh / 2 + 16);
-            ctx.quadraticCurveTo(cx - sw / 2, cy + sh / 2, cx - sw / 2, cy + 12);
-            ctx.lineTo(cx - sw / 2, cy - sh / 2 + 28);
-            ctx.closePath();
-            ctx.fillStyle = "#2a2016";
-            ctx.fill();
-            ctx.lineWidth = 6;
-            ctx.strokeStyle = "#ff4d3d";
-            ctx.stroke();
-
-            ctx.strokeStyle = "#efe6d2";
-            ctx.lineWidth = 7;
-            ctx.beginPath();
-            ctx.arc(cx, cy - 10, 28, Math.PI, 0, false);
-            ctx.stroke();
-            ctx.fillStyle = "#efe6d2";
-            roundRect(ctx, cx - 34, cy - 10, 68, 52, 7);
-            ctx.fill();
-            ctx.fillStyle = "#2a2016";
-            ctx.beginPath();
-            ctx.arc(cx, cy + 10, 7, 0, Math.PI * 2);
-            ctx.fill();
-
-            ctx.textAlign = "center";
-            ctx.fillStyle = "#ff4d3d";
-            ctx.font = "600 28px Oswald, sans-serif";
-            ctx.fillText("AKSES TERKUNCI", cx, cy + sh / 2 + 42);
+            ctx.fillStyle = "#dc2626";
+            ctx.font = "bold 16px 'JetBrains Mono', monospace";
+            ctx.fillText("🔒 Konten disaring algoritma — tekan UNLOCK", 45, 440);
 
             return c;
         }
 
-        function applyTexture(entity, canvas) {
+        // ---------- SKENARIO 2: Canvas bubble versi TERBUKA (data asli) ----------
+        function makeUnlockedBubbleCanvas() {
+            const w = 640, h = 520;
+            const c = document.createElement("canvas");
+            c.width = w; c.height = h;
+            const ctx = c.getContext("2d");
+
+            ctx.shadowColor = "#22c55e";
+            ctx.shadowBlur = 35;
+            ctx.fillStyle = "#ffffff";
+            roundRect(ctx, 24, 24, w - 48, h - 64, 32);
+            ctx.fill();
+
+            ctx.lineWidth = 8;
+            ctx.strokeStyle = "#22c55e";
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(w / 2 - 22, h - 40);
+            ctx.lineTo(w / 2, h - 4);
+            ctx.lineTo(w / 2 + 22, h - 40);
+            ctx.fillStyle = "#ffffff";
+            ctx.fill();
+            ctx.lineWidth = 8;
+            ctx.strokeStyle = "#22c55e";
+            ctx.stroke();
+            ctx.clearRect(w / 2 - 20, h - 8, 40, 12);
+
+            ctx.shadowBlur = 0;
+
+            ctx.fillStyle = "#16a34a";
+            ctx.font = "bold 20px 'JetBrains Mono', monospace";
+            ctx.fillText("✅ DATA TERVERIFIKASI — TERBUKA", 45, 65);
+
+            ctx.fillStyle = "#1e293b";
+            ctx.font = "bold 30px Oswald, sans-serif";
+            wrapText(ctx, "Fakta Lengkap: Jadwal Masak & Distribusi Program MBG", 45, 115, w - 90, 36, 2);
+
+            ctx.strokeStyle = "#e2e8f0";
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(45, 195);
+            ctx.lineTo(w - 45, 195);
+            ctx.stroke();
+
+            const points = [
+                "• Holding time makanan diatur maksimal 4 jam sebelum distribusi.",
+                "• Radius distribusi dibatasi agar suhu & kualitas tetap terjaga.",
+                "• SOP cold chain wajib diterapkan di seluruh dapur mitra.",
+                "• Evaluasi berkala melibatkan ahli gizi & sekolah penerima."
+            ];
+            ctx.fillStyle = "#334155";
+            ctx.font = "17px 'JetBrains Mono', monospace";
+            points.forEach((p, i) => {
+                wrapText(ctx, p, 45, 230 + i * 46, w - 90, 22, 2);
+            });
+
+            ctx.fillStyle = "#16a34a";
+            ctx.font = "bold 15px 'JetBrains Mono', monospace";
+            ctx.fillText("🔓 Tembok algoritma berhasil dibongkar", 45, 460);
+
+            return c;
+        }
+
+        // Canvas kartu komentar (dengan outline hitam, ditandai "gagal menembus")
+        function makeCardCanvas(data) {
+            const w = 540, h = 340;
+            const c = document.createElement("canvas");
+            c.width = w; c.height = h;
+            const ctx = c.getContext("2d");
+
+            ctx.fillStyle = "#f8fafc";
+            roundRect(ctx, 16, 16, w - 32, h - 32, 16);
+            ctx.fill();
+
+            ctx.lineWidth = 4;
+            ctx.strokeStyle = "#0f172a";
+            ctx.stroke();
+
+            ctx.fillStyle = "#0f172a";
+            ctx.font = "bold 20px 'JetBrains Mono', monospace";
+            ctx.fillText(data.author, 40, 58);
+
+            ctx.fillStyle = data.tag.includes("PRO") ? "#16a34a" : data.tag.includes("KONTRA") ? "#dc2626" : "#d97706";
+            ctx.font = "bold 16px 'JetBrains Mono', monospace";
+            ctx.fillText(data.tag, 40, 92);
+
+            ctx.fillStyle = "#334155";
+            ctx.font = "18px 'JetBrains Mono', monospace";
+            wrapText(ctx, `"${data.text}"`, 40, 145, w - 80, 26, 3);
+
+            ctx.fillStyle = "#dc2626";
+            ctx.font = "bold 15px 'JetBrains Mono', monospace";
+            ctx.fillText("🚫 Gagal menembus tembok algoritma", 40, 270);
+
+            return c;
+        }
+
+        // Canvas ikon gembok (dua versi: terkunci & terbuka)
+        function makeLockCanvas(open) {
+            const s = 260;
+            const c = document.createElement("canvas");
+            c.width = s; c.height = s;
+            const ctx = c.getContext("2d");
+
+            const glowColor = open ? "#22c55e" : "#ff1744";
+            const bodyColor = open ? "#16a34a" : "#dc2626";
+
+            ctx.shadowColor = glowColor;
+            ctx.shadowBlur = 26;
+
+            // Badan gembok
+            ctx.fillStyle = "#ffffff";
+            roundRect(ctx, 60, 120, 140, 110, 18);
+            ctx.fill();
+            ctx.lineWidth = 8;
+            ctx.strokeStyle = bodyColor;
+            ctx.stroke();
+
+            // Shackle (bagian atas gembok) — posisi berbeda kalau "open"
+            ctx.beginPath();
+            ctx.lineWidth = 16;
+            ctx.strokeStyle = bodyColor;
+            ctx.lineCap = "round";
+            if (open) {
+                // Shackle terangkat/terbuka ke samping
+                ctx.arc(150, 95, 45, Math.PI * 1.05, Math.PI * 2.0, false);
+            } else {
+                // Shackle tertutup rapat
+                ctx.arc(130, 115, 45, Math.PI, Math.PI * 2, false);
+            }
+            ctx.stroke();
+
+            ctx.shadowBlur = 0;
+
+            // Lubang kunci
+            ctx.fillStyle = bodyColor;
+            ctx.beginPath();
+            ctx.arc(130, 165, 12, 0, Math.PI * 2);
+            ctx.fill();
+            roundRect(ctx, 124, 170, 12, 26, 4);
+            ctx.fill();
+
+            // Label kecil
+            ctx.fillStyle = bodyColor;
+            ctx.font = "bold 22px 'JetBrains Mono', monospace";
+            ctx.textAlign = "center";
+            ctx.fillText(open ? "UNLOCKED" : "LOCKED", 130, 260);
+            ctx.textAlign = "left";
+
+            return c;
+        }
+
+        function getMesh(entity) {
+            return entity.getObject3D("mesh");
+        }
+
+        function applyTexture(entity, canvas, opacity = 1) {
             const THREE = AFRAME.THREE;
             const setTex = () => {
-                const mesh = entity.getObject3D("mesh");
+                const mesh = getMesh(entity);
                 if (!mesh) return;
                 const tex = new THREE.CanvasTexture(canvas);
                 tex.needsUpdate = true;
                 mesh.material.map = tex;
                 mesh.material.transparent = true;
+                mesh.material.opacity = opacity;
                 mesh.material.needsUpdate = true;
             };
-            if (entity.getObject3D("mesh")) setTex();
+            if (getMesh(entity)) setTex();
             else entity.addEventListener("loaded", setTex, { once: true });
+        }
+
+        // Tween opacity manual (dipakai untuk efek fade-out kartu & fade-in data asli)
+        function tweenOpacity(entity, from, to, duration, onDone) {
+            const start = performance.now();
+            function step(now) {
+                const mesh = getMesh(entity);
+                if (!mesh) return;
+                const t = Math.min(1, (now - start) / duration);
+                const eased = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2; // easeInOutQuad
+                mesh.material.opacity = from + (to - from) * eased;
+                mesh.material.transparent = true;
+                mesh.material.needsUpdate = true;
+                if (t < 1) requestAnimationFrame(step);
+                else if (onDone) onDone();
+            }
+            requestAnimationFrame(step);
         }
 
         async function buildTextures() {
             if (document.fonts && document.fonts.ready) await document.fonts.ready;
 
-            applyTexture(bubblePlane, makeBubbleCanvas());
-            applyTexture(lockShield, makeShieldCanvas());
-
-            Object.keys(NEWS).forEach((id) => {
-                applyTexture(document.getElementById(id), makeCardCanvas(NEWS[id], false));
+            applyTexture(document.getElementById("bubblePlane"), makeLockedBubbleCanvas());
+            applyTexture(document.getElementById("lockIcon"), makeLockCanvas(false));
+            CARD_IDS.forEach((id) => {
+                applyTexture(document.getElementById(id), makeCardCanvas(COMMENTS[id]));
             });
         }
         buildTextures();
 
-        function resetScenario1State() {
-            currentScenario = 1;
-            isUnlocked = false;
-            isAnimating = false;
+        // ---------- Update panel konteks & debug sesuai skenario aktif ----------
+        function setContext(title, body, unlocked) {
+            ctxTitle.innerText = title;
+            ctxBody.innerText = body;
+            arHeaderContext.classList.toggle("unlocked", unlocked);
+        }
 
-            scenario1Group.setAttribute("visible", "true");
-            scenario1Group.setAttribute("scale", "1 1 1");
-            scenario2Group.setAttribute("visible", "false");
-
-            lockShield.setAttribute("visible", "true");
-            lockShield.setAttribute("scale", "1 1 1");
-            lockShield.setAttribute("material", "opacity", 1);
-            lockShield.setAttribute("material", "color", "#ffffff");
-            lockShield.removeAttribute("animation__shatter");
-            lockShield.removeAttribute("animation__fade");
-
-            bubblePlane.setAttribute("visible", "true");
-            bubblePlane.setAttribute("scale", "1 1 1");
-            videoPlane.setAttribute("visible", "true");
-            videoPlane.setAttribute("scale", "1 1 1");
-
-            scenarioStatus.innerText = "1 — Terkunci";
-            tapHint.innerText = "Tap tombol UNLOCK untuk membuka data";
-
-            backOverlay.classList.remove("show");
-            if (markerVisible && currentScenario === 1 && !isUnlocked) {
-                unlockOverlay.classList.add("show");
+        function refreshUnlockButtonState() {
+            if (appState === "unlocked") {
+                unlockButton.classList.remove("ready");
+                unlockButton.classList.add("unlocked");
+                unlockButton.innerText = "🔓 TERBUKA";
+                unlockButton.disabled = true;
+                unlockHint.innerText = "Tembok berhasil dibongkar";
+                return;
+            }
+            if (markerVisible && appState === "locked") {
+                unlockButton.disabled = false;
+                unlockButton.classList.add("ready");
+                unlockButton.innerText = "🔒 UNLOCK";
+                unlockHint.innerText = "Tekan untuk membongkar tembok algoritma";
+            } else {
+                unlockButton.disabled = true;
+                unlockButton.classList.remove("ready");
+                unlockButton.innerText = "🔒 UNLOCK";
+                unlockHint.innerText = appState === "locked" ? "Arahkan kamera ke marker dulu" : "Sedang membuka…";
             }
         }
 
-        function goToScenario2() {
-            if (isAnimating || isUnlocked || currentScenario !== 1) return;
-            isAnimating = true;
-
-            unlockOverlay.classList.remove("show");
-
-            lockShield.setAttribute("material", "color", "#ff8f7a");
-            lockShield.setAttribute("animation__shatter", {
-                property: "scale",
-                from: "1 1 1",
-                to: "1.8 1.8 1.8",
-                dur: 450,
-                easing: "easeInBack"
-            });
-            lockShield.setAttribute("animation__fade", {
-                property: "material.opacity",
-                from: 1,
-                to: 0,
-                dur: 450,
-                easing: "easeInQuad"
-            });
-
-            bubblePlane.setAttribute("animation__out", {
-                property: "scale", from: "1 1 1", to: "0.01 0.01 0.01", dur: 400, easing: "easeInBack"
-            });
-            videoPlane.setAttribute("animation__out", {
-                property: "scale", from: "1 1 1", to: "0.01 0.01 0.01", dur: 400, easing: "easeInBack"
-            });
-
-            mainVideo.pause();
-
-            setTimeout(() => {
-                scenario1Group.setAttribute("visible", "false");
-
-                scenario2Group.setAttribute("visible", "true");
-                scenario2Group.setAttribute("scale", "0.01 0.01 0.01");
-                scenario2Group.setAttribute("animation__in", {
-                    property: "scale",
-                    from: "0.01 0.01 0.01",
-                    to: "1 1 1",
-                    dur: 500,
-                    easing: "easeOutBack"
-                });
-
-                currentScenario = 2;
-                isUnlocked = true;
-                isAnimating = false;
-
-                scenarioStatus.innerText = "2 — Terbuka";
-                tapHint.innerText = "Bukti kiri & kanan ditemukan";
-                tapHint.classList.add("show");
-                setTimeout(() => tapHint.classList.remove("show"), 2500);
-
-                if (markerVisible && currentScenario === 2 && isUnlocked) {
-                    backOverlay.classList.add("show");
-                }
-            }, 460);
-        }
-
-        // Navigasi Kembali ke phase4.html
-        function goToPhase4() {
-            window.location.href = "phase4.html";
-        }
-
-        // Event listeners untuk Tombol Awal
-        backStartBtn.addEventListener("click", (e) => {
-            e.preventDefault();
-            goToPhase4();
-        });
-
-        scanBackBtn.addEventListener("click", (e) => {
-            e.preventDefault();
-            goToPhase4();
-        });
-
-        unlockBtn.addEventListener("click", (e) => {
-            e.preventDefault();
-            goToScenario2();
-        });
-
-        backBtnHtml.addEventListener("click", (e) => {
-            e.preventDefault();
-            goToPhase4();
-        });
-
-        // Tombol Lanjut Scan
         startButton.addEventListener("click", async () => {
+            if (!startButton.classList.contains("active")) return;
             startScreen.style.display = "none";
-            scanBackBtn.classList.add("show"); // Tampilkan tombol kembali di pojok layar scan
-            mainVideo.muted = false;
+            arBackButton.style.display = "flex";
+            arHeaderContext.style.display = "block";
+            unlockPanel.style.display = "flex";
+            refreshUnlockButtonState();
 
             const mindarSystem = scene.systems["mindar-image-system"];
             try {
                 await mindarSystem.start();
-                markerStatus.innerText = "Mencari...";
+                markerStatus.innerText = "Mencari Marker...";
 
                 const camVideo = document.querySelector("video:not(#mainVideo)");
                 if (camVideo) camVideo.classList.add("camFeed");
             } catch (error) {
                 console.error("MindAR error:", error);
-                markerStatus.innerText = "ERROR";
+                markerStatus.innerText = "GAGAL KAMERA";
                 markerStatus.style.color = "red";
             }
         });
@@ -739,48 +733,106 @@
             content.setAttribute("visible", "true");
             content.setAttribute("animation", "property: scale; from: 0.01 0.01 0.01; to: 1 1 1; dur: 450; easing: easeOutBack");
 
-            planeStatus.innerText = "Visible ✓";
+            planeStatus.innerText = "Aktif ✓";
             planeStatus.style.color = "#00ff00";
 
-            resetScenario1State();
-
-            mainVideo.play().catch((err) => console.warn("Autoplay video ditolak:", err));
-
-            tapHint.classList.add("show");
-            setTimeout(() => tapHint.classList.remove("show"), 3500);
+            refreshUnlockButtonState();
         });
 
         target.addEventListener("targetLost", () => {
             markerVisible = false;
-            markerStatus.innerText = "Hilang";
+            markerStatus.innerText = "Hilang (Arahkan ke Marker)";
             markerStatus.style.color = "yellow";
 
             content.setAttribute("visible", "false");
             planeStatus.innerText = "Hidden";
             planeStatus.style.color = "yellow";
 
-            unlockOverlay.classList.remove("show");
-            backOverlay.classList.remove("show");
-            mainVideo.pause();
+            refreshUnlockButtonState();
         });
 
-        let tapTimer = null;
-        const DOUBLE_TAP_DELAY = 300;
+        // ============================================================
+        // SKENARIO 2 — URUTAN ANIMASI UNLOCK
+        // 1) Ikon gembok memantul & berputar, lalu berganti jadi versi
+        //    terbuka (hijau) dengan flash pulsa.
+        // 2) Keenam kartu komentar memudar (fade-out) satu per satu
+        //    dengan jeda (stagger), lalu disembunyikan.
+        // 3) Bubble utama di-crossfade ke tekstur "data asli" (fade-in).
+        // 4) State berpindah ke 'unlocked' dan UI diperbarui.
+        // ============================================================
+        function runUnlockSequence() {
+            if (appState !== "locked" || !markerVisible) return;
+            appState = "unlocking";
+            refreshUnlockButtonState();
 
-        videoPlane.addEventListener("click", () => {
-            if (currentScenario !== 1) return;
+            lockStatus.innerText = "🔓 MEMBUKA...";
+            lockStatus.style.color = "#facc15";
+            setContext(
+                "Fase 4: Membongkar Tembok Algoritma",
+                "Sistem sedang menembus filter echo chamber dan menghapus komentar yang sebelumnya diblokir...",
+                false
+            );
 
-            if (tapTimer !== null) {
-                clearTimeout(tapTimer);
-                tapTimer = null;
-                mainVideo.muted = !mainVideo.muted;
-            } else {
-                tapTimer = setTimeout(() => {
-                    tapTimer = null;
-                    mainVideo.paused ? mainVideo.play() : mainVideo.pause();
-                }, DOUBLE_TAP_DELAY);
-            }
-        });
+            const lockIcon = document.getElementById("lockIcon");
+
+            // Langkah 1: animasi gembok memantul + berputar
+            lockIcon.setAttribute("animation__pulse",
+                "property: scale; from: 1 1 1; to: 1.35 1.35 1.35; dur: 350; dir: alternate; loop: 1; easing: easeOutBack");
+            lockIcon.setAttribute("animation__spin",
+                "property: rotation; from: 0 0 0; to: 0 0 25; dur: 350; dir: alternate; loop: 1; easing: easeInOutQuad");
+
+            setTimeout(() => {
+                // Ganti tekstur gembok jadi versi terbuka (hijau)
+                applyTexture(lockIcon, makeLockCanvas(true));
+                lockIcon.setAttribute("animation__open",
+                    "property: scale; from: 1.1 1.1 1.1; to: 1.5 1.5 1.5; dur: 500; easing: easeOutQuad");
+
+                // Setelah muncul sekilas, gembok memudar & lenyap
+                setTimeout(() => {
+                    tweenOpacity(lockIcon, 1, 0, 500, () => {
+                        lockIcon.setAttribute("visible", "false");
+                    });
+                }, 550);
+            }, 400);
+
+            // Langkah 2: kartu komentar memudar satu per satu (stagger fade-out)
+            let cardsDone = 0;
+            CARD_IDS.forEach((id, i) => {
+                const el = document.getElementById(id);
+                setTimeout(() => {
+                    tweenOpacity(el, 1, 0, 550, () => {
+                        el.setAttribute("visible", "false");
+                        el.removeAttribute("animation"); // hentikan animasi posisi loop-nya
+                        cardsDone++;
+                    });
+                }, 300 + i * 160);
+            });
+
+            // Langkah 3: crossfade bubble utama ke data asli
+            const bubble = document.getElementById("bubblePlane");
+            const dataRevealDelay = 300 + CARD_IDS.length * 160 + 550 + 150; // setelah kartu terakhir selesai
+
+            setTimeout(() => {
+                tweenOpacity(bubble, 1, 0, 260, () => {
+                    applyTexture(bubble, makeUnlockedBubbleCanvas(), 0);
+                    tweenOpacity(bubble, 0, 1, 700, () => {
+                        // Langkah 4: selesai, state -> unlocked
+                        appState = "unlocked";
+                        lockStatus.innerText = "🔓 TERBUKA";
+                        lockStatus.style.color = "#4ade80";
+                        debugPanel.classList.add("unlocked");
+                        setContext(
+                            "Fase 4: Data Asli Terungkap",
+                            "Tembok algoritma berhasil dibongkar. Statistik dan fakta lengkap tentang jam masak & distribusi MBG kini ditampilkan.",
+                            true
+                        );
+                        refreshUnlockButtonState();
+                    });
+                });
+            }, dataRevealDelay);
+        }
+
+        unlockButton.addEventListener("click", runUnlockSequence);
     </script>
 
 </body>
