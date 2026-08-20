@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>ECHOBREAK — AR Investigation Board</title>
+    <title>ECHOBREAK — AR Investigation Board (Clean HUD)</title>
 
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
@@ -21,7 +21,6 @@
             font-family: 'JetBrains Mono', monospace;
         }
 
-        /* LAYER STACKING: 0 kamera, 1 a-scene (3D/AR), 10000+ UI */
         video.mindar-camera-video, video.camFeed {
             object-fit: cover !important;
             width: 100vw !important; height: 100vh !important;
@@ -93,6 +92,12 @@
             enabled: false
         ">
 
+        <!-- ASSET MANAGER UNTUK GAMBAR -->
+        <a-assets>
+            <img id="imgApproved" src="approved.jpg" crossorigin="anonymous">
+            <img id="imgDanger" src="danger.jpg" crossorigin="anonymous">
+        </a-assets>
+
         <a-camera position="0 0 0" look-controls="enabled: false"
                   raycaster="objects: .clickable; far: 10"
                   cursor="fuse: false; rayOrigin: mouse">
@@ -101,33 +106,33 @@
         <!-- ============================== MARKER TARGET ============================== -->
         <a-entity id="target" mindar-image-target="targetIndex: 0">
 
-            <!-- Konten Utama AR (Approved di Kiri, Danger di Kanan, VS di Tengah) -->
-            <a-entity id="ar-content" visible="false" scale="0.01 0.01 0.01">
+            <!-- Diubah agar berdiri tegak (rotation -90) dan posisinya naik ke atas marker (position Z: 0.23) -->
+            <a-entity id="ar-content" visible="false" scale="0.01 0.01 0.01" rotation="-90 0 0" position="0 0 0.23">
 
-                <!-- ---------- PERSPEKTIF 1: APPROVED (KIRI) ---------- -->
+                <!-- ---------- KARTU 1: APPROVED (KIRI) ---------- -->
                 <a-entity position="-0.32 0 0"
                          animation="property: scale; from: 0.95 0.95 0.95; to: 1.05 1.05 1.05; dur: 1600; dir: alternate; loop: true; easing: easeInOutSine">
+                    <!-- Background Border/Glow & HUD Enhanced Canvas -->
                     <a-plane id="approvedPlane" position="0 0 0" width="0.34" height="0.46"
                              material="shader: flat; transparent: true; side: double"></a-plane>
+                    <!-- Gambar Full approved.jpg tertata rapi di dalam bingkai -->
+                    <a-image src="#imgApproved" position="0 0 0.001" width="0.30" height="0.38"></a-image>
                 </a-entity>
 
-                <!-- ---------- TEKS 3D VS DI TENGAH (ORANGE GLOW & ANIMASI) ---------- -->
+                <!-- ---------- TEKS 3D VS DI TENGAH ---------- -->
                 <a-entity position="0 0 0.03"
                          animation="property: scale; from: 0.9 0.9 0.9; to: 1.15 1.15 1.15; dur: 900; dir: alternate; loop: true; easing: easeInOutSine">
-                    <a-text value="VS"
-                            align="center"
-                            anchor="center"
-                            color="#ff9900"
-                            width="5"
-                            shader="msdf">
-                    </a-text>
+                    <a-text value="VS" align="center" anchor="center" color="#ff9900" width="5" shader="msdf"></a-text>
                 </a-entity>
 
-                <!-- ---------- PERSPEKTIF 2: DANGER (KANAN) ---------- -->
+                <!-- ---------- KARTU 2: DANGER (KANAN) ---------- -->
                 <a-entity position="0.32 0 0"
                          animation="property: scale; from: 0.96 0.96 0.96; to: 1.04 1.04 1.04; dur: 1100; dir: alternate; loop: true; easing: easeInOutSine">
+                    <!-- Background Border/Glow & HUD Enhanced Canvas -->
                     <a-plane id="dangerPlane" position="0 0 0" width="0.34" height="0.46"
                              material="shader: flat; transparent: true; side: double"></a-plane>
+                    <!-- Gambar Full danger.jpg tertata rapi di dalam bingkai -->
+                    <a-image src="#imgDanger" position="0 0 0.001" width="0.30" height="0.38"></a-image>
                 </a-entity>
 
             </a-entity>
@@ -145,219 +150,95 @@
         const markerStatus = document.getElementById("marker-status");
         const planeStatus = document.getElementById("plane-status");
 
-        function wrapText(ctx, text, x, y, maxWidth, lineHeight, maxLines) {
-            const words = text.split(" ");
-            let line = "", lines = 0;
-            for (let i = 0; i < words.length; i++) {
-                const test = line + words[i] + " ";
-                if (ctx.measureText(test).width > maxWidth && line !== "") {
-                    ctx.fillText(line.trim(), x, y);
-                    line = words[i] + " ";
-                    y += lineHeight;
-                    lines++;
-                    if (maxLines && lines >= maxLines) {
-                        ctx.fillText(line.trim() + "…", x, y);
-                        return;
-                    }
-                } else {
-                    line = test;
-                }
+        // ---------- CANVAS GENERATOR DENGAN ENHANCED HUD & CYBER DETAILS ----------
+        function makeEnhancedHudCanvas(statusText, borderColor, glowColor) {
+            const w = 500, h = 650;
+            const c = document.createElement("canvas");
+            c.width = w; c.height = h;
+            const ctx = c.getContext("2d");
+
+            const x = 20, y = 20, bw = w - 40, bh = h - 40, r = 16;
+
+            // 1. Background Gelap Semi-Transparan ala Panel Militer
+            ctx.beginPath();
+            ctx.moveTo(x + r, y);
+            ctx.lineTo(x + bw - r, y);
+            ctx.arcTo(x + bw, y, x + bw, y + r, r);
+            ctx.lineTo(x + bw, y + bh - r);
+            ctx.arcTo(x + bw, y + bh, x + bw - r, y + bh, r);
+            ctx.lineTo(x + r, y + bh);
+            ctx.arcTo(x, y + bh, x, y + bh - r, r);
+            ctx.lineTo(x, y + r);
+            ctx.arcTo(x, y, x + r, y, r);
+            ctx.closePath();
+
+            ctx.fillStyle = "rgba(8, 12, 10, 0.92)";
+            ctx.fill();
+
+            // 2. Scanlines / Cyber Grid Halus di Latar Belakang
+            ctx.save();
+            ctx.clip();
+            ctx.strokeStyle = "rgba(255, 255, 255, 0.03)";
+            ctx.lineWidth = 1;
+            for (let i = 0; i < h; i += 8) {
+                ctx.beginPath();
+                ctx.moveTo(0, i);
+                ctx.lineTo(w, i);
+                ctx.stroke();
             }
-            ctx.fillText(line.trim(), x, y);
-        }
+            ctx.restore();
 
-        // ---------- CANVAS 1: APPROVED (KIRI) ----------
-        function makeApprovedCanvas() {
-            const w = 500, h = 650;
-            const c = document.createElement("canvas");
-            c.width = w; c.height = h;
-            const ctx = c.getContext("2d");
-
-            const x = 15, y = 15, bw = w - 30, bh = h - 30, r = 32;
-
-            ctx.beginPath();
-            ctx.moveTo(x + r, y);
-            ctx.lineTo(x + bw - r, y);
-            ctx.arcTo(x + bw, y, x + bw, y + r, r);
-            ctx.lineTo(x + bw, y + bh - r);
-            ctx.arcTo(x + bw, y + bh, x + bw - r, y + bh, r);
-            ctx.lineTo(x + r, y + bh);
-            ctx.arcTo(x, y + bh, x, y + bh - r, r);
-            ctx.lineTo(x, y + r);
-            ctx.arcTo(x, y, x + r, y, r);
-            ctx.closePath();
-
-            ctx.fillStyle = "#16261c";
-            ctx.fill();
-
-            // Border & Glow Hijau
-            ctx.lineWidth = 12;
-            ctx.strokeStyle = "#00ff66";
-            ctx.shadowColor = "#00ff44";
-            ctx.shadowBlur = 45;
+            // 3. Multi-layer Neon Glow & Border Utama
+            ctx.lineWidth = 6;
+            ctx.strokeStyle = borderColor;
+            ctx.shadowColor = glowColor;
+            ctx.shadowBlur = 30;
             ctx.stroke();
+            
+            ctx.shadowBlur = 15;
             ctx.stroke();
             ctx.shadowBlur = 0;
 
-            // Ikon Centang di Tengah Atas Kartu
-            ctx.save();
-            ctx.translate(w / 2, 55);
-            ctx.beginPath();
-            ctx.arc(0, 0, 24, 0, Math.PI * 2);
-            ctx.fillStyle = "#00ff66";
-            ctx.fill();
-            ctx.strokeStyle = "#121a14";
-            ctx.lineWidth = 3;
-            ctx.stroke();
-
-            ctx.beginPath();
-            ctx.moveTo(-9, 0);
-            ctx.lineTo(-2, 7);
-            ctx.lineTo(11, -7);
-            ctx.strokeStyle = "#121a14";
+            // 4. Corner Brackets (Tech Frames / Siku Sudut Futuristis)
+            ctx.strokeStyle = borderColor;
             ctx.lineWidth = 4;
-            ctx.lineCap = "round";
-            ctx.lineJoin = "round";
-            ctx.stroke();
-            ctx.restore();
+            const cornerLen = 22;
 
-            ctx.fillStyle = "#00ff66";
-            ctx.font = "700 21px 'JetBrains Mono', monospace";
-            ctx.textBaseline = "top";
-            ctx.textAlign = "center";
-            ctx.fillText("STATUS: APPROVED", w / 2, 92);
+            ctx.beginPath(); ctx.moveTo(x, y + cornerLen); ctx.lineTo(x, y); ctx.lineTo(x + cornerLen, y); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(x + bw - cornerLen, y); ctx.lineTo(x + bw, y); ctx.lineTo(x + bw, y + cornerLen); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(x, y + bh - cornerLen); ctx.lineTo(x, y + bh); ctx.lineTo(x + cornerLen, y + bh); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(x + bw - cornerLen, y + bh); ctx.lineTo(x + bw, y + bh); ctx.lineTo(x + bw, y + bh - cornerLen); ctx.stroke();
 
-            ctx.fillStyle = "#ffffff";
-            ctx.font = "600 22px Oswald, sans-serif";
-            wrapText(ctx, "Akses Jaringan Diamankan", 35, 126, w - 70, 28, 2);
-
-            ctx.strokeStyle = "#22442d";
-            ctx.lineWidth = 3;
-            ctx.beginPath();
-            ctx.moveTo(35, 185);
-            ctx.lineTo(w - 35, 185);
-            ctx.stroke();
-
-            // Kotak Preview Gambar Berita
-            ctx.fillStyle = "#0d1711";
-            ctx.fillRect(35, 205, w - 70, 240);
-            ctx.strokeStyle = "#22442d";
-            ctx.lineWidth = 2;
-            ctx.strokeRect(35, 205, w - 70, 240);
-
-            const grad = ctx.createLinearGradient(35, 205, 35, 445);
-            grad.addColorStop(0, "#1f3b2d");
-            grad.addColorStop(1, "#0f1d16");
-            ctx.fillStyle = grad;
-            ctx.fillRect(37, 207, w - 74, 236);
-
-            // Nama File: approved.jpg
-            ctx.fillStyle = "rgba(0, 255, 102, 0.85)";
+            // 5. Metadata & Tech Watermarks
+            ctx.fillStyle = borderColor;
             ctx.font = "600 13px 'JetBrains Mono', monospace";
-            ctx.textAlign = "right";
-            ctx.fillText("approved.jpg", w - 48, 422);
-
             ctx.textAlign = "left";
-            ctx.fillStyle = "#d1c2a5";
-            ctx.font = "400 13px 'JetBrains Mono', monospace";
-            const desc = "Sistem verifikasi mendeteksi koneksi stabil. Seluruh protokol pengamanan berjalan optimal tanpa gangguan anomali.";
-            wrapText(ctx, desc, 35, 460, w - 70, 20, 4);
+            ctx.fillText(`SYS-SEC: ${statusText}`, x + 16, y + 26);
 
-            return c;
-        }
-
-        // ---------- CANVAS 2: DANGER (KANAN) ----------
-        function makeDangerCanvas() {
-            const w = 500, h = 650;
-            const c = document.createElement("canvas");
-            c.width = w; c.height = h;
-            const ctx = c.getContext("2d");
-
-            const x = 15, y = 15, bw = w - 30, bh = h - 30, r = 32;
-
-            ctx.beginPath();
-            ctx.moveTo(x + r, y);
-            ctx.lineTo(x + bw - r, y);
-            ctx.arcTo(x + bw, y, x + bw, y + r, r);
-            ctx.lineTo(x + bw, y + bh - r);
-            ctx.arcTo(x + bw, y + bh, x + bw - r, y + bh, r);
-            ctx.lineTo(x + r, y + bh);
-            ctx.arcTo(x, y + bh, x, y + bh - r, r);
-            ctx.lineTo(x, y + r);
-            ctx.arcTo(x, y, x + r, y, r);
-            ctx.closePath();
-
-            ctx.fillStyle = "#2d1616";
-            ctx.fill();
-
-            // Border & Glow Merah
-            ctx.lineWidth = 12;
-            ctx.strokeStyle = "#ff1a1a";
-            ctx.shadowColor = "#ff0000";
-            ctx.shadowBlur = 50;
-            ctx.stroke();
-            ctx.stroke();
-            ctx.shadowBlur = 0;
-
-            // Ikon Peringatan di Tengah Atas Kartu
-            ctx.save();
-            ctx.translate(w / 2, 55);
-            ctx.beginPath();
-            ctx.arc(0, 0, 24, 0, Math.PI * 2);
-            ctx.fillStyle = "#ff1a1a";
-            ctx.fill();
-            ctx.strokeStyle = "#1a0f0f";
-            ctx.lineWidth = 3;
-            ctx.stroke();
-
-            ctx.fillStyle = "#1a0f0f";
-            ctx.fillRect(-2, -9, 4, 11);
-            ctx.beginPath();
-            ctx.arc(0, 7, 2.3, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.restore();
-
-            ctx.fillStyle = "#ff3333";
-            ctx.font = "700 21px 'JetBrains Mono', monospace";
-            ctx.textBaseline = "top";
-            ctx.textAlign = "center";
-            ctx.fillText("STATUS: DANGER", w / 2, 92);
-
-            ctx.fillStyle = "#ffffff";
-            ctx.font = "600 22px Oswald, sans-serif";
-            wrapText(ctx, "Ancaman Keamanan Kritis", 35, 126, w - 70, 28, 2);
-
-            ctx.strokeStyle = "#5a2222";
-            ctx.lineWidth = 3;
-            ctx.beginPath();
-            ctx.moveTo(35, 185);
-            ctx.lineTo(w - 35, 185);
-            ctx.stroke();
-
-            // Kotak Preview Gambar Berita
-            ctx.fillStyle = "#1a0f0f";
-            ctx.fillRect(35, 205, w - 70, 240);
-            ctx.strokeStyle = "#4a2222";
-            ctx.lineWidth = 2;
-            ctx.strokeRect(35, 205, w - 70, 240);
-
-            const grad = ctx.createLinearGradient(35, 205, 35, 445);
-            grad.addColorStop(0, "#3d1a1a");
-            grad.addColorStop(1, "#1a0a0a");
-            ctx.fillStyle = grad;
-            ctx.fillRect(37, 207, w - 74, 236);
-
-            // Nama File: danger.jpg
-            ctx.fillStyle = "rgba(255, 51, 51, 0.85)";
-            ctx.font = "600 13px 'JetBrains Mono', monospace";
             ctx.textAlign = "right";
-            ctx.fillText("danger.jpg", w - 48, 422);
+            ctx.fillStyle = "rgba(239, 230, 210, 0.5)";
+            ctx.font = "400 11px 'JetBrains Mono', monospace";
+            ctx.fillText("[SEC-LVL: 09]", x + bw - 16, y + 26);
 
+            ctx.strokeStyle = "rgba(255, 255, 255, 0.15)";
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(x + 16, y + 38);
+            ctx.lineTo(x + bw - 16, y + 38);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(x + 16, y + bh - 32);
+            ctx.lineTo(x + bw - 16, y + bh - 32);
+            ctx.stroke();
+
+            ctx.fillStyle = "rgba(255, 255, 255, 0.4)";
+            ctx.font = "400 10px 'JetBrains Mono', monospace";
             ctx.textAlign = "left";
-            ctx.fillStyle = "#d1a5a5";
-            ctx.font = "400 13px 'JetBrains Mono', monospace";
-            const desc = "Pelanggaran keamanan kritis terkonfirmasi pada mainframe pusat. Enkripsi file rahasia telah disusupi.";
-            wrapText(ctx, desc, 35, 460, w - 70, 20, 4);
+            ctx.fillText("ECHOBREAK // AR-NODE v2.6", x + 16, y + bh - 14);
+
+            ctx.textAlign = "right";
+            ctx.fillText("LOC: 3.09//SEC", x + bw - 16, y + bh - 14);
 
             return c;
         }
@@ -379,9 +260,9 @@
 
         async function buildTextures() {
             if (document.fonts && document.fonts.ready) await document.fonts.ready;
-
-            applyTexture(document.getElementById("approvedPlane"), makeApprovedCanvas());
-            applyTexture(document.getElementById("dangerPlane"), makeDangerCanvas());
+            
+            applyTexture(document.getElementById("approvedPlane"), makeEnhancedHudCanvas("APPROVED", "#00ff66", "#00ff44"));
+            applyTexture(document.getElementById("dangerPlane"), makeEnhancedHudCanvas("CRITICAL", "#ff1a1a", "#ff0000"));
         }
         buildTextures();
 
