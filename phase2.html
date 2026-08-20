@@ -104,12 +104,10 @@
                         0% {
                                 border-color: rgba(109, 40, 217, 0.3);
                         }
-
                         50% {
                                 border-color: rgba(109, 40, 217, 0.8);
                                 box-shadow: 0 0 10px rgba(109, 40, 217, 0.15);
                         }
-
                         100% {
                                 border-color: rgba(109, 40, 217, 0.3);
                         }
@@ -146,25 +144,21 @@
         </header>
 
         <!-- Main Content Canvas -->
-        <main class="flex-grow pt-16 pb-36 md:pb-24 flex flex-col max-w-3xl mx-auto w-full px-4 md:px-8">
+        <main class="flex-grow pt-16 pb-40 md:pb-28 flex flex-col max-w-3xl mx-auto w-full px-4 md:px-8">
 
                 <!-- Phase Header & Indicator -->
-                <div class="mb-4 md:mb-6 pt-2">
+                <div class="mb-5 md:mb-6 pt-2">
                         <div class="flex items-center justify-between mb-2">
-                                <h2 class="text-lg md:text-2xl font-bold text-primary-container">Fase 2: Echo Chamber
-                                </h2>
-
+                                <h2 class="text-lg md:text-2xl font-bold text-primary-container">Fase 2: Echo Chamber</h2>
                         </div>
-                        <p class="text-xs md:text-sm text-on-surface-variant leading-relaxed">
-                                Analisis perdebatan program Makan Bergizi Gratis (MBG), mulai dari efisiensi jam masak
-                                hingga manajemen logistik distribusi.
+                        <p class="text-xs md:text-sm text-on-surface-variant leading-relaxed mb-4">
+                                Analisis perdebatan program Makan Bergizi Gratis (MBG), mulai dari efisiensi jam masak hingga manajemen logistik distribusi.
                         </p>
 
                         <!-- Homogeneity Meter -->
-                        <div class="mt-3 bg-surface p-3.5 rounded-xl border border-outline-variant ambient-shadow">
+                        <div class="bg-surface p-3.5 rounded-xl border border-outline-variant ambient-shadow mb-3">
                                 <div class="flex justify-between items-end mb-1.5">
-                                        <span class="text-xs font-medium text-on-surface-variant">Algorithmic
-                                                Homogeneity</span>
+                                        <span class="text-xs font-medium text-on-surface-variant">Algorithmic Homogeneity</span>
                                         <span class="text-sm md:text-base font-bold text-digital-purple">84%</span>
                                 </div>
                                 <div class="h-2 w-full bg-surface-container-high rounded-full overflow-hidden">
@@ -172,21 +166,26 @@
                                 </div>
                         </div>
 
-                        <!-- Scan QR Code Button -->
-                        <div class="mt-3">
-                                <p class="text-xs text-on-surface-variant text-center mb-2">
-                                        Ayo scan QR code ini dulu untuk mengetahui bagaimana algoritma itu terbentuk!
-                                </p>
+                        <!-- Scan QR Code Button with Number 1 -->
+                        <div>
                                 <a href="phase2ar.html"
-                                        class="w-full py-2.5 px-4 rounded-xl bg-secondary text-on-secondary font-semibold text-xs md:text-sm hover:opacity-90 active:scale-[0.98] transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer no-underline">
+                                        class="w-full py-3 px-4 rounded-xl bg-secondary text-on-secondary font-semibold text-xs md:text-sm hover:opacity-90 active:scale-[0.98] transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer no-underline">
                                         <span class="material-symbols-outlined text-base"
                                                 style="font-variation-settings: 'FILL' 0;">qr_code_scanner</span>
-                                        Scan QR Code AR
+                                        1. Scan QR Code AR Terlebih Dahulu
                                 </a>
                         </div>
                 </div>
 
-                <!-- Social Media Feed Container (Rendered via JS for DRY principles) -->
+                <!-- Feed Section Title with Number 2 -->
+                <div class="flex items-center justify-between mb-3 px-1">
+                        <h3 class="text-sm md:text-base font-bold text-on-surface flex items-center gap-2">
+                                <span class="material-symbols-outlined text-democratic-blue text-base">forum</span>
+                                2. Baca Komentar & Diskusi Publik
+                        </h3>
+                </div>
+
+                <!-- Social Media Feed Container -->
                 <div id="feed-container" class="flex-grow flex flex-col gap-3.5">
                         <!-- Content injected via script below -->
                 </div>
@@ -202,14 +201,14 @@
                         Mengapa topik jam masak MBG ini mendominasi?
                 </button>
                 <a href="phase3.html"
-                        class="w-full py-2.5 px-4 rounded-xl bg-democratic-blue text-on-primary font-semibold text-xs md:text-sm hover:opacity-90 active:scale-[0.98] transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer no-underline">
-                        Lanjut ke Analisis
+                        class="w-full py-3 px-4 rounded-xl bg-democratic-blue text-on-primary font-semibold text-xs md:text-sm hover:opacity-90 active:scale-[0.98] transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer no-underline">
+                        3. Lanjut ke Halaman Analisis
                         <span class="material-symbols-outlined text-base"
                                 style="font-variation-settings: 'FILL' 0;">arrow_forward</span>
                 </a>
         </div>
 
-        <!-- BottomNavBar (Mobile Only - 2 Options: Beranda & Modul) -->
+        <!-- BottomNavBar (Mobile Only) -->
         <nav
                 class="md:hidden flex justify-around items-center w-full px-4 border-t border-outline-variant bg-surface/95 backdrop-blur-lg fixed bottom-0 z-50 shadow-lg h-16">
                 <button
@@ -236,7 +235,7 @@
                                 avatar: "https://lh3.googleusercontent.com/aida-public/AB6AXuCeM80X2hxGEHMBVAJAExyKeLnuulQIsnefK8jnXkWGa_xRW1mXyb_ZI0hCMUnh-PWlwWW5xyqbTuzftdo2BATa9O3tllyTTK2JqJVlSgCPs6ijili_XeGzsQEXkaHyvMrT7XaLExO9X90LbIB8yTzNDl5Q0qK09T5F85RfPpNkxcyRdnZakthu5yrOgnYA_QNjORBb48NnGeLFuVGG-ztSelL-5f2Bfrzdv6hI3hymznLjSGw4SsgwiA",
                                 content: "Sistem dapur umum untuk program MBG sudah berjalan baik. Jadwal shift masak dini hari memastikan makanan matang tepat waktu dan bisa langsung dikirim ke sekolah-sekolah sebelum jam istirahat. #MBGBerkualitas",
                                 sentiment: "Sentimen: Pro",
-                                sentimentType: "pro", // hijau
+                                sentimentType: "pro", 
                                 likes: "1.2k",
                                 comments: "342",
                                 arActive: false
@@ -248,7 +247,7 @@
                                 avatar: "https://lh3.googleusercontent.com/aida-public/AB6AXuAj6ErysAwgG4sXTIhfGN2QYU_POXxS_ux9LzOGtXI6tQlaa59heMdShYV-ibwS1hrd7lmIc-RyaHhQszVhi_1-Mj-g8Z43G55qiNkoWJIEqI344yYJ9buqf8-Oa2SH8T_ugSX3NV1R7NL3o97HikGm4DXWtuWegKvaAFVD0qLTlElBOQttS_jj_hfpwOWkDWNV-OoCWBT0HixemIsI7mE5VD6u4kAKWaDQje7uggzhDSlykzB0uZxF_w",
                                 content: "Kontra terkait jam masak perlu diperhatikan serius! Kalau makanan sudah dimasak jam 2 pagi untuk dibagikan jam 12 siang, apa tidak basi atau berkurang kandungan gizinya? Logistik distribusinya harus dievaluasi.",
                                 sentiment: "Sentimen: Kontra",
-                                sentimentType: "kontra", // merah
+                                sentimentType: "kontra", 
                                 likes: "856",
                                 comments: "120",
                                 arActive: false
@@ -260,7 +259,7 @@
                                 avatar: "https://lh3.googleusercontent.com/aida-public/AB6AXuDckm1egcQjWrmVAY9bnto67AAtnUZyrRkkCBbf5YXmE0ttbMAFUHtI8Vp0tyfZYbmCgaT9FvTSKtBVVRjF-Xi9DcPKWTAvKJut7FhRmCAwW3EzYqsspvbS4gLxiPNEyKGZRDiE1LsUCwWFk_qO9FpUeXL5nqrXVLPLScryV1N7LN0KnMINGSZtEE0aUiV_HVa_apFPvT5Cz_j_1vsiK_d4Ou6yT0qP8H9UiEuRY4zZpSRZEDyRjB46iQ",
                                 content: "Titik kritis MBG ada pada *holding time* makanan matang. Standar keamanan pangan mengharuskan makanan dikonsumsi maksimal beberapa jam setelah dimasak agar tetap aman bagi anak-anak.",
                                 sentiment: "Sentimen: Netral",
-                                sentimentType: "netral", // biru
+                                sentimentType: "netral", 
                                 likes: "2.4k",
                                 comments: "560",
                                 arActive: true,
@@ -273,7 +272,7 @@
                                 avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&auto=format&fit=crop&q=80",
                                 content: "Program MBG ini membuka lapangan kerja baru bagi UMKM lokal sebagai penyuplai bahan baku. Asal rantai pasok dikelola dengan manajemen gudang yang rapi, masalah keterlambatan bisa diatasi.",
                                 sentiment: "Sentimen: Pro",
-                                sentimentType: "pro", // hijau
+                                sentimentType: "pro", 
                                 likes: "650",
                                 comments: "89",
                                 arActive: false
@@ -285,7 +284,7 @@
                                 avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80",
                                 content: "Kritik terhadap program MBG sah-sah saja, namun kita juga perlu melihat perbandingan dengan program *school feeding* di negara lain yang sukses setelah melewati fase penyesuaian logistik tahun pertama.",
                                 sentiment: "Sentimen: Netral",
-                                sentimentType: "netral", // biru
+                                sentimentType: "netral", 
                                 likes: "1.1k",
                                 comments: "210",
                                 arActive: false
@@ -297,7 +296,7 @@
                                 avatar: "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=100&auto=format&fit=crop&q=80",
                                 content: "Anak saya di sekolah mengeluh makanannya sering datang dingin dan sayurnya sudah layu karena jarak tempuh dapur ke sekolah terlalu jauh. Tolong perhatikan radius wilayah distribusi dapur umum!",
                                 sentiment: "Sentimen: Kontra",
-                                sentimentType: "kontra", // merah
+                                sentimentType: "kontra", 
                                 likes: "1.8k",
                                 comments: "430",
                                 arActive: false
@@ -306,7 +305,6 @@
 
                 const container = document.getElementById('feed-container');
 
-                // Helper to assign color classes based on sentiment type
                 function getSentimentStyles(type) {
                         switch (type) {
                                 case 'pro':

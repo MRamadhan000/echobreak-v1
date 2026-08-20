@@ -421,8 +421,13 @@
                 </div>
             </div>
 
-            <!-- Submit Button -->
-            <div class="flex justify-end pt-2">
+            <!-- Submit & Auto-Fill Buttons -->
+            <div class="flex flex-col sm:flex-row justify-end gap-3 pt-2">
+                <button type="button" onclick="autoFillAnswers()"
+                    class="w-full sm:w-auto bg-digital-purple hover:bg-digital-purple/90 text-on-primary text-xs md:text-sm font-semibold py-3 px-6 rounded-xl shadow-md transition-all active:scale-95 flex items-center justify-center gap-2">
+                    <span>Isi Jawaban Otomatis</span>
+                    <span class="material-symbols-outlined text-[18px]">auto_fix_high</span>
+                </button>
                 <button type="submit"
                     class="w-full sm:w-auto bg-success-green hover:bg-success-green/90 text-on-primary text-xs md:text-sm font-semibold py-3 px-8 rounded-xl shadow-md transition-all active:scale-95 flex items-center justify-center gap-2">
                     Kirim Post-Test & Lihat Hasil Akhir
@@ -433,6 +438,28 @@
         </form>
     </main>
 
+    <!-- Script Auto-Fill -->
+    <script>
+        function autoFillAnswers() {
+            const correctAnswers = {
+                'post_q1': 'A',
+                'post_q2': 'B',
+                'post_q3': 'A',
+                'post_q4': 'B',
+                'post_q5': 'B',
+                'post_q6': 'A',
+                'post_q7': 'B',
+                'post_q8': 'A'
+            };
+
+            for (const [name, value] of Object.entries(correctAnswers)) {
+                const radio = document.querySelector(`input[name="${name}"][value="${value}"]`);
+                if (radio) {
+                    radio.checked = true;
+                }
+            }
+        }
+    </script>
 </body>
 
 </html>
