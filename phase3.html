@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+        <meta charset="utf-8" />
+        <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+        <title>Layar Fase 3: Perspective Breaking</title>
+        <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+                rel="stylesheet" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap"
+                rel="stylesheet" />
+        <script id="tailwind-config">
+                tailwind.config = {
+                        darkMode: "class",
+                        theme: {
+                                extend: {
+                                        "colors": {
+                                                "on-secondary-fixed-variant": "#5b00c5",
+                                                "outline": "#737685",
+                                                "inverse-primary": "#b2c5ff",
+                                                "on-primary-fixed-variant": "#0040a2",
+                                                "on-primary": "#ffffff",
+                                                "surface-dark": "#0F172A",
+                                                "on-secondary-fixed": "#250059",
+                                                "on-primary-fixed": "#001848",
+                                                "secondary-container": "#8b4ef7",
+                                                "on-tertiary": "#ffffff",
+                                                "secondary-fixed-dim": "#d3bbff",
+                                                "success-green": "#10B981",
+                                                "error-container": "#ffdad6",
+                                                "inverse-on-surface": "#eff1f3",
+                                                "alert-amber": "#F59E0B",
+                                                "primary": "#003d9b",
+                                                "primary-container": "#0052cc",
+                                                "on-tertiary-fixed-variant": "#653e00",
+                                                "surface-container-highest": "#e0e3e5",
+                                                "democratic-blue": "#0052CC",
+                                                "surface-dim": "#d8dadc",
+                                                "tertiary-fixed-dim": "#ffb95f",
+                                                "on-tertiary-container": "#ffc988",
+                                                "outline-variant": "#c3c6d6",
+                                                "on-secondary": "#ffffff",
+                                                "primary-fixed": "#dae2ff",
+                                                "surface": "#f7f9fb",
+                                                "on-surface-variant": "#434654",
+                                                "surface-container-high": "#e6e8ea",
+                                                "on-error": "#ffffff",
+                                                "surface-tint": "#0c56d0",
+                                                "surface-variant": "#e0e3e5",
+                                                "digital-purple": "#6D28D9",
+                                                "surface-container-lowest": "#ffffff",
+                                                "on-surface": "#191c1e",
+                                                "inverse-surface": "#2d3133",
+                                                "tertiary-container": "#805000",
+                                                "surface-container-low": "#f2f4f6",
+                                                "tertiary": "#603b00",
+                                                "background": "#f7f9fb",
+                                                "on-tertiary-fixed": "#2a1700",
+                                                "tertiary-fixed": "#ffddb8",
+                                                "text-main": "#1E293B",
+                                                "on-error-container": "#93000a",
+                                                "secondary": "#712edd",
+                                                "on-secondary-container": "#fffbff",
+                                                "surface-container": "#eceef0",
+                                                "secondary-fixed": "#ebddff",
+                                                "primary-fixed-dim": "#b2c5ff",
+                                                "on-primary-container": "#c4d2ff",
+                                                "error": "#ba1a1a",
+                                                "on-background": "#191c1e",
+                                                "surface-bright": "#f7f9fb"
+                                        },
+                                        "borderRadius": {
+                                                "DEFAULT": "0.25rem",
+                                                "lg": "0.5rem",
+                                                "xl": "0.75rem",
+                                                "full": "9999px"
+                                        },
+                                        "spacing": {
+                                                "margin-mobile": "16px",
+                                                "margin-desktop": "40px",
+                                                "sm": "12px",
+                                                "xl": "32px",
+                                                "xs": "8px",
+                                                "base": "4px",
+                                                "md": "16px",
+                                                "lg": "24px",
+                                                "gutter": "16px"
+                                        },
+                                        "fontFamily": {
+                                                "body-md": ["Inter"],
+                                                "body-sm": ["Inter"],
+                                                "headline-lg-mobile": ["Plus Jakarta Sans"],
+                                                "headline-md": ["Plus Jakarta Sans"],
+                                                "headline-lg": ["Plus Jakarta Sans"],
+                                                "body-lg": ["Inter"],
+                                                "label-sm": ["JetBrains Mono"],
+                                                "label-md": ["JetBrains Mono"]
+                                        }
+                                }
+                        }
+                }
+        </script>
+        <style>
+                body {
+                        background-color: theme('colors.background');
+                        color: theme('colors.on-background');
+                        min-height: 100dvh;
+                }
+
+                .glass-panel {
+                        background: rgba(255, 255, 255, 0.75);
+                        backdrop-filter: blur(12px);
+                        -webkit-backdrop-filter: blur(12px);
+                        border: 1px solid rgba(255, 255, 255, 0.3);
+                }
+
+                .pulse-border {
+                        animation: pulse-border 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+                }
+
+                @keyframes pulse-border {
+                        0%,
+                        100% {
+                                border-color: theme('colors.alert-amber');
+                                box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4);
+                        }
+                        50% {
+                                border-color: theme('colors.digital-purple');
+                                box-shadow: 0 0 0 4px rgba(109, 40, 217, 0.2);
+                        }
+                }
+        </style>
+</head>
+
+<body class="font-body-md antialiased pb-28 md:pb-12 pt-16">
+
+        <!-- TopAppBar -->
+        <header
+                class="fixed top-0 w-full z-50 bg-surface-container/90 dark:bg-surface-container-high/90 backdrop-blur-md shadow-sm">
+                <div class="flex items-center justify-between px-4 md:px-margin-desktop w-full h-16">
+                        <div class="flex items-center gap-3">
+                                <a href="phase2.html"
+                                        class="p-1 text-primary dark:text-primary-fixed hover:opacity-80 active:scale-95 transition-transform inline-flex items-center justify-center">
+                                        <span class="material-symbols-outlined text-[20px]">arrow_back</span>
+                                </a>
+                                <h1
+                                        class="font-headline-md text-base md:text-lg font-bold text-democratic-blue truncate">
+                                        EchoBreak</h1>
+                        </div>
+                        <!-- Web Nav (Hidden on Mobile) -->
+                        <nav class="hidden md:flex items-center gap-6">
+                                <a class="text-on-surface-variant font-label-md text-label-md hover:text-primary transition-colors flex items-center gap-2"
+                                        href="#">
+                                        <span class="material-symbols-outlined text-[18px]">home</span> Beranda
+                                </a>
+                                <a class="text-primary font-label-md text-label-md hover:text-primary transition-colors flex items-center gap-2 border-b-2 border-primary pb-1"
+                                        href="#">
+                                        <span class="material-symbols-outlined text-[18px]">apps</span> Modul
+                                </a>
+                                <a class="text-on-surface-variant font-label-md text-label-md hover:text-primary transition-colors flex items-center gap-2"
+                                        href="#">
+                                        <span class="material-symbols-outlined text-[18px]">analytics</span> Progres
+                                </a>
+                                <a class="text-on-surface-variant font-label-md text-label-md hover:text-primary transition-colors flex items-center gap-2"
+                                        href="#">
+                                        <span class="material-symbols-outlined text-[18px]">person</span> Profil
+                                </a>
+                        </nav>
+                </div>
+        </header>
+
+        <!-- Main Content Canvas -->
+        <main class="max-w-7xl mx-auto px-4 md:px-margin-desktop py-6 md:py-xl">
+                <!-- Header Section -->
+                <section class="mb-8 text-center md:text-left">
+                        <div
+                                class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed-variant text-[11px] md:text-xs font-medium mb-3">
+                                <span class="material-symbols-outlined text-[14px]">visibility</span>
+                                Fase 3: Tantangan Perspektif
+                        </div>
+                        <h2 class="text-xl md:text-3xl font-bold text-text-main mb-2 tracking-tight">
+                                Bandingkan Perspektif Berita
+                        </h2>
+                        <p class="text-xs md:text-base text-on-surface-variant max-w-2xl mx-auto md:mx-0">
+                                Analisis dua sudut pandang berbeda mengenai isu yang sama. Perhatikan bagaimana bahasa
+                                dan fokus berita dapat memengaruhi persepsi audiens.
+                        </p>
+                </section>
+
+                <!-- Main Claim -->
+                <section class="mb-8">
+                        <div
+                                class="glass-panel p-4 md:p-lg rounded-xl shadow-sm border-l-4 border-l-democratic-blue relative overflow-hidden">
+                                <div class="absolute top-0 right-0 p-4 opacity-10 pointer-events-none">
+                                        <span class="material-symbols-outlined text-5xl">format_quote</span>
+                                </div>
+                                <h3
+                                        class="text-[11px] md:text-xs font-semibold text-outline mb-1 uppercase tracking-wider">
+                                        Klaim Utama</h3>
+                                <p class="text-sm md:text-xl font-semibold text-text-main">
+                                        "Implementasi AI di sektor pendidikan akan sepenuhnya menggantikan peran guru
+                                        dalam 5 tahun ke depan."
+                                </p>
+                        </div>
+                </section>
+
+                <!-- Perspective Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        <!-- Perspective A (Pro/Sensational) -->
+                        <article
+                                class="bg-surface rounded-xl shadow-sm border border-surface-variant overflow-hidden flex flex-col">
+                                <div class="h-40 sm:h-48 relative overflow-hidden">
+                                        <div class="bg-cover bg-center w-full h-full transform hover:scale-105 transition-transform duration-500"
+                                                style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDGno5qXXfgAf44iWAiaJyyrgJKesKogGzLeW8ZQxuIstrGiv3kkU3vrgdC09WO4ZOSIS_VOhsNnVjo1HVXE71Fd4gvYo7OCjbt907RjrRag7vstU12e6JzARbrtQb6hZ8s5ZnwVqai9TFJ9QpUjcod2esGy0LFpEeO1yvDI02Lat8RUFGctXctr1KrMpK4OTNzrvP4iI0rMDSAQZ1jiey5KJp3JTRTjAVFaxtFH7qwomw9JEJXz9xkNQ')">
+                                        </div>
+                                        <div class="absolute top-3 left-3">
+                                                <span
+                                                        class="bg-alert-amber text-on-tertiary px-2 py-0.5 rounded text-[10px] md:text-xs font-semibold flex items-center gap-1 shadow-md">
+                                                        <span
+                                                                class="material-symbols-outlined text-[12px]">warning</span>
+                                                        Sensasional
+                                                </span>
+                                        </div>
+                                </div>
+                                <div class="p-4 md:p-lg flex-grow flex flex-col">
+                                        <div class="flex items-center gap-2 mb-2">
+                                                <img class="w-5 h-5 rounded-full object-cover flex-shrink-0"
+                                                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuDa5Pc9iDjuFcmV56hC8X8MYecbQYLbMZ4I2B7ezX1a-RC8y7BFYpDc-IeWn2q4Y5l2vYOR36D1K_XiOgTAxgr_6PAL6zm1dHmE7ooOTAhUJKtprlPcxF6ZeBpyoRbw9cbEjeEjGILx7b7QmBJh8SFt_YRO3Xi6rbzlMDrNGEah2DF6IpG-XoW6pJVQ5CJ4EcBa-Z-EDa8136oNElItpKmPdU2lR8IH5amMyHM2uYWXbzDr1oE6dGMZhg"
+                                                        alt="Avatar" />
+                                                <span class="text-[11px] md:text-xs text-on-surface-variant truncate">TechUpdate
+                                                        Daily • 2 jam lalu</span>
+                                        </div>
+                                        <h4 class="text-sm md:text-base font-bold text-text-main mb-2">
+                                                Kiamat Profesi Guru? AI Siap Ambil Alih Ruang Kelas Sepenuhnya!
+                                        </h4>
+                                        <p class="text-xs md:text-sm text-on-surface-variant mb-4 flex-grow">
+                                                Sebuah laporan mengejutkan mengungkapkan bahwa kecerdasan buatan akan
+                                                segera menghapus kebutuhan akan pengajar manusia. Bersiaplah untuk era
+                                                di mana robot memimpin pendidikan anak-anak kita.
+                                        </p>
+                                        <!-- Perspective A Checklist -->
+                                        <div class="bg-surface-container-low p-3 rounded-lg mt-auto mb-3">
+                                                <h5 class="text-[11px] md:text-xs font-semibold text-outline mb-1.5">
+                                                        Checklist
+                                                        Analisis:</h5>
+                                                <ul class="space-y-1.5">
+                                                        <li class="flex items-start gap-1.5 text-xs text-on-surface">
+                                                                <span
+                                                                        class="material-symbols-outlined text-alert-amber text-[15px] flex-shrink-0">priority_high</span>
+                                                                <span>Bahasa emosional/provokatif</span>
+                                                        </li>
+                                                        <li class="flex items-start gap-1.5 text-xs text-on-surface">
+                                                                <span
+                                                                        class="material-symbols-outlined text-alert-amber text-[15px] flex-shrink-0">priority_high</span>
+                                                                <span>Sumber data tidak spesifik ("Sebuah
+                                                                        laporan")</span>
+                                                        </li>
+                                                </ul>
+                                        </div>
+                                        <!-- Scan QR Code Button -->
+                                        <a href="phase3ar.html"
+                                                class="w-full bg-democratic-blue hover:bg-primary-container text-on-primary text-xs font-semibold py-2.5 px-4 rounded-lg flex items-center justify-center gap-2 transition-all active:scale-95 shadow-sm">
+                                                <span
+                                                        class="material-symbols-outlined text-[16px]">qr_code_scanner</span>
+                                                Scan QR Code AR
+                                        </a>
+                                </div>
+                        </article>
+
+                        <!-- Perspective B (Contra/Objective) -->
+                        <article
+                                class="bg-surface rounded-xl shadow-sm border border-surface-variant overflow-hidden flex flex-col">
+                                <div class="h-40 sm:h-48 relative overflow-hidden">
+                                        <div class="bg-cover bg-center w-full h-full transform hover:scale-105 transition-transform duration-500"
+                                                style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAHszUMf4CP8xmMQ4FJiLL3eN-kZnLoiQq98hoHR-QVxT2sDEkAadw8MXK1RcKAHQdX0wo-3t0_0lD54IMCu_BUWIe6XnWmayKh7g4L4BO-fn2u_hsAUuJFu2Gl6lzniXtCRp1XegWmHlwHE0TnA1tRi0QoNJpqYJ-uQnQgWX0M-JRdTqT8hzG-3kda4DNwhOu1HQ-M8JHKVLO4tKdIwBh5f66B1TrzWpa5GujUYvIf8LUkoTgN26dtlg')">
+                                        </div>
+                                        <div class="absolute top-3 left-3">
+                                                <span
+                                                        class="bg-success-green text-on-tertiary px-2 py-0.5 rounded text-[10px] md:text-xs font-semibold flex items-center gap-1 shadow-md">
+                                                        <span
+                                                                class="material-symbols-outlined text-[12px]">check_circle</span>
+                                                        Objektif
+                                                </span>
+                                        </div>
+                                </div>
+                                <div class="p-4 md:p-lg flex-grow flex flex-col">
+                                        <div class="flex items-center gap-2 mb-2">
+                                                <img class="w-5 h-5 rounded-full object-cover flex-shrink-0"
+                                                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuD9qC77XNZG120Xpmnd_5Nx-j-ZTASfAPHZyYLZ6mLyJ7RDbH6WBou8mZdaZ7T85FcKR2e_J6JrQwi56YFSa13l5CfgPSHRxRrwWfth2y59mVSWI2ThPNepYX0YlESxpnU8ZhMPAjEWugrLM5Gsbp5YPuC-Rm-ogmKoIzkKndjzOixQ0HjH14gp4Rnf-fE8jf9s9xR_9g054T8TIceib5_QajglJiTW1R2OE39zfElSPrUVBUbtWbcTEA"
+                                                        alt="Avatar" />
+                                                <span class="text-[11px] md:text-xs text-on-surface-variant truncate">Jurnal
+                                                        Edukasi Global • 1 hari lalu</span>
+                                        </div>
+                                        <h4 class="text-sm md:text-base font-bold text-text-main mb-2">
+                                                Integrasi AI dalam Pendidikan: Peluang Kolaborasi, Bukan Substitusi
+                                        </h4>
+                                        <p class="text-xs md:text-sm text-on-surface-variant mb-4 flex-grow">
+                                                Studi terbaru dari Institut Penelitian Pendidikan menunjukkan bahwa AI
+                                                efektif sebagai alat bantu administratif dan personalisasi belajar,
+                                                namun empati dan bimbingan moral tetap membutuhkan kehadiran guru.
+                                        </p>
+                                        <!-- Perspective B Checklist -->
+                                        <div class="bg-surface-container-low p-3 rounded-lg mt-auto mb-3">
+                                                <h5 class="text-[11px] md:text-xs font-semibold text-outline mb-1.5">
+                                                        Checklist
+                                                        Analisis:</h5>
+                                                <ul class="space-y-1.5">
+                                                        <li class="flex items-start gap-1.5 text-xs text-on-surface">
+                                                                <span
+                                                                        class="material-symbols-outlined text-success-green text-[15px] flex-shrink-0">check</span>
+                                                                <span>Menyebutkan sumber penelitian (Institut
+                                                                        Penelitian)</span>
+                                                        </li>
+                                                        <li class="flex items-start gap-1.5 text-xs text-on-surface">
+                                                                <span
+                                                                        class="material-symbols-outlined text-success-green text-[15px] flex-shrink-0">check</span>
+                                                                <span>Nada netral dan informatif</span>
+                                                        </li>
+                                                </ul>
+                                        </div>
+                                        <!-- Scan QR Code Button -->
+                                        <a href="phase3ar.html"
+                                                class="w-full bg-democratic-blue hover:bg-primary-container text-on-primary text-xs font-semibold py-2.5 px-4 rounded-lg flex items-center justify-center gap-2 transition-all active:scale-95 shadow-sm">
+                                                <span
+                                                        class="material-symbols-outlined text-[16px]">qr_code_scanner</span>
+                                                Scan QR Code AR
+                                        </a>
+                                </div>
+                        </article>
+                </div>
+
+                <!-- Verification Action -->
+                <section
+                        class="flex flex-col items-center justify-center p-5 md:p-xl bg-surface-container rounded-2xl pulse-border border-2 text-center">
+                        <span
+                                class="material-symbols-outlined text-3xl md:text-4xl text-digital-purple mb-2">fact_check</span>
+                        <h3 class="text-base md:text-lg font-bold text-text-main mb-1">
+                                Siap Menyimpulkan?
+                        </h3>
+                        <p class="text-xs md:text-sm text-on-surface-variant max-w-md mb-5">
+                                Berdasarkan perbandingan kedua perspektif di atas, verifikasi fakta mana yang lebih
+                                dapat dipercaya.
+                        </p>
+                        <a href="phase4.html"
+                                class="w-full sm:w-auto bg-democratic-blue hover:bg-primary-container text-on-primary text-xs md:text-sm font-semibold py-2.5 px-6 rounded-full shadow-md transition-all active:scale-95 flex items-center justify-center gap-2">
+                                Verifikasi Sekarang
+                                <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+                        </a>
+                </section>
+        </main>
+
+        <!-- BottomNavBar (Mobile Only) -->
+        <nav
+                class="md:hidden fixed bottom-0 left-0 w-full z-50 bg-surface/95 dark:bg-inverse-surface/95 backdrop-blur-lg border-t border-outline-variant dark:border-outline shadow-lg">
+                <div class="flex justify-around items-center w-full py-1.5 px-2">
+                        <a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant/50 p-1.5 rounded-lg transition-all duration-200"
+                                href="#">
+                                <span class="material-symbols-outlined text-[20px]">home</span>
+                                <span class="text-[10px] mt-0.5">Beranda</span>
+                        </a>
+                        <a class="flex flex-col items-center justify-center bg-secondary-fixed text-on-secondary-fixed-variant rounded-full px-3 py-1 active:scale-90 transition-all duration-200"
+                                href="#">
+                                <span class="material-symbols-outlined text-[20px]"
+                                        style="font-variation-settings: 'FILL' 1;">apps</span>
+                                <span class="text-[10px] mt-0.5">Modul</span>
+                        </a>
+                        <a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant/50 p-1.5 rounded-lg transition-all duration-200"
+                                href="#">
+                                <span class="material-symbols-outlined text-[20px]">analytics</span>
+                                <span class="text-[10px] mt-0.5">Progres</span>
+                        </a>
+                        <a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant/50 p-1.5 rounded-lg transition-all duration-200"
+                                href="#">
+                                <span class="material-symbols-outlined text-[20px]">person</span>
+                                <span class="text-[10px] mt-0.5">Profil</span>
+                        </a>
+                </div>
+        </nav>
+</body>
+
+</html>

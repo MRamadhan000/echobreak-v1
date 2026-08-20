@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>ECHOBREAK — AR Investigation Board (Clean HUD)</title>
+
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap"
+        rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #f7f9fb;
+            font-family: 'Inter', sans-serif;
+        }
+
+        video.mindar-camera-video,
+        video.camFeed {
+            object-fit: cover !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            z-index: 0 !important;
+        }
+
+        a-scene {
+            width: 100vw;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        a-scene canvas {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            z-index: 1 !important;
+            background: transparent !important;
+        }
+
+        #debug-panel {
+            position: fixed;
+            top: 70px;
+            left: 10px;
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #fff;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-family: 'JetBrains Mono', monospace;
+            z-index: 10001;
+            pointer-events: none;
+            line-height: 1.7;
+            backdrop-filter: blur(8px);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- START SCREEN (PERMINTAAN IZIN & NAVIGASI AWAL) -->
+    <div id="start-screen" class="fixed inset-0 bg-[#f7f9fb] z-[20000] flex flex-col items-center justify-center p-4">
+        <div class="max-w-md w-full bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-[#e0e3e5] text-center">
+            <div
+                class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#ebddff] text-[#712edd] text-xs font-semibold mb-4">
+                <span class="material-symbols-outlined text-[16px]">qr_code_scanner</span>
+                Fase 3: AR Scanner
+            </div>
+            <h2 class="text-xl md:text-2xl font-bold text-[#1E293B] mb-2">Akses Kamera Diperlukan</h2>
+            <p class="text-xs md:text-sm text-[#434654] mb-6">
+                Untuk menggunakan fitur pemindaian AR, aplikasi memerlukan izin akses kamera perangkat Anda. Pastikan
+                untuk mengizinkan (*allow*) saat diminta.
+            </p>
+            <div class="flex gap-3">
+                <button id="backButton"
+                    class="flex-1 bg-[#f2f4f6] hover:bg-[#e6e8ea] text-[#191c1e] text-xs font-semibold py-3 px-4 rounded-xl border border-[#c3c6d6] transition-all active:scale-95 flex items-center justify-center gap-2">
+                    <span class="material-symbols-outlined text-[16px]">arrow_back</span>
+                    Kembali
+                </button>
+                <button id="startButton"
+                    class="flex-1 bg-[#0052CC] hover:bg-[#0040a2] text-white text-xs font-semibold py-3 px-4 rounded-xl shadow-sm transition-all active:scale-95 flex items-center justify-center gap-2">
+                    Lanjut
+                    <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOMBOL KEMBALI SAAT SCANNING AR BERLANGSUNG -->
+    <div id="ar-top-nav" class="fixed top-4 left-4 z-[10002] hidden">
+        <button id="arBackButton"
+            class="bg-[#0052CC] hover:bg-[#0040a2] text-white text-xs font-semibold py-2.5 px-4 rounded-xl shadow-lg border border-white/15 backdrop-blur-md transition-all active:scale-95 flex items-center gap-2">
+            <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+            Kembali ke Fase 3
+        </button>
+    </div>
+
+    <div id="debug-panel">
+        STATUS AR
+        <br>Marker: <span id="marker-status" style="color: #F59E0B;">Menunggu</span>
+        <br>Plane: <span id="plane-status" style="color: #F59E0B;">Hidden</span>
+    </div>
+
+    <a-scene mindar-image="
+            imageTargetSrc: marker.mind;
+            autoStart: false;
+        " embedded color-space="sRGB" renderer="
+            colorManagement: true;
+            alpha: true;
+        " vr-mode-ui="
+            enabled: false
+        " device-orientation-permission-ui="
+            enabled: false
+        ">
+
+        <!-- ASSET MANAGER UNTUK GAMBAR -->
+        <a-assets>
+            <img id="imgApproved" src="approved.jpg" crossorigin="anonymous">
+            <img id="imgDanger" src="danger.jpg" crossorigin="anonymous">
+        </a-assets>
+
+        <a-camera position="0 0 0" look-controls="enabled: false" raycaster="objects: .clickable; far: 10"
+            cursor="fuse: false; rayOrigin: mouse">
+        </a-camera>
+
+        <!-- ============================== MARKER TARGET ============================== -->
+        <a-entity id="target" mindar-image-target="targetIndex: 0">
+
+            <!-- Diubah agar berdiri tegak (rotation -90) dan posisinya naik ke atas marker (position Z: 0.23) -->
+            <a-entity id="ar-content" visible="false" scale="0.01 0.01 0.01" rotation="-90 0 0" position="0 0 0.23">
+
+                <!-- ---------- KARTU 1: APPROVED (KIRI) ---------- -->
+                <a-entity position="-0.32 0 0"
+                    animation="property: scale; from: 0.95 0.95 0.95; to: 1.05 1.05 1.05; dur: 1600; dir: alternate; loop: true; easing: easeInOutSine">
+                    <!-- Background Border/Glow & HUD Enhanced Canvas -->
+                    <a-plane id="approvedPlane" position="0 0 0" width="0.34" height="0.46"
+                        material="shader: flat; transparent: true; side: double"></a-plane>
+                    <!-- Gambar Full approved.jpg tertata rapi di dalam bingkai -->
+                    <a-image src="#imgApproved" position="0 0 0.001" width="0.30" height="0.38"></a-image>
+                </a-entity>
+
+                <!-- ---------- TEKS 3D VS DI TENGAH ---------- -->
+                <a-entity position="0 0 0.03"
+                    animation="property: scale; from: 0.9 0.9 0.9; to: 1.15 1.15 1.15; dur: 900; dir: alternate; loop: true; easing: easeInOutSine">
+                    <a-text value="VS" align="center" anchor="center" color="#ff9900" width="5" shader="msdf"></a-text>
+                </a-entity>
+
+                <!-- ---------- KARTU 2: DANGER (KANAN) ---------- -->
+                <a-entity position="0.32 0 0"
+                    animation="property: scale; from: 0.96 0.96 0.96; to: 1.04 1.04 1.04; dur: 1100; dir: alternate; loop: true; easing: easeInOutSine">
+                    <!-- Background Border/Glow & HUD Enhanced Canvas -->
+                    <a-plane id="dangerPlane" position="0 0 0" width="0.34" height="0.46"
+                        material="shader: flat; transparent: true; side: double"></a-plane>
+                    <!-- Gambar Full danger.jpg tertata rapi di dalam bingkai -->
+                    <a-image src="#imgDanger" position="0 0 0.001" width="0.30" height="0.38"></a-image>
+                </a-entity>
+
+            </a-entity>
+        </a-entity>
+
+    </a-scene>
+
+    <!-- ============================== JAVASCRIPT ============================== -->
+    <script>
+        const scene = document.querySelector("a-scene");
+        const target = document.getElementById("target");
+        const content = document.getElementById("ar-content");
+        const startScreen = document.getElementById("start-screen");
+        const startButton = document.getElementById("startButton");
+        const backButton = document.getElementById("backButton");
+        const arTopNav = document.getElementById("ar-top-nav");
+        const arBackButton = document.getElementById("arBackButton");
+        const markerStatus = document.getElementById("marker-status");
+        const planeStatus = document.getElementById("plane-status");
+
+        // Tombol Kembali di awal -> kembali ke phase3.html
+        backButton.addEventListener("click", () => {
+            window.location.href = "phase3.html";
+        });
+
+        // Tombol Kembali saat AR aktif -> kembali ke phase3.html
+        arBackButton.addEventListener("click", () => {
+            window.location.href = "phase3.html";
+        });
+
+        // ---------- CANVAS GENERATOR DENGAN ENHANCED HUD & CYBER DETAILS ----------
+        function makeEnhancedHudCanvas(statusText, borderColor, glowColor) {
+            const w = 500, h = 650;
+            const c = document.createElement("canvas");
+            c.width = w; c.height = h;
+            const ctx = c.getContext("2d");
+
+            const x = 20, y = 20, bw = w - 40, bh = h - 40, r = 16;
+
+            // 1. Background Gelap Semi-Transparan ala Panel Militer
+            ctx.beginPath();
+            ctx.moveTo(x + r, y);
+            ctx.lineTo(x + bw - r, y);
+            ctx.arcTo(x + bw, y, x + bw, y + r, r);
+            ctx.lineTo(x + bw, y + bh - r);
+            ctx.arcTo(x + bw, y + bh, x + bw - r, y + bh, r);
+            ctx.lineTo(x + r, y + bh);
+            ctx.arcTo(x, y + bh, x, y + bh - r, r);
+            ctx.lineTo(x, y + r);
+            ctx.arcTo(x, y, x + r, y, r);
+            ctx.closePath();
+
+            ctx.fillStyle = "rgba(8, 12, 10, 0.92)";
+            ctx.fill();
+
+            // 2. Scanlines / Cyber Grid Halus di Latar Belakang
+            ctx.save();
+            ctx.clip();
+            ctx.strokeStyle = "rgba(255, 255, 255, 0.03)";
+            ctx.lineWidth = 1;
+            for (let i = 0; i < h; i += 8) {
+                ctx.beginPath();
+                ctx.moveTo(0, i);
+                ctx.lineTo(w, i);
+                ctx.stroke();
+            }
+            ctx.restore();
+
+            // 3. Multi-layer Neon Glow & Border Utama
+            ctx.lineWidth = 6;
+            ctx.strokeStyle = borderColor;
+            ctx.shadowColor = glowColor;
+            ctx.shadowBlur = 30;
+            ctx.stroke();
+
+            ctx.shadowBlur = 15;
+            ctx.stroke();
+            ctx.shadowBlur = 0;
+
+            // 4. Corner Brackets (Tech Frames / Siku Sudut Futuristis)
+            ctx.strokeStyle = borderColor;
+            ctx.lineWidth = 4;
+            const cornerLen = 22;
+
+            ctx.beginPath(); ctx.moveTo(x, y + cornerLen); ctx.lineTo(x, y); ctx.lineTo(x + cornerLen, y); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(x + bw - cornerLen, y); ctx.lineTo(x + bw, y); ctx.lineTo(x + bw, y + cornerLen); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(x, y + bh - cornerLen); ctx.lineTo(x, y + bh); ctx.lineTo(x + cornerLen, y + bh); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(x + bw - cornerLen, y + bh); ctx.lineTo(x + bw, y + bh); ctx.lineTo(x + bw, y + bh - cornerLen); ctx.stroke();
+
+            // 5. Metadata & Tech Watermarks
+            ctx.fillStyle = borderColor;
+            ctx.font = "600 13px 'JetBrains Mono', monospace";
+            ctx.textAlign = "left";
+            ctx.fillText(`SYS-SEC: ${statusText}`, x + 16, y + 26);
+
+            ctx.textAlign = "right";
+            ctx.fillStyle = "rgba(239, 230, 210, 0.5)";
+            ctx.font = "400 11px 'JetBrains Mono', monospace";
+            ctx.fillText("[SEC-LVL: 09]", x + bw - 16, y + 26);
+
+            ctx.strokeStyle = "rgba(255, 255, 255, 0.15)";
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(x + 16, y + 38);
+            ctx.lineTo(x + bw - 16, y + 38);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(x + 16, y + bh - 32);
+            ctx.lineTo(x + bw - 16, y + bh - 32);
+            ctx.stroke();
+
+            ctx.fillStyle = "rgba(255, 255, 255, 0.4)";
+            ctx.font = "400 10px 'JetBrains Mono', monospace";
+            ctx.textAlign = "left";
+            ctx.fillText("ECHOBREAK // AR-NODE v2.6", x + 16, y + bh - 14);
+
+            ctx.textAlign = "right";
+            ctx.fillText("LOC: 3.09//SEC", x + bw - 16, y + bh - 14);
+
+            return c;
+        }
+
+        function applyTexture(entity, canvas) {
+            const THREE = AFRAME.THREE;
+            const setTex = () => {
+                const mesh = entity.getObject3D("mesh");
+                if (!mesh) return;
+                const tex = new THREE.CanvasTexture(canvas);
+                tex.needsUpdate = true;
+                mesh.material.map = tex;
+                mesh.material.transparent = true;
+                mesh.material.needsUpdate = true;
+            };
+            if (entity.getObject3D("mesh")) setTex();
+            else entity.addEventListener("loaded", setTex, { once: true });
+        }
+
+        async function buildTextures() {
+            if (document.fonts && document.fonts.ready) await document.fonts.ready;
+
+            applyTexture(document.getElementById("approvedPlane"), makeEnhancedHudCanvas("APPROVED", "#00ff66", "#00ff44"));
+            applyTexture(document.getElementById("dangerPlane"), makeEnhancedHudCanvas("CRITICAL", "#ff1a1a", "#ff0000"));
+        }
+        buildTextures();
+
+        // ---------- START AR & CAMERA PERMISSION REQUEST ----------
+        startButton.addEventListener("click", async () => {
+            try {
+                // Meminta izin akses kamera secara eksplisit terlebih dahulu
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+                stream.getTracks().forEach(track => track.stop()); // Hentikan stream sementara agar diambil alih oleh MindAR
+
+                startScreen.style.display = "none";
+                arTopNav.classList.remove("hidden"); // Tampilkan tombol kembali di mode AR
+
+                const mindarSystem = scene.systems["mindar-image-system"];
+                await mindarSystem.start();
+                markerStatus.innerText = "Mencari...";
+
+                const camVideo = document.querySelector("video");
+                if (camVideo) camVideo.classList.add("camFeed");
+            } catch (error) {
+                console.error("Camera permission error:", error);
+                alert("Akses kamera ditolak atau tidak tersedia. Harap izinkan akses kamera di pengaturan browser Anda untuk melanjutkan.");
+            }
+        });
+
+        // ---------- MARKER FOUND ----------
+        target.addEventListener("targetFound", () => {
+            markerStatus.innerText = "Ditemukan ✓";
+            markerStatus.style.color = "#00ff00";
+
+            content.setAttribute("visible", "true");
+            content.setAttribute("animation", "property: scale; from: 0.01 0.01 0.01; to: 1 1 1; dur: 450; easing: easeOutBack");
+
+            planeStatus.innerText = "Visible ✓";
+            planeStatus.style.color = "#00ff00";
+        });
+
+        // ---------- MARKER LOST ----------
+        target.addEventListener("targetLost", () => {
+            markerStatus.innerText = "Hilang";
+            markerStatus.style.color = "#F59E0B";
+
+            content.setAttribute("visible", "false");
+            planeStatus.innerText = "Hidden";
+            planeStatus.style.color = "#F59E0B";
+        });
+    </script>
+
+</body>
+</html>
