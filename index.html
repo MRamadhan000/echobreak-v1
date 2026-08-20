@@ -2,145 +2,150 @@
 <html lang="id">
 
 <head>
-    <meta charset="utf-8" />
-    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>EchoBreak - Login</title>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap"
-            rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
-            rel="stylesheet" />
-    <script id="tailwind-config">
-            tailwind.config = {
-                    darkMode: "class",
-                    theme: {
-                            extend: {
-                                    "colors": {
-                                            "tertiary": "#603b00",
-                                            "surface": "#f7f9fb",
-                                            "on-surface-variant": "#434654",
-                                            "secondary-fixed": "#ebddff",
-                                            "outline": "#737685",
-                                            "surface-variant": "#e0e3e5",
-                                            "primary-container": "#0052cc",
-                                            "on-primary": "#ffffff",
-                                            "on-primary-container": "#c4d2ff",
-                                            "surface-dim": "#d8dadc",
-                                            "surface-bright": "#f7f9fb",
-                                            "on-tertiary-fixed": "#2a1700",
-                                            "primary": "#003d9b",
-                                            "surface-tint": "#0c56d0",
-                                            "on-tertiary": "#ffffff",
-                                            "on-secondary": "#ffffff",
-                                            "on-secondary-fixed-variant": "#5b00c5",
-                                            "error": "#ba1a1a",
-                                            "on-primary-fixed-variant": "#0040a2",
-                                            "on-secondary-fixed": "#250059",
-                                            "surface-container-high": "#e6e8ea",
-                                            "primary-fixed": "#dae2ff",
-                                            "text-main": "#1E293B",
-                                            "surface-container": "#eceef0",
-                                            "inverse-primary": "#b2c5ff",
-                                            "secondary": "#712edd",
-                                            "on-surface": "#191c1e",
-                                            "surface-container-highest": "#e0e3e5",
-                                            "on-secondary-container": "#fffbff",
-                                            "on-primary-fixed": "#001848",
-                                            "tertiary-fixed-dim": "#ffb95f",
-                                            "on-error-container": "#93000a",
-                                            "outline-variant": "#c3c6d6",
-                                            "digital-purple": "#6D28D9",
-                                            "inverse-on-surface": "#eff1f3",
-                                            "background": "#f7f9fb",
-                                            "on-error": "#ffffff",
-                                            "secondary-fixed-dim": "#d3bbff",
-                                            "primary-fixed-dim": "#b2c5ff",
-                                            "on-tertiary-fixed-variant": "#653e00",
-                                            "surface-dark": "#0F172A",
-                                            "democratic-blue": "#0052CC",
-                                            "surface-container-low": "#f2f4f6",
-                                            "inverse-surface": "#2d3133",
-                                            "error-container": "#ffdad6",
-                                            "on-tertiary-container": "#ffc988",
-                                            "success-green": "#10B981",
-                                            "surface-container-lowest": "#ffffff",
-                                            "alert-amber": "#F59E0B",
-                                            "tertiary-fixed": "#ffddb8",
-                                            "on-background": "#191c1e",
-                                            "secondary-container": "#8b4ef7",
-                                            "tertiary-container": "#805000"
-                                    },
-                                    "borderRadius": {
-                                            "DEFAULT": "0.25rem",
-                                            "lg": "0.5rem",
-                                            "xl": "0.75rem",
-                                            "full": "9999px"
-                                    },
-                                    "spacing": {
-                                            "md": "16px",
-                                            "xl": "32px",
-                                            "gutter": "16px",
-                                            "base": "4px",
-                                            "sm": "12px",
-                                            "lg": "24px",
-                                            "xs": "8px",
-                                            "margin-mobile": "16px",
-                                            "margin-desktop": "40px"
-                                    },
-                                    "fontFamily": {
-                                            "headline-lg-mobile": ["Plus Jakarta Sans"],
-                                            "body-lg": ["Inter"],
-                                            "headline-md": ["Plus Jakarta Sans"],
-                                            "body-sm": ["Inter"],
-                                            "label-md": ["JetBrains Mono"],
-                                            "body-md": ["Inter"],
-                                            "label-sm": ["JetBrains Mono"],
-                                            "headline-lg": ["Plus Jakarta Sans"]
-                                    },
-                                    "fontSize": {
-                                            "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
-                                            "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
-                                            "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
-                                            "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
-                                            "label-md": ["14px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }],
-                                            "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
-                                            "label-sm": ["12px", { "lineHeight": "14px", "letterSpacing": "0.05em", "fontWeight": "500" }],
-                                            "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }]
-                                    }
-                            }
-                    }
-            }
-    </script>
-    <style>
-            .glass-panel {
-                    background: rgba(247, 249, 251, 0.85);
-                    backdrop-filter: blur(12px);
-                    -webkit-backdrop-filter: blur(12px);
-                    border: 1px solid rgba(255, 255, 255, 0.3);
-                    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.04);
-            }
+        <meta charset="utf-8" />
+        <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+        <title>EchoBreak - Login</title>
+        <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap"
+                rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+                rel="stylesheet" />
+        <script id="tailwind-config">
+                tailwind.config = {
+                        darkMode: "class",
+                        theme: {
+                                extend: {
+                                        "colors": {
+                                                "tertiary": "#603b00",
+                                                "surface": "#f7f9fb",
+                                                "on-surface-variant": "#434654",
+                                                "secondary-fixed": "#ebddff",
+                                                "outline": "#737685",
+                                                "surface-variant": "#e0e3e5",
+                                                "primary-container": "#0052cc",
+                                                "on-primary": "#ffffff",
+                                                "on-primary-container": "#c4d2ff",
+                                                "surface-dim": "#d8dadc",
+                                                "surface-bright": "#f7f9fb",
+                                                "on-tertiary-fixed": "#2a1700",
+                                                "primary": "#003d9b",
+                                                "surface-tint": "#0c56d0",
+                                                "on-tertiary": "#ffffff",
+                                                "on-secondary": "#ffffff",
+                                                "on-secondary-fixed-variant": "#5b00c5",
+                                                "error": "#ba1a1a",
+                                                "on-primary-fixed-variant": "#0040a2",
+                                                "on-secondary-fixed": "#250059",
+                                                "surface-container-high": "#e6e8ea",
+                                                "primary-fixed": "#dae2ff",
+                                                "text-main": "#1E293B",
+                                                "surface-container": "#eceef0",
+                                                "inverse-primary": "#b2c5ff",
+                                                "secondary": "#712edd",
+                                                "on-surface": "#191c1e",
+                                                "surface-container-highest": "#e0e3e5",
+                                                "on-secondary-container": "#fffbff",
+                                                "on-primary-fixed": "#001848",
+                                                "tertiary-fixed-dim": "#ffb95f",
+                                                "on-error-container": "#93000a",
+                                                "outline-variant": "#c3c6d6",
+                                                "digital-purple": "#6D28D9",
+                                                "inverse-on-surface": "#eff1f3",
+                                                "background": "#f7f9fb",
+                                                "on-error": "#ffffff",
+                                                "secondary-fixed-dim": "#d3bbff",
+                                                "primary-fixed-dim": "#b2c5ff",
+                                                "on-tertiary-fixed-variant": "#653e00",
+                                                "surface-dark": "#0F172A",
+                                                "democratic-blue": "#0052CC",
+                                                "surface-container-low": "#f2f4f6",
+                                                "inverse-surface": "#2d3133",
+                                                "error-container": "#ffdad6",
+                                                "on-tertiary-container": "#ffc988",
+                                                "success-green": "#10B981",
+                                                "surface-container-lowest": "#ffffff",
+                                                "alert-amber": "#F59E0B",
+                                                "tertiary-fixed": "#ffddb8",
+                                                "on-background": "#191c1e",
+                                                "secondary-container": "#8b4ef7",
+                                                "tertiary-container": "#805000"
+                                        },
+                                        "borderRadius": {
+                                                "DEFAULT": "0.25rem",
+                                                "lg": "0.5rem",
+                                                "xl": "0.75rem",
+                                                "full": "9999px"
+                                        },
+                                        "spacing": {
+                                                "md": "16px",
+                                                "xl": "32px",
+                                                "gutter": "16px",
+                                                "base": "4px",
+                                                "sm": "12px",
+                                                "lg": "24px",
+                                                "xs": "8px",
+                                                "margin-mobile": "16px",
+                                                "margin-desktop": "40px"
+                                        },
+                                        "fontFamily": {
+                                                "headline-lg-mobile": ["Plus Jakarta Sans"],
+                                                "body-lg": ["Inter"],
+                                                "headline-md": ["Plus Jakarta Sans"],
+                                                "body-sm": ["Inter"],
+                                                "label-md": ["JetBrains Mono"],
+                                                "body-md": ["Inter"],
+                                                "label-sm": ["JetBrains Mono"],
+                                                "headline-lg": ["Plus Jakarta Sans"]
+                                        },
+                                        "fontSize": {
+                                                "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                                                "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                                                "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                                                "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                                                "label-md": ["14px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                                                "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                                                "label-sm": ["12px", { "lineHeight": "14px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                                                "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+                                        }
+                                }
+                        }
+                }
+        </script>
+        <style>
+                .glass-panel {
+                        background: rgba(247, 249, 251, 0.85);
+                        backdrop-filter: blur(12px);
+                        -webkit-backdrop-filter: blur(12px);
+                        border: 1px solid rgba(255, 255, 255, 0.3);
+                        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.04);
+                }
 
-            .ar-accent-bg {
-                    background-image: radial-gradient(circle at 15% 50%, rgba(109, 40, 217, 0.08), transparent 25%),
-                            radial-gradient(circle at 85% 30%, rgba(0, 82, 204, 0.08), transparent 25%);
-            }
+                .ar-accent-bg {
+                        background-image: radial-gradient(circle at 15% 50%, rgba(109, 40, 217, 0.08), transparent 25%),
+                                radial-gradient(circle at 85% 30%, rgba(0, 82, 204, 0.08), transparent 25%);
+                }
 
-            .input-focus-ring:focus-within {
-                    border-color: #6D28D9;
-                    box-shadow: 0 0 0 1px #6D28D9;
-            }
+                .input-focus-ring:focus-within {
+                        border-color: #6D28D9;
+                        box-shadow: 0 0 0 1px #6D28D9;
+                }
 
-            body {
-                    min-height: 100dvh; /* Diubah agar fleksibel dan menyesuaikan layar HP */
-            }
-    </style>
+                body {
+                        min-height: 100dvh;
+                        /* Diubah agar fleksibel dan menyesuaikan layar HP */
+                }
+        </style>
 </head>
 
 <body class="bg-surface text-on-surface antialiased flex flex-col relative overflow-x-hidden ar-accent-bg">
         <!-- Abstract AR/Tech Background Elements -->
         <div class="absolute inset-0 pointer-events-none overflow-hidden z-0">
-                <div class="absolute top-1/4 left-[-10%] w-[40vw] h-[40vw] rounded-full border border-digital-purple/10 border-dashed animate-[spin_60s_linear_infinite]"></div>
-                <div class="absolute bottom-[-10%] right-[-5%] w-[50vw] h-[50vw] rounded-full border border-democratic-blue/10 border-dashed animate-[spin_80s_linear_infinite_reverse]"></div>
+                <div
+                        class="absolute top-1/4 left-[-10%] w-[40vw] h-[40vw] rounded-full border border-digital-purple/10 border-dashed animate-[spin_60s_linear_infinite]">
+                </div>
+                <div
+                        class="absolute bottom-[-10%] right-[-5%] w-[50vw] h-[50vw] rounded-full border border-democratic-blue/10 border-dashed animate-[spin_80s_linear_infinite_reverse]">
+                </div>
                 <!-- Grid pattern overlay -->
                 <div class="absolute inset-0 opacity-[0.03]"
                         style="background-image: linear-gradient(#434654 1px, transparent 1px), linear-gradient(90deg, #434654 1px, transparent 1px); background-size: 40px 40px;">
@@ -148,19 +153,25 @@
         </div>
 
         <!-- Main Content Canvas -->
-        <main class="flex-grow flex items-center justify-center p-margin-mobile md:p-margin-desktop relative z-10 w-full max-w-lg mx-auto">
+        <main
+                class="flex-grow flex items-center justify-center p-margin-mobile md:p-margin-desktop relative z-10 w-full max-w-lg mx-auto">
                 <div class="w-full glass-panel rounded-xl p-lg md:p-xl flex flex-col gap-lg shadow-lg">
                         <!-- Branding Header -->
                         <div class="text-center mb-sm">
-                                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-surface-container-high mb-md relative">
+                                <div
+                                        class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-surface-container-high mb-md relative">
                                         <!-- Subtle pulsing AR ring -->
-                                        <div class="absolute inset-0 rounded-full border border-digital-purple/30 animate-ping opacity-20"></div>
+                                        <div
+                                                class="absolute inset-0 rounded-full border border-digital-purple/30 animate-ping opacity-20">
+                                        </div>
                                         <span class="material-symbols-outlined text-democratic-blue text-3xl"
                                                 style="font-variation-settings: 'FILL' 1;">view_in_ar</span>
                                 </div>
-                                <h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-democratic-blue">
+                                <h1
+                                        class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-democratic-blue">
                                         EchoBreak</h1>
-                                <p class="font-body-md text-body-md text-on-surface-variant mt-xs">Analisis kritis di era digital.</p>
+                                <p class="font-body-md text-body-md text-on-surface-variant mt-xs">Analisis kritis di
+                                        era digital.</p>
                         </div>
 
                         <!-- Login Form -->
@@ -169,9 +180,12 @@
                                 <div class="flex flex-col gap-base relative">
                                         <label class="font-label-sm text-label-sm text-on-surface-variant uppercase"
                                                 for="identifier">Email atau NIS</label>
-                                        <div class="relative input-focus-ring rounded bg-surface-container transition-all duration-200 border border-outline-variant">
-                                                <div class="absolute inset-y-0 left-0 pl-sm flex items-center pointer-events-none">
-                                                        <span class="material-symbols-outlined text-on-surface-variant text-[20px]">person</span>
+                                        <div
+                                                class="relative input-focus-ring rounded bg-surface-container transition-all duration-200 border border-outline-variant">
+                                                <div
+                                                        class="absolute inset-y-0 left-0 pl-sm flex items-center pointer-events-none">
+                                                        <span
+                                                                class="material-symbols-outlined text-on-surface-variant text-[20px]">person</span>
                                                 </div>
                                                 <input class="w-full bg-transparent border-none focus:ring-0 pl-[40px] pr-sm py-sm font-body-md text-body-md text-on-surface placeholder-outline"
                                                         id="identifier" placeholder="Masukkan ID pengguna"
@@ -187,9 +201,12 @@
                                                 <a class="font-label-sm text-label-sm text-democratic-blue hover:text-primary transition-colors"
                                                         href="#">Lupa Sandi?</a>
                                         </div>
-                                        <div class="relative input-focus-ring rounded bg-surface-container transition-all duration-200 border border-outline-variant">
-                                                <div class="absolute inset-y-0 left-0 pl-sm flex items-center pointer-events-none">
-                                                        <span class="material-symbols-outlined text-on-surface-variant text-[20px]">lock</span>
+                                        <div
+                                                class="relative input-focus-ring rounded bg-surface-container transition-all duration-200 border border-outline-variant">
+                                                <div
+                                                        class="absolute inset-y-0 left-0 pl-sm flex items-center pointer-events-none">
+                                                        <span
+                                                                class="material-symbols-outlined text-on-surface-variant text-[20px]">lock</span>
                                                 </div>
                                                 <input class="w-full bg-transparent border-none focus:ring-0 pl-[40px] pr-sm py-sm font-body-md text-body-md text-on-surface placeholder-outline"
                                                         id="password" placeholder="••••••••" type="password" />
@@ -208,7 +225,8 @@
                         <div class="mt-xs text-center border-t border-outline-variant/30 pt-md">
                                 <p class="font-body-sm text-body-sm text-on-surface-variant">
                                         Belum memiliki akses?
-                                        <a class="text-digital-purple font-semibold hover:underline" href="#">Daftar Akun Baru</a>
+                                        <a class="text-digital-purple font-semibold hover:underline" href="#">Daftar
+                                                Akun Baru</a>
                                 </p>
                         </div>
                 </div>
@@ -220,7 +238,8 @@
                         <span class="material-symbols-outlined text-success-green"
                                 style="font-variation-settings: 'FILL' 1;">check_circle</span>
                         <div class="flex flex-col">
-                                <span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Sistem Status</span>
+                                <span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Sistem
+                                        Status</span>
                                 <span class="font-label-md text-label-md text-on-surface">AR Core Aktif</span>
                         </div>
                 </div>
@@ -228,17 +247,18 @@
 
         <script>
                 document.getElementById('loginForm').addEventListener('submit', function (e) {
-                        e.preventDefault(); 
+                        e.preventDefault();
 
                         const identifier = document.getElementById('identifier').value.trim();
                         const password = document.getElementById('password').value.trim();
 
                         if (identifier !== "" && password !== "") {
-                                window.location.href = './beranda';
+                                window.location.href = 'beranda.html';
                         } else {
                                 alert('Mohon isi Email/NIS dan Kata Sandi terlebih dahulu.');
                         }
                 });
         </script>
 </body>
+
 </html>
