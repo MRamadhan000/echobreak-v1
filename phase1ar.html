@@ -3,376 +3,540 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ECHOBREAK - AR Comments Scanner</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>ECHOBREAK — Fase 1: AR Komentar Scanner</title>
 
-    <!-- A-Frame -->
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
-
-    <!-- MindAR -->
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
 
-    <!-- Tailwind CSS untuk Styling UI yang Konsisten -->
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
 
     <style>
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
 
         html, body {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            background: #f7f9fb;
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            overflow: hidden; background: #000;
+            font-family: 'JetBrains Mono', monospace;
         }
 
-        video {
+        video.mindar-camera-video, video.camFeed {
             object-fit: cover !important;
-            width: 100vw !important;
-            height: 100vh !important;
-            position: fixed !important;
-            top: 0 !important;
-            left: 0 !important;
+            width: 100vw !important; height: 100vh !important;
+            position: fixed !important; top: 0 !important; left: 0 !important;
             z-index: 0 !important;
         }
 
         a-scene {
-            width: 100vw;
-            height: 100vh;
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 1;
+            width: 100vw; height: 100vh;
+            position: fixed; top: 0; left: 0; z-index: 1;
         }
 
         a-scene canvas {
-            position: fixed !important;
-            top: 0 !important;
-            left: 0 !important;
-            width: 100vw !important;
-            height: 100vh !important;
-            z-index: 1 !important;
-            background: transparent !important;
+            position: fixed !important; top: 0 !important; left: 0 !important;
+            width: 100vw !important; height: 100vh !important;
+            z-index: 1 !important; background: transparent !important;
         }
+
+        /* --- LAYAR AWAL --- */
+        #start-screen {
+            position: fixed; inset: 0;
+            background: #ffffff;
+            color: #191c1e; z-index: 20000;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            gap: 16px; text-align: center; padding: 20px;
+        }
+        #start-screen .badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px; letter-spacing: 2px;
+            background: #e7f0ff; color: #0052cc;
+            border: 1px solid #0052cc;
+            padding: 5px 12px; border-radius: 20px;
+            font-weight: 700;
+        }
+        #start-screen h2 {
+            font-family: 'Oswald', sans-serif;
+            font-size: clamp(22px, 6.5vw, 30px);
+            letter-spacing: 2.5px;
+            margin: 0; color: #0052cc;
+            text-shadow: 0 0 10px rgba(0,82,204,.15);
+        }
+        #start-screen p {
+            margin: 0;
+            font-size: clamp(11px, 3.5vw, 13px);
+            color: #434654;
+            max-width: 300px;
+            line-height: 1.4;
+        }
+        #cam-status-text {
+            font-size: clamp(10px, 3.2vw, 12px);
+            color: #64748b;
+            margin: -6px 0 0 0;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-top: 6px;
+            width: 100%;
+            max-width: 320px;
+            justify-content: center;
+        }
+
+        #backButton {
+            padding: 12px 20px;
+            font-family: 'Oswald', sans-serif;
+            font-size: clamp(13px, 4vw, 15px);
+            font-weight: 600;
+            letter-spacing: 1px;
+            background: #ffffff;
+            color: #0052cc;
+            border: 2px solid #0052cc;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex; align-items: center; justify-content: center;
+            gap: 6px;
+            flex: 1;
+            transition: all 0.2s ease;
+        }
+        #backButton:hover { background: #f0f6ff; }
+        #backButton:active { transform: scale(0.96); }
+
+        #startButton {
+            padding: 12px 24px;
+            font-family: 'Oswald', sans-serif;
+            font-size: clamp(13px, 4vw, 15px);
+            font-weight: 600;
+            letter-spacing: 1px;
+            background: #0052cc;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            cursor: not-allowed;
+            opacity: 0.5;
+            flex: 1.2;
+            display: inline-flex; align-items: center; justify-content: center;
+            gap: 6px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,82,204,0.25);
+        }
+        #startButton.active {
+            cursor: pointer;
+            opacity: 1;
+        }
+        #startButton.retry {
+            background: #d97706;
+            box-shadow: 0 4px 12px rgba(217,119,6,0.25);
+        }
+
+        .icon {
+            font-size: 15px;
+            line-height: 1;
+        }
+
+        /* --- HEADER KONTEKS AR --- */
+        #ar-header-context {
+            position: fixed; top: 12px; left: 50%; transform: translateX(-50%);
+            width: 92%; max-width: 420px;
+            background: rgba(15, 23, 42, 0.88);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(0, 82, 204, 0.4);
+            box-shadow: 0 0 12px rgba(0, 82, 204, 0.25);
+            color: #f8fafc; padding: 10px 14px; border-radius: 8px;
+            z-index: 20005; display: none; text-align: center;
+            pointer-events: none;
+        }
+        #ar-header-context h4 {
+            font-family: 'Oswald', sans-serif; font-size: 13px; letter-spacing: 0.5px;
+            margin: 0 0 3px 0; color: #60a5fa; text-transform: uppercase;
+        }
+        #ar-header-context p {
+            font-size: 10px; margin: 0; color: #cbd5e1; line-height: 1.35;
+        }
+
+        /* --- TOMBOL NAVIGASI BAWAH SAAT AR AKTIF --- */
+        #ar-nav {
+            position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
+            width: 92%; max-width: 380px;
+            display: none; gap: 10px;
+            z-index: 20005;
+        }
+        #ar-nav a {
+            flex: 1;
+            padding: 10px 14px;
+            font-family: 'Oswald', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            border-radius: 8px;
+            text-decoration: none;
+            display: inline-flex; align-items: center; justify-content: center;
+            gap: 6px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            transition: all 0.2s ease;
+        }
+        #ar-nav a:active { transform: scale(0.96); }
+        #navBack {
+            background: #ffffff; color: #0052cc;
+            border: 2px solid #0052cc;
+        }
+        #navBack:hover { background: #f0f6ff; }
+        #navNext {
+            background: #0052cc; color: #ffffff;
+            border: 2px solid #0052cc;
+        }
+        #navNext:hover { background: #003d9b; }
+
+        /* --- DEBUG PANEL --- */
+        #debug-panel {
+            position: fixed; top: 85px; left: 16px;
+            background: rgba(15,23,42,0.85); border: 1px solid #0052cc; color: #e2e8f0;
+            padding: 6px 10px; border-radius: 4px; font-size: 9px;
+            z-index: 10001; pointer-events: none; line-height: 1.5;
+            max-width: 190px;
+        }
+
+        /* --- TAP HINT --- */
+        #tap-hint {
+            position: fixed; bottom: 78px; left: 50%; transform: translateX(-50%);
+            background: rgba(15,23,42,0.85); color: #fff;
+            padding: 7px 14px; border-radius: 999px;
+            font-size: 10.5px; z-index: 20004; pointer-events: none;
+            opacity: 0; transition: opacity 0.4s ease;
+            border: 1px solid rgba(0,82,204,0.4);
+        }
+        #tap-hint.show { opacity: 1; }
     </style>
 </head>
 
-<body class="bg-[#f7f9fb] text-[#191c1e] text-xs sm:text-sm">
+<body>
 
-    <!-- ==============================
-         START SCREEN
-    ============================== -->
-    <div id="start-screen" class="fixed inset-0 bg-[#f7f9fb] text-[#191c1e] z-[20000] flex flex-col items-center justify-center p-6 text-center">
-        <div class="max-w-md w-full flex flex-col gap-4 items-center">
-            <h1 class="font-bold text-lg text-[#0052CC]">ECHOBREAK AR Komentar</h1>
-            <p id="cam-status-text" class="text-xs text-[#434654] mb-1">Memeriksa izin akses kamera...</p>
-            
-            <div class="flex items-center gap-3 w-full">
-                <a href="phase1.html" class="flex-1 py-3 px-4 rounded-xl bg-[#e0e3e5] text-[#434654] font-semibold text-xs sm:text-sm flex items-center justify-center gap-1.5 hover:bg-[#d8dadc] transition-all">
-                    <span class="material-symbols-outlined text-base">arrow_back</span>
-                    <span>Kembali</span>
-                </a>
+    <!-- Header Konteks AR -->
+    <div id="ar-header-context">
+        <h4>Fase 1: Opini Publik AR</h4>
+        <p>Visualisasi hologram berisi ragam komentar publik — pro, kontra, dan netral — terhadap isu MBG.</p>
+    </div>
 
-                <button id="btn-request-cam" disabled class="flex-1 py-3 px-4 rounded-xl bg-gray-300 text-gray-500 font-semibold text-xs sm:text-sm flex items-center justify-center gap-1.5 shadow-none cursor-not-allowed transition-all">
-                    <span class="material-symbols-outlined text-base">photo_camera</span>
-                    <span id="btn-text">Izinkan Kamera</span>
-                </button>
-            </div>
+    <!-- Navigasi bawah saat AR aktif -->
+    <div id="ar-nav">
+        <a id="navBack" href="phase1.html">← KEMBALI</a>
+        <a id="navNext" href="phase2.html">LANJUT FASE 2 →</a>
+    </div>
+
+    <!-- Layar Awal -->
+    <div id="start-screen">
+        <div class="badge">FASE 1 · OPINI PUBLIK</div>
+        <h2>AR KOMENTAR SCANNER</h2>
+        <p>Arahkan kamera ke marker untuk melihat hologram opini publik terhadap berita MBG</p>
+        <p id="cam-status-text">Memeriksa izin akses kamera...</p>
+
+        <div class="button-group">
+            <a id="backButton" href="phase1.html">KEMBALI</a>
+            <button id="startButton" disabled>MENUNGGU...</button>
         </div>
     </div>
 
-    <!-- ==============================
-         UI NAVIGATION
-    ============================== -->
-    <div id="ar-ui" class="hidden fixed inset-0 z-[10002] pointer-events-none flex flex-col justify-between p-4">
-        <div class="flex justify-between items-center pointer-events-auto">
-            <div class="bg-black/70 backdrop-blur-md text-white px-3 py-1.5 rounded-lg font-mono text-[11px] border border-white/10">
-                Status Marker: <span id="marker-status" class="text-yellow-400 font-bold">Menunggu</span>
-            </div>
-        </div>
-
-        <div class="flex items-center gap-2 pointer-events-auto w-full max-w-sm mx-auto">
-            <a href="phase1.html" class="flex-1 py-2.5 px-3 rounded-xl bg-white/90 backdrop-blur-md text-[#434654] font-semibold text-xs flex items-center justify-center gap-1 shadow-lg hover:bg-white transition-all border border-gray-200">
-                <span class="material-symbols-outlined text-sm">arrow_back</span>
-                <span>Kembali</span>
-            </a>
-            <a href="phase2.html" class="flex-1 py-2.5 px-3 rounded-xl bg-[#0052CC] text-white font-semibold text-xs flex items-center justify-center gap-1 shadow-lg hover:bg-[#003d9b] transition-all">
-                <span>Lanjut Phase 2</span>
-                <span class="material-symbols-outlined text-sm">arrow_forward</span>
-            </a>
-        </div>
+    <div id="debug-panel">
+        AR KOMENTAR SCANNER
+        <br>Marker: <span id="marker-status" style="color: yellow;">Menunggu</span>
+        <br>Core State: <span id="plane-status" style="color: yellow;">Hidden</span>
     </div>
 
-    <!-- ==============================
-         TAP HINT
-    ============================== -->
-    <div id="tap-hint" class="fixed bottom-20 left-1/2 -translate-x-1/2 bg-black/75 text-white py-1.5 px-3 rounded-full text-[11px] z-[10001] pointer-events-none opacity-0 transition-opacity duration-400">
-        Arahkan kamera ke marker untuk melihat opini publik MBG
-    </div>
+    <div id="tap-hint">Arahkan kamera ke marker untuk melihat opini publik MBG</div>
 
-    <!-- ==============================
-         AR SCENE
-    ============================== -->
     <a-scene mindar-image="
             imageTargetSrc: marker.mind;
             autoStart: false;
         " embedded color-space="sRGB" renderer="
             colorManagement: true;
             alpha: true;
-        " vr-mode-ui="
-            enabled: false
-        " device-orientation-permission-ui="
-            enabled: false
-        ">
-
-        <a-assets>
-            <!-- Canvas untuk Judul dan 6 Komentar -->
-            <canvas id="canvasTitle" width="512" height="120"></canvas>
-            <canvas id="canvas1" width="512" height="280"></canvas>
-            <canvas id="canvas2" width="512" height="280"></canvas>
-            <canvas id="canvas3" width="512" height="280"></canvas>
-            <canvas id="canvas4" width="512" height="280"></canvas>
-            <canvas id="canvas5" width="512" height="280"></canvas>
-            <canvas id="canvas6" width="512" height="280"></canvas>
-        </a-assets>
+        " vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
 
         <a-camera position="0 0 0" look-controls="enabled: false"
                   raycaster="objects: .clickable; far: 10"
                   cursor="fuse: false; rayOrigin: mouse">
         </a-camera>
 
-        <!-- TARGET MARKER (Orientasi rotation="0 0 0" menghadap lurus ke depan) -->
+        <!-- ============================== MARKER TARGET ============================== -->
         <a-entity id="target" mindar-image-target="targetIndex: 0">
-            
-            <!-- Plane Judul Utama di Paling Atas (Menghadap Depan) -->
-            <a-plane class="clickable comment-plane" position="0 0.65 0.05" rotation="0 0 0" width="1.4" height="0.25" material="src: #canvasTitle; shader: flat; transparent: true;" visible="false"></a-plane>
 
-            <!-- Baris 1 Komentar (Menghadap Depan) -->
-            <a-plane class="clickable comment-plane" position="-0.7 0.15 0.05" rotation="0 0 0" width="0.65" height="0.4" material="src: #canvas1; shader: flat; transparent: true;" visible="false"></a-plane>
-            <a-plane class="clickable comment-plane" position="0 0.15 0.05" rotation="0 0 0" width="0.65" height="0.4" material="src: #canvas2; shader: flat; transparent: true;" visible="false"></a-plane>
-            <a-plane class="clickable comment-plane" position="0.7 0.15 0.05" rotation="0 0 0" width="0.65" height="0.4" material="src: #canvas3; shader: flat; transparent: true;" visible="false"></a-plane>
-            
-            <!-- Baris 2 Komentar (Menghadap Depan) -->
-            <a-plane class="clickable comment-plane" position="-0.7 -0.35 0.05" rotation="0 0 0" width="0.65" height="0.4" material="src: #canvas4; shader: flat; transparent: true;" visible="false"></a-plane>
-            <a-plane class="clickable comment-plane" position="0 -0.35 0.05" rotation="0 0 0" width="0.65" height="0.4" material="src: #canvas5; shader: flat; transparent: true;" visible="false"></a-plane>
-            <a-plane class="clickable comment-plane" position="0.7 -0.35 0.05" rotation="0 0 0" width="0.65" height="0.4" material="src: #canvas6; shader: flat; transparent: true;" visible="false"></a-plane>
+            <a-entity id="ar-content" visible="false" scale="0.01 0.01 0.01">
 
+                <!-- Judul Utama -->
+                <a-plane id="titlePlane" position="0 0.62 -0.01" width="0.78" height="0.17"
+                         material="shader: flat; transparent: true; side: double"></a-plane>
+
+                <!-- Baris 1 -->
+                <a-plane id="card-1" class="comment-plane" position="-0.42 0.28 -0.01" rotation="0 0 -2" width="0.38" height="0.22"
+                         material="shader: flat; transparent: true; side: double"
+                         animation="property: position; from: -0.42 0.28 -0.01; to: -0.36 0.32 -0.01; dur: 2200; dir: alternate; loop: true; easing: easeInOutSine"></a-plane>
+                <a-plane id="card-2" class="comment-plane" position="0 0.28 -0.01" rotation="0 0 1" width="0.38" height="0.22"
+                         material="shader: flat; transparent: true; side: double"
+                         animation="property: position; from: 0 0.28 -0.01; to: 0 0.33 -0.01; dur: 2400; dir: alternate; loop: true; easing: easeInOutSine"></a-plane>
+                <a-plane id="card-3" class="comment-plane" position="0.42 0.28 -0.01" rotation="0 0 2" width="0.38" height="0.22"
+                         material="shader: flat; transparent: true; side: double"
+                         animation="property: position; from: 0.42 0.28 -0.01; to: 0.36 0.32 -0.01; dur: 2100; dir: alternate; loop: true; easing: easeInOutSine"></a-plane>
+
+                <!-- Baris 2 -->
+                <a-plane id="card-4" class="comment-plane" position="-0.42 -0.02 -0.01" rotation="0 0 2" width="0.38" height="0.22"
+                         material="shader: flat; transparent: true; side: double"
+                         animation="property: position; from: -0.42 -0.02 -0.01; to: -0.36 -0.06 -0.01; dur: 2300; dir: alternate; loop: true; easing: easeInOutSine"></a-plane>
+                <a-plane id="card-5" class="comment-plane" position="0 -0.02 -0.01" rotation="0 0 -1" width="0.38" height="0.22"
+                         material="shader: flat; transparent: true; side: double"
+                         animation="property: position; from: 0 -0.02 -0.01; to: 0 -0.07 -0.01; dur: 2500; dir: alternate; loop: true; easing: easeInOutSine"></a-plane>
+                <a-plane id="card-6" class="comment-plane" position="0.42 -0.02 -0.01" rotation="0 0 -2" width="0.38" height="0.22"
+                         material="shader: flat; transparent: true; side: double"
+                         animation="property: position; from: 0.42 -0.02 -0.01; to: 0.36 -0.06 -0.01; dur: 2000; dir: alternate; loop: true; easing: easeInOutSine"></a-plane>
+
+            </a-entity>
         </a-entity>
 
     </a-scene>
 
-    <!-- ==============================
-         JAVASCRIPT LOGIC
-    ============================== -->
+    <!-- ============================== JAVASCRIPT ============================== -->
     <script>
-        const commentsData = [
-            {
-                author: "Budi Santoso",
-                tag: "[PRO]",
-                text: "Shift dini hari adalah langkah taktis paling masuk akal demi mengejar volume produksi yang masif.",
-                color: "#16a34a"
-            },
-            {
-                author: "Dr. Siti Rahma",
-                tag: "[KONTRA]",
-                text: "Bahaya holding time terlalu lama! Nutrisi makanan bisa rusak sebelum anak-anak sempat menyantapnya.",
-                color: "#dc2626"
-            },
-            {
-                author: "Ahmad Fauzi",
-                tag: "[NETRAL]",
-                text: "Programnya bagus, tapi radius distribusi dan SOP jam masak wajib dievaluasi secara berkala.",
-                color: "#d97706"
-            },
-            {
-                author: "Dewi Lestari",
-                tag: "[PRO]",
-                text: "Sangat membantu ekonomi mikro! UMKM sekitar dapur umum jadi punya pasokan bahan baku rutin harian.",
-                color: "#16a34a"
-            },
-            {
-                author: "Rian Pratama",
-                tag: "[KONTRA]",
-                text: "Takutnya ada masalah basi atau penurunan cita rasa karena jarak tempuh ke sekolah terlalu jauh.",
-                color: "#dc2626"
-            },
-            {
-                author: "Eko Prasetyo",
-                tag: "[NETRAL]",
-                text: "Kuncinya ada di teknologi cold chain management dan pembatasan jarak tempuh dapur umum.",
-                color: "#d97706"
-            }
-        ];
-
-        function drawTitleToCanvas() {
-            const canvas = document.getElementById("canvasTitle");
-            const ctx = canvas.getContext('2d');
-
-            ctx.fillStyle = "#0052CC";
-            ctx.beginPath();
-            ctx.roundRect(0, 0, 512, 120, 20);
-            ctx.fill();
-
-            ctx.fillStyle = "#ffffff";
-            ctx.font = "bold 20px Inter, sans-serif";
-            ctx.textAlign = "center";
-            ctx.fillText("Pendapat Orang Lain", 256, 45);
-            ctx.font = "16px Inter, sans-serif";
-            ctx.fillText("Terhadap Berita MBG", 256, 80);
-            ctx.textAlign = "left";
-        }
-
-        function drawCommentToCanvas(canvasId, item) {
-            const canvas = document.getElementById(canvasId);
-            const ctx = canvas.getContext('2d');
-
-            ctx.fillStyle = "#ffffff";
-            ctx.beginPath();
-            ctx.roundRect(0, 0, 512, 280, 20);
-            ctx.fill();
-
-            ctx.strokeStyle = "#e2e8f0";
-            ctx.lineWidth = 6;
-            ctx.stroke();
-
-            ctx.fillStyle = item.color;
-            ctx.beginPath();
-            ctx.roundRect(30, 25, 100, 32, 8);
-            ctx.fill();
-
-            ctx.fillStyle = "#ffffff";
-            ctx.font = "bold 15px Inter, sans-serif";
-            ctx.fillText(item.tag, 42, 47);
-
-            ctx.fillStyle = "#434654";
-            ctx.font = "bold 15px Inter, sans-serif";
-            ctx.fillText(item.author, 145, 47);
-
-            ctx.strokeStyle = "#edf2f7";
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.moveTo(30, 70);
-            ctx.lineTo(482, 70);
-            ctx.stroke();
-
-            ctx.fillStyle = "#191c1e";
-            ctx.font = "16px Inter, sans-serif";
-            
-            let words = item.text.split(" ");
-            let line = "";
-            let y = 110;
-            let maxWidth = 450;
-
-            for(let n = 0; n < words.length; n++) {
-                let testLine = line + words[n] + " ";
-                let metrics = ctx.measureText(testLine);
-                let testWidth = metrics.width;
-                if (testWidth > maxWidth && n > 0) {
-                    ctx.fillText(line, 30, y);
-                    line = words[n] + " ";
-                    y += 26;
-                } else {
-                    line = testLine;
-                }
-            }
-            ctx.fillText(line, 30, y);
-        }
-
-        window.addEventListener("DOMContentLoaded", () => {
-            drawTitleToCanvas();
-            commentsData.forEach((item, index) => {
-                drawCommentToCanvas(`canvas${index + 1}`, item);
-            });
-            requestCameraAccess();
-        });
-
         const scene = document.querySelector("a-scene");
         const target = document.getElementById("target");
-        const commentPlanes = document.querySelectorAll(".comment-plane");
+        const content = document.getElementById("ar-content");
         const startScreen = document.getElementById("start-screen");
-        const btnRequestCam = document.getElementById("btn-request-cam");
-        const btnText = document.getElementById("btn-text");
+        const startButton = document.getElementById("startButton");
         const camStatusText = document.getElementById("cam-status-text");
-        const arUi = document.getElementById("ar-ui");
+        const arHeaderContext = document.getElementById("ar-header-context");
+        const arNav = document.getElementById("ar-nav");
         const markerStatus = document.getElementById("marker-status");
+        const planeStatus = document.getElementById("plane-status");
         const tapHint = document.getElementById("tap-hint");
 
-        let cameraGranted = false;
+        const COMMENTS = [
+            { author: "Budi Santoso", tag: "[PRO]", color: "#16a34a",
+              text: "Shift dini hari adalah langkah taktis paling masuk akal demi mengejar volume produksi yang masif." },
+            { author: "Dr. Siti Rahma", tag: "[KONTRA]", color: "#dc2626",
+              text: "Bahaya holding time terlalu lama! Nutrisi makanan bisa rusak sebelum sempat disantap anak-anak." },
+            { author: "Ahmad Fauzi", tag: "[NETRAL]", color: "#d97706",
+              text: "Programnya bagus, tapi radius distribusi dan SOP jam masak wajib dievaluasi berkala." },
+            { author: "Dewi Lestari", tag: "[PRO]", color: "#16a34a",
+              text: "Sangat membantu ekonomi mikro! UMKM sekitar dapur umum dapat pasokan bahan baku rutin harian." },
+            { author: "Rian Pratama", tag: "[KONTRA]", color: "#dc2626",
+              text: "Takutnya ada masalah basi atau penurunan cita rasa karena jarak tempuh ke sekolah terlalu jauh." },
+            { author: "Eko Prasetyo", tag: "[NETRAL]", color: "#d97706",
+              text: "Kuncinya ada di teknologi cold chain management dan pembatasan jarak tempuh dapur umum." }
+        ];
 
-        async function requestCameraAccess() {
+        window.addEventListener("DOMContentLoaded", async () => {
             camStatusText.innerText = "Meminta izin akses kamera...";
             try {
-                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: "environment" },
+                    audio: false
+                });
                 stream.getTracks().forEach(track => track.stop());
 
-                cameraGranted = true;
-                camStatusText.innerText = "Akses kamera diberikan! Silakan lanjut scan.";
-                
-                btnRequestCam.disabled = false;
-                btnRequestCam.classList.remove("bg-gray-300", "text-gray-500", "cursor-not-allowed", "shadow-none");
-                btnRequestCam.classList.add("bg-[#0052CC]", "text-white", "cursor-pointer", "shadow-md", "hover:bg-[#003d9b]");
-                btnText.innerText = "Lanjut Scan";
+                camStatusText.innerText = "Akses kamera diberikan. Silakan mulai scan.";
+                startButton.removeAttribute("disabled");
+                startButton.classList.add("active");
+                startButton.innerText = "MULAI AR";
             } catch (error) {
-                console.error("Izin kamera ditolak:", error);
-                cameraGranted = false;
-                camStatusText.innerText = "Akses kamera ditolak. Mohon berikan izin kamera pada browser.";
-                
-                btnRequestCam.disabled = false;
-                btnRequestCam.classList.remove("bg-gray-300", "text-gray-500", "cursor-not-allowed", "shadow-none");
-                btnRequestCam.classList.add("bg-[#0052CC]", "text-white", "cursor-pointer", "shadow-md", "hover:bg-[#003d9b]");
-                btnText.innerText = "Coba Izinkan Lagi";
+                console.warn("Izin kamera ditolak:", error);
+                camStatusText.innerText = "Akses kamera ditolak. Mohon izinkan kamera pada browser.";
+                startButton.removeAttribute("disabled");
+                startButton.classList.add("active", "retry");
+                startButton.innerText = "COBA LAGI";
             }
+        });
+
+        function roundRect(ctx, x, y, w, h, r) {
+            ctx.beginPath();
+            ctx.moveTo(x + r, y);
+            ctx.arcTo(x + w, y, x + w, y + h, r);
+            ctx.arcTo(x + w, y + h, x, y + h, r);
+            ctx.arcTo(x, y + h, x, y, r);
+            ctx.arcTo(x, y, x + w, y, r);
+            ctx.closePath();
         }
 
-        btnRequestCam.addEventListener("click", async () => {
-            if (!cameraGranted) {
-                await requestCameraAccess();
-                if (!cameraGranted) return;
+        function wrapText(ctx, text, x, y, maxWidth, lineHeight, maxLines) {
+            const words = text.split(" ");
+            let line = "", lines = 0;
+            for (let i = 0; i < words.length; i++) {
+                const test = line + words[i] + " ";
+                if (ctx.measureText(test).width > maxWidth && line !== "") {
+                    ctx.fillText(line.trim(), x, y);
+                    line = words[i] + " ";
+                    y += lineHeight;
+                    lines++;
+                    if (maxLines && lines >= maxLines - 1) {
+                        ctx.fillText(line.trim() + "…", x, y);
+                        return;
+                    }
+                } else {
+                    line = test;
+                }
+            }
+            ctx.fillText(line.trim(), x, y);
+        }
+
+        // Kartu judul dengan glow biru
+        function makeTitleCanvas() {
+            const w = 900, h = 200;
+            const c = document.createElement("canvas");
+            c.width = w; c.height = h;
+            const ctx = c.getContext("2d");
+
+            ctx.shadowColor = "#0052cc";
+            ctx.shadowBlur = 40;
+            roundRect(ctx, 20, 20, w - 40, h - 40, 26);
+            ctx.fillStyle = "#0f172a";
+            ctx.fill();
+
+            ctx.shadowBlur = 18;
+            ctx.lineWidth = 6;
+            ctx.strokeStyle = "#0052cc";
+            ctx.stroke();
+            ctx.shadowBlur = 0;
+
+            ctx.fillStyle = "#60a5fa";
+            ctx.font = "800 40px Oswald, sans-serif";
+            ctx.textAlign = "center";
+            ctx.fillText("💬 PENDAPAT ORANG LAIN", w / 2, 90);
+
+            ctx.fillStyle = "#e2e8f0";
+            ctx.font = "24px 'JetBrains Mono', monospace";
+            ctx.fillText("Terhadap Berita MBG", w / 2, 132);
+            ctx.textAlign = "left";
+
+            return c;
+        }
+
+        // Kartu komentar dengan outline berwarna + glow lembut
+        function makeCommentCanvas(item) {
+            const w = 560, h = 340;
+            const c = document.createElement("canvas");
+            c.width = w; c.height = h;
+            const ctx = c.getContext("2d");
+
+            ctx.shadowColor = item.color;
+            ctx.shadowBlur = 28;
+            roundRect(ctx, 18, 18, w - 36, h - 36, 20);
+            ctx.fillStyle = "#ffffff";
+            ctx.fill();
+
+            ctx.shadowBlur = 14;
+            ctx.lineWidth = 6;
+            ctx.strokeStyle = item.color;
+            ctx.stroke();
+            ctx.shadowBlur = 0;
+
+            // Tag pill
+            ctx.fillStyle = item.color;
+            roundRect(ctx, 34, 34, 118, 36, 10);
+            ctx.fill();
+            ctx.fillStyle = "#ffffff";
+            ctx.font = "bold 17px 'JetBrains Mono', monospace";
+            ctx.fillText(item.tag, 48, 58);
+
+            // Nama
+            ctx.fillStyle = "#0f172a";
+            ctx.font = "bold 20px 'JetBrains Mono', monospace";
+            ctx.fillText(item.author, 34, 102);
+
+            ctx.strokeStyle = "#e2e8f0";
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(34, 120);
+            ctx.lineTo(w - 34, 120);
+            ctx.stroke();
+
+            // Isi komentar
+            ctx.fillStyle = "#334155";
+            ctx.font = "19px 'JetBrains Mono', monospace";
+            wrapText(ctx, `"${item.text}"`, 34, 158, w - 68, 27, 6);
+
+            return c;
+        }
+
+        function applyTexture(entity, canvas) {
+            const THREE = AFRAME.THREE;
+            const setTex = () => {
+                const mesh = entity.getObject3D("mesh");
+                if (!mesh) return;
+                const tex = new THREE.CanvasTexture(canvas);
+                tex.needsUpdate = true;
+                mesh.material.map = tex;
+                mesh.material.transparent = true;
+                mesh.material.needsUpdate = true;
+            };
+            if (entity.getObject3D("mesh")) setTex();
+            else entity.addEventListener("loaded", setTex, { once: true });
+        }
+
+        async function buildTextures() {
+            if (document.fonts && document.fonts.ready) await document.fonts.ready;
+
+            applyTexture(document.getElementById("titlePlane"), makeTitleCanvas());
+            COMMENTS.forEach((item, index) => {
+                applyTexture(document.getElementById(`card-${index + 1}`), makeCommentCanvas(item));
+            });
+        }
+        buildTextures();
+
+        startButton.addEventListener("click", async () => {
+            if (!startButton.classList.contains("active")) return;
+
+            if (startButton.classList.contains("retry")) {
+                startButton.innerText = "MEMERIKSA...";
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" }, audio: false });
+                    stream.getTracks().forEach(track => track.stop());
+                } catch (err) {
+                    startButton.innerText = "COBA LAGI";
+                    return;
+                }
             }
 
-            btnRequestCam.disabled = true;
-            btnText.innerText = "Memuat AR...";
-
             startScreen.style.display = "none";
-            arUi.classList.remove("hidden");
+            arHeaderContext.style.display = "block";
+            arNav.style.display = "flex";
 
+            const mindarSystem = scene.systems["mindar-image-system"];
             try {
-                const mindarSystem = scene.systems["mindar-image-system"];
                 await mindarSystem.start();
-                
                 markerStatus.innerText = "Mencari Marker...";
-            } catch (err) {
-                console.error("Gagal memulai MindAR sistem:", err);
-                alert("Terjadi kesalahan saat menginisialisasi AR.");
-                window.location.reload();
+
+                const camVideo = document.querySelector("video:not(#mainVideo)");
+                if (camVideo) camVideo.classList.add("camFeed");
+            } catch (error) {
+                console.error("MindAR error:", error);
+                markerStatus.innerText = "GAGAL KAMERA";
+                markerStatus.style.color = "red";
             }
         });
 
         target.addEventListener("targetFound", () => {
             markerStatus.innerText = "Ditemukan ✓";
-            markerStatus.className = "text-green-400 font-bold";
+            markerStatus.style.color = "#00ff00";
 
-            commentPlanes.forEach(plane => {
-                plane.setAttribute("visible", "true");
-            });
+            content.setAttribute("visible", "true");
+            content.setAttribute("animation", "property: scale; from: 0.01 0.01 0.01; to: 1 1 1; dur: 450; easing: easeOutBack");
+
+            planeStatus.innerText = "Aktif ✓";
+            planeStatus.style.color = "#00ff00";
 
             tapHint.classList.add("show");
             setTimeout(() => tapHint.classList.remove("show"), 3000);
         });
 
         target.addEventListener("targetLost", () => {
-            markerStatus.innerText = "Hilang";
-            markerStatus.className = "text-yellow-400 font-bold";
+            markerStatus.innerText = "Hilang (Arahkan ke Marker)";
+            markerStatus.style.color = "yellow";
 
-            commentPlanes.forEach(plane => {
-                plane.setAttribute("visible", "false");
-            });
+            content.setAttribute("visible", "false");
+            planeStatus.innerText = "Hidden";
+            planeStatus.style.color = "yellow";
         });
     </script>
+
 </body>
 </html>
