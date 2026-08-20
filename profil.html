@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>EchoBreak - Profil Peserta Didik</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@500&amp;family=Plus+Jakarta+Sans:wght@600;700&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed-variant": "#5b00c5",
+                        "outline": "#737685",
+                        "inverse-primary": "#b2c5ff",
+                        "on-primary-fixed-variant": "#0040a2",
+                        "on-primary": "#ffffff",
+                        "surface-dark": "#0F172A",
+                        "on-secondary-fixed": "#250059",
+                        "on-primary-fixed": "#001848",
+                        "secondary-container": "#8b4ef7",
+                        "on-tertiary": "#ffffff",
+                        "secondary-fixed-dim": "#d3bbff",
+                        "success-green": "#10B981",
+                        "error-container": "#ffdad6",
+                        "inverse-on-surface": "#eff1f3",
+                        "alert-amber": "#F59E0B",
+                        "primary": "#003d9b",
+                        "primary-container": "#0052cc",
+                        "on-tertiary-fixed-variant": "#653e00",
+                        "surface-container-highest": "#e0e3e5",
+                        "democratic-blue": "#0052CC",
+                        "surface-dim": "#d8dadc",
+                        "tertiary-fixed-dim": "#ffb95f",
+                        "on-tertiary-container": "#ffc988",
+                        "outline-variant": "#c3c6d6",
+                        "on-secondary": "#ffffff",
+                        "primary-fixed": "#dae2ff",
+                        "surface": "#f7f9fb",
+                        "on-surface-variant": "#434654",
+                        "surface-container-high": "#e6e8ea",
+                        "on-error": "#ffffff",
+                        "surface-tint": "#0c56d0",
+                        "surface-variant": "#e0e3e5",
+                        "digital-purple": "#6D28D9",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface": "#191c1e",
+                        "inverse-surface": "#2d3133",
+                        "tertiary-container": "#805000",
+                        "surface-container-low": "#f2f4f6",
+                        "tertiary": "#603b00",
+                        "background": "#f7f9fb",
+                        "on-tertiary-fixed": "#2a1700",
+                        "tertiary-fixed": "#ffddb8",
+                        "text-main": "#1E293B",
+                        "on-error-container": "#93000a",
+                        "secondary": "#712edd",
+                        "on-secondary-container": "#fffbff",
+                        "surface-container": "#eceef0",
+                        "secondary-fixed": "#ebddff",
+                        "primary-fixed-dim": "#b2c5ff",
+                        "on-primary-container": "#c4d2ff",
+                        "error": "#ba1a1a",
+                        "on-background": "#191c1e",
+                        "surface-bright": "#f7f9fb"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass-panel {
+            background: rgba(247, 249, 251, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(195, 198, 214, 0.4);
+        }
+
+        body {
+            min-height: 100dvh;
+            overflow-x: hidden;
+            position: relative;
+        }
+    </style>
+</head>
+
+<body
+    class="bg-background text-on-surface antialiased flex flex-col items-center justify-start pb-24 md:pb-16 pt-14 md:pt-16">
+
+    <!-- TopAppBar (Mobile) -->
+    <header
+        class="fixed top-0 left-0 w-full z-50 bg-surface-container/90 dark:bg-surface-container-high/90 backdrop-blur-md shadow-sm flex items-center justify-center px-4 h-14 md:hidden">
+        <h1 class="font-bold text-sm text-democratic-blue">EchoBreak - Profil</h1>
+    </header>
+
+    <!-- TopNavbar (Desktop) -->
+    <header
+        class="fixed top-0 left-0 w-full z-50 bg-surface-container/90 dark:bg-surface-container-high/90 backdrop-blur-md shadow-sm hidden md:flex items-center justify-between px-8 h-16">
+        <div class="flex items-center gap-2">
+            <h1 class="font-bold text-democratic-blue text-lg">EchoBreak</h1>
+        </div>
+        <nav class="flex items-center gap-2">
+            <a class="text-on-surface-variant hover:bg-surface-variant/50 px-3 py-1.5 rounded-full transition-all flex items-center gap-2 text-sm font-medium"
+                href="beranda.html">
+                <span class="material-symbols-outlined text-[18px]">home</span>
+                <span>Beranda</span>
+            </a>
+            <a class="text-on-surface-variant hover:bg-surface-variant/50 px-3 py-1.5 rounded-full transition-all flex items-center gap-2 text-sm font-medium"
+                href="#">
+                <span class="material-symbols-outlined text-[18px]">apps</span>
+                <span>Modul</span>
+            </a>
+            <a class="text-on-surface-variant hover:bg-surface-variant/50 px-3 py-1.5 rounded-full transition-all flex items-center gap-2 text-sm font-medium"
+                href="progres.html">
+                <span class="material-symbols-outlined text-[18px]">analytics</span>
+                <span>Progres</span>
+            </a>
+            <a class="bg-secondary-fixed text-on-secondary-fixed-variant px-3 py-1.5 rounded-full transition-all flex items-center gap-2 text-sm font-medium"
+                href="profil.html">
+                <span class="material-symbols-outlined text-[18px]"
+                    style="font-variation-settings: 'FILL' 1;">person</span>
+                <span>Profil</span>
+            </a>
+        </nav>
+    </header>
+
+    <!-- Profile Header / Hero Section -->
+    <section
+        class="w-full relative overflow-hidden bg-surface-dark text-on-primary rounded-b-3xl shadow-md mb-6 md:mb-8">
+        <div class="absolute inset-0 opacity-20 pointer-events-none"
+            style="background-image: radial-gradient(#6D28D9 1px, transparent 1px); background-size: 20px 20px;"></div>
+        <div class="relative z-10 px-4 md:px-10 py-8 md:py-16 flex flex-col items-center text-center">
+            <div class="relative mb-3">
+                <div
+                    class="w-16 h-16 md:w-24 md:h-24 rounded-full bg-primary-container text-on-primary flex items-center justify-center font-bold text-xl md:text-3xl shadow-inner border-2 border-primary-fixed">
+                    TR
+                </div>
+                <div class="absolute bottom-0 right-0 bg-success-green text-on-primary p-1 rounded-full border-2 border-surface-dark"
+                    title="Akun Aktif">
+                    <span class="material-symbols-outlined text-[12px] block">verified</span>
+                </div>
+            </div>
+            <h1 class="font-bold text-lg md:text-2xl mb-1">
+                Titan Ramadhan
+            </h1>
+            <p class="text-[11px] md:text-sm text-primary-fixed-dim bg-democratic-blue/30 px-3 py-0.5 rounded-full mb-1.5">
+                NIS: 20231037068 • Kelas XII IPA 2
+            </p>
+            <p class-[11px] text-xs text-on-surface-variant">
+                Peserta Aktif EchoBreak • Analisis Kritis & Literasi Digital
+            </p>
+        </div>
+    </section>
+
+    <!-- Main Content Canvas -->
+    <main
+        class="w-full max-w-4xl px-3 md:px-10 grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-6 relative z-25 -mt-6 md:-mt-12">
+
+        <!-- Statistik Singkat Card -->
+        <div
+            class="md:col-span-12 glass-panel rounded-xl shadow-sm p-3 md:p-6 grid grid-cols-2 md:grid-cols-4 gap-3 text-center">
+            <div class="bg-surface-container-low p-2.5 md:p-3 rounded-lg">
+                <span class-[11px] text-xs text-outline block mb-0.5">Simulasi Selesai</span>
+                <span class="text-lg md:text-2xl text-democratic-blue font-bold">12</span>
+            </div>
+            <div class="bg-surface-container-low p-2.5 md:p-3 rounded-lg">
+                <span class-[11px] text-xs text-outline block mb-0.5">Rata-rata Skor</span>
+                <span class="text-lg md:text-2xl text-success-green font-bold">88%</span>
+            </div>
+            <div class="bg-surface-container-low p-2.5 md:p-3 rounded-lg">
+                <span class-[11px] text-xs text-outline block mb-0.5">Lencana Diraih</span>
+                <span class="text-lg md:text-2xl text-digital-purple font-bold">5</span>
+            </div>
+            <div class="bg-surface-container-low p-2.5 md:p-3 rounded-lg">
+                <span class-[11px] text-xs text-outline block mb-0.5">Status Akun</span>
+                <span class="text-xs md:text-sm text-success-green font-bold mt-1 inline-block">Terverifikasi</span>
+            </div>
+        </div>
+
+        <!-- Detail Informasi Peserta Didik -->
+        <div
+            class="md:col-span-12 bg-surface-container-lowest rounded-xl shadow-sm border border-surface-variant p-3.5 md:p-6 mb-8">
+            <div class="flex items-center gap-2 mb-3 md:mb-6 border-b border-surface-variant pb-2.5">
+                <span class="material-symbols-outlined text-digital-purple text-base md:text-xl">badge</span>
+                <h3 class="font-bold text-sm md:text-lg text-text-main">Informasi Akademik</h3>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-y-2.5 gap-x-6 text-xs md:text-sm">
+                <div class="flex justify-between md:justify-start gap-2 md:gap-4 py-1.5 border-b border-surface-container">
+                    <span class="text-outline w-28 md:w-36 font-semibold shrink-0">Nama Lengkap</span>
+                    <span class="text-text-main text-right md:text-left">M. Ramadhan Titan D. C.</span>
+                </div>
+                <div class="flex justify-between md:justify-start gap-2 md:gap-4 py-1.5 border-b border-surface-container">
+                    <span class="text-outline w-28 md:w-36 font-semibold shrink-0">Nomor Induk Siswa</span>
+                    <span class="text-text-main text-right md:text-left">20231037068</span>
+                </div>
+                <div class="flex justify-between md:justify-start gap-2 md:gap-4 py-1.5 border-b border-surface-container">
+                    <span class="text-outline w-28 md:w-36 font-semibold shrink-0">Institusi / Sekolah</span>
+                    <span class="text-text-main text-right md:text-left">SMA Negeri 1 Digital Nusantara</span>
+                </div>
+                <div class="flex justify-between md:justify-start gap-2 md:gap-4 py-1.5 border-b border-surface-container">
+                    <span class="text-outline w-28 md:w-36 font-semibold shrink-0">Program / Peminatan</span>
+                    <span class="text-text-main text-right md:text-left">MIPA / Data Science Track</span>
+                </div>
+                <div class="flex justify-between md:justify-start gap-2 md:gap-4 py-1.5 border-b border-surface-container">
+                    <span class="text-outline w-28 md:w-36 font-semibold shrink-0">Email Terdaftar</span>
+                    <span class="text-text-main text-right md:text-left truncate max-w-[180px] md:max-w-none">titan.ramadhan@student.echobreak.id</span>
+                </div>
+                <div class="flex justify-between md:justify-start gap-2 md:gap-4 py-1.5 border-b border-surface-container">
+                    <span class="text-outline w-28 md:w-36 font-semibold shrink-0">Bergabung Sejak</span>
+                    <span class="text-text-main text-right md:text-left">Januari 2026</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- BottomNavBar (Mobile Only) - Fixed di bawah layar -->
+    <nav
+        class="fixed bottom-0 left-0 w-full z-50 border-t border-outline-variant dark:border-outline bg-surface/90 backdrop-blur-lg shadow-lg flex justify-around items-center py-1.5 px-4 md:hidden">
+        <!-- Tab 1: Beranda -->
+        <a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant/50 px-3 py-0.5 rounded-full active:scale-90 transition-all duration-200"
+            href="beranda.html">
+            <span class="material-symbols-outlined text-base">home</span>
+            <span class="text-[9px] font-medium mt-0.5">Beranda</span>
+        </a>
+        <!-- Tab 2: Modul -->
+        <a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant/50 px-3 py-0.5 rounded-full active:scale-90 transition-all duration-200"
+            href="#">
+            <span class="material-symbols-outlined text-base">apps</span>
+            <span class="text-[9px] font-medium mt-0.5">Modul</span>
+        </a>
+        <!-- Tab 3: Progres -->
+        <a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant/50 px-3 py-0.5 rounded-full active:scale-90 transition-all duration-200"
+            href="progres.html">
+            <span class="material-symbols-outlined text-base">analytics</span>
+            <span class="text-[9px] font-medium mt-0.5">Progres</span>
+        </a>
+        <!-- Tab 4: Profil (Aktif) -->
+        <a class="flex flex-col items-center justify-center bg-secondary-fixed text-on-secondary-fixed-variant rounded-full px-3 py-0.5 active:scale-90 transition-all duration-200"
+            href="profil.html">
+            <span class="material-symbols-outlined text-base" style="font-variation-settings: 'FILL' 1;">person</span>
+            <span class="text-[9px] font-medium mt-0.5">Profil</span>
+        </a>
+    </nav>
+
+</body>
+
+</html>

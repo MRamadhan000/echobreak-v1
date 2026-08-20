@@ -113,7 +113,8 @@
     </header>
 
     <!-- TopNavbar (Desktop) -->
-    <header class="fixed top-0 left-0 w-full z-50 bg-surface-container/90 dark:bg-surface-container-high/90 backdrop-blur-md shadow-sm hidden md:flex items-center justify-between px-8 h-16">
+    <header
+        class="fixed top-0 left-0 w-full z-50 bg-surface-container/90 dark:bg-surface-container-high/90 backdrop-blur-md shadow-sm hidden md:flex items-center justify-between px-8 h-16">
         <div class="flex items-center gap-2">
             <button class="p-1 text-primary hover:opacity-80 active:scale-95 transition-transform">
                 <span class="material-symbols-outlined text-[24px]">arrow_back</span>
@@ -121,19 +122,26 @@
             <h1 class="font-bold text-democratic-blue text-lg">EchoBreak</h1>
         </div>
         <nav class="flex items-center gap-2">
-            <a class="bg-secondary-fixed text-on-secondary-fixed-variant px-3 py-1.5 rounded-full transition-all flex items-center gap-2 text-sm font-medium" href="#">
-                <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">home</span>
+            <a class="bg-secondary-fixed text-on-secondary-fixed-variant px-3 py-1.5 rounded-full transition-all flex items-center gap-2 text-sm font-medium"
+                href="beranda.html">
+                <span class="material-symbols-outlined text-[18px]"
+                    style="font-variation-settings: 'FILL' 1;">home</span>
                 <span>Beranda</span>
             </a>
-            <a class="text-on-surface-variant hover:bg-surface-variant/50 px-3 py-1.5 rounded-full transition-all flex items-center gap-2 text-sm font-medium" href="#">
+            <a class="text-on-surface-variant hover:bg-surface-variant/50 px-3 py-1.5 rounded-full transition-all flex items-center gap-2 text-sm font-medium"
+                href="#">
                 <span class="material-symbols-outlined text-[18px]">apps</span>
                 <span>Modul</span>
             </a>
-            <a class="text-on-surface-variant hover:bg-surface-variant/50 px-3 py-1.5 rounded-full transition-all flex items-center gap-2 text-sm font-medium" href="#">
+            <!-- Terhubung ke progres.html -->
+            <a class="text-on-surface-variant hover:bg-surface-variant/50 px-3 py-1.5 rounded-full transition-all flex items-center gap-2 text-sm font-medium"
+                href="progres.html">
                 <span class="material-symbols-outlined text-[18px]">analytics</span>
                 <span>Progres</span>
             </a>
-            <a class="text-on-surface-variant hover:bg-surface-variant/50 px-3 py-1.5 rounded-full transition-all flex items-center gap-2 text-sm font-medium" href="#">
+            <!-- Terhubung ke profil.html -->
+            <a class="text-on-surface-variant hover:bg-surface-variant/50 px-3 py-1.5 rounded-full transition-all flex items-center gap-2 text-sm font-medium"
+                href="profil.html">
                 <span class="material-symbols-outlined text-[18px]">person</span>
                 <span>Profil</span>
             </a>
@@ -144,7 +152,7 @@
     <main class="max-w-7xl mx-auto px-4 md:px-10 py-4 md:py-6">
         <!-- Greeting Section -->
         <section class="mb-4">
-            <h2 class="text-xl md:text-2xl font-bold text-democratic-blue mb-0.5">Halo, Budi! 👋</h2>
+            <h2 class="text-xl md:text-2xl font-bold text-democratic-blue mb-0.5">Halo, Titan! 👋</h2>
             <p class="text-xs md:text-sm text-on-surface-variant">Selamat datang di pusat pelatihan literasi digitalmu.</p>
         </section>
 
@@ -167,8 +175,7 @@
                     <div class="progress-gradient h-1.5 md:h-2 rounded-full transition-all duration-1000 ease-out"
                         style="width: 70%"></div>
                 </div>
-                <p class="text-[11px] md:text-xs text-on-surface-variant relative z-10">Selesaikan 1 modul lagi untuk mencapai
-                    level 'Kritis'.</p>
+                <p class="text-[11px] md:text-xs text-on-surface-variant relative z-10">Selesaikan 1 modul lagi untuk mencapai level 'Kritis'.</p>
                 <!-- Decorative element -->
                 <div class="absolute -right-6 -bottom-6 opacity-5 pointer-events-none">
                     <span class="material-symbols-outlined" style="font-size: 110px;">analytics</span>
@@ -205,9 +212,9 @@
                         <p class="text-[11px] md:text-xs text-on-surface-variant">Akses materi dan studi kasus terbaru.</p>
                     </div>
                 </a>
-                <!-- My Progress -->
+                <!-- My Progress (Terhubung ke progres.html) -->
                 <a class="col-span-1 glass-panel rounded-xl p-3 md:p-4 flex flex-col justify-between min-h-[95px] md:min-h-[140px] hover:border-democratic-blue transition-colors group"
-                    href="#">
+                    href="progres.html">
                     <div class="bg-primary-fixed text-on-primary-fixed p-1.5 md:p-2 rounded-lg inline-flex w-fit mb-2">
                         <span class="material-symbols-outlined text-lg md:text-xl">bar_chart</span>
                     </div>
@@ -218,7 +225,8 @@
                 <!-- Achievement -->
                 <a class="col-span-1 glass-panel rounded-xl p-3 md:p-4 flex flex-col justify-between min-h-[95px] md:min-h-[140px] hover:border-alert-amber transition-colors group"
                     href="#">
-                    <div class="bg-tertiary-fixed text-on-tertiary-fixed p-1.5 md:p-2 rounded-lg inline-flex w-fit mb-2">
+                    <div
+                        class="bg-tertiary-fixed text-on-tertiary-fixed p-1.5 md:p-2 rounded-lg inline-flex w-fit mb-2">
                         <span class="material-symbols-outlined text-lg md:text-xl">emoji_events</span>
                     </div>
                     <div>
@@ -249,7 +257,7 @@
         class="fixed bottom-0 left-0 w-full z-50 border-t border-outline-variant dark:border-outline bg-surface/90 backdrop-blur-lg shadow-lg flex justify-around items-center py-1.5 px-4 md:hidden">
         <!-- Tab 1: Beranda -->
         <a class="flex flex-col items-center justify-center bg-secondary-fixed text-on-secondary-fixed-variant rounded-full px-3 py-0.5 active:scale-90 transition-all duration-200"
-            href="#">
+            href="beranda.html">
             <span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' 1;">home</span>
             <span class="text-[10px] font-medium mt-0.5">Beranda</span>
         </a>
@@ -259,15 +267,15 @@
             <span class="material-symbols-outlined text-lg">apps</span>
             <span class="text-[10px] font-medium mt-0.5">Modul</span>
         </a>
-        <!-- Tab 3: Progres -->
+        <!-- Tab 3: Progres (Terhubung ke progres.html) -->
         <a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant/50 px-3 py-0.5 rounded-full active:scale-90 transition-all duration-200"
-            href="#">
+            href="progres.html">
             <span class="material-symbols-outlined text-lg">analytics</span>
             <span class="text-[10px] font-medium mt-0.5">Progres</span>
         </a>
         <!-- Tab 4: Profil -->
         <a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant/50 px-3 py-0.5 rounded-full active:scale-90 transition-all duration-200"
-            href="#">
+            href="profil.html">
             <span class="material-symbols-outlined text-lg">person</span>
             <span class="text-[10px] font-medium mt-0.5">Profil</span>
         </a>
