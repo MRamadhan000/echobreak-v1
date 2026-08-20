@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>EchoBreak - Simulasi Selesai</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@500&amp;family=Plus+Jakarta+Sans:wght@600;700&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed-variant": "#5b00c5",
+                        "outline": "#737685",
+                        "inverse-primary": "#b2c5ff",
+                        "on-primary-fixed-variant": "#0040a2",
+                        "on-primary": "#ffffff",
+                        "surface-dark": "#0F172A",
+                        "on-secondary-fixed": "#250059",
+                        "on-primary-fixed": "#001848",
+                        "secondary-container": "#8b4ef7",
+                        "on-tertiary": "#ffffff",
+                        "secondary-fixed-dim": "#d3bbff",
+                        "success-green": "#10B981",
+                        "error-container": "#ffdad6",
+                        "inverse-on-surface": "#eff1f3",
+                        "alert-amber": "#F59E0B",
+                        "primary": "#003d9b",
+                        "primary-container": "#0052cc",
+                        "on-tertiary-fixed-variant": "#653e00",
+                        "surface-container-highest": "#e0e3e5",
+                        "democratic-blue": "#0052CC",
+                        "surface-dim": "#d8dadc",
+                        "tertiary-fixed-dim": "#ffb95f",
+                        "on-tertiary-container": "#ffc988",
+                        "outline-variant": "#c3c6d6",
+                        "on-secondary": "#ffffff",
+                        "primary-fixed": "#dae2ff",
+                        "surface": "#f7f9fb",
+                        "on-surface-variant": "#434654",
+                        "surface-container-high": "#e6e8ea",
+                        "on-error": "#ffffff",
+                        "surface-tint": "#0c56d0",
+                        "surface-variant": "#e0e3e5",
+                        "digital-purple": "#6D28D9",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface": "#191c1e",
+                        "inverse-surface": "#2d3133",
+                        "tertiary-container": "#805000",
+                        "surface-container-low": "#f2f4f6",
+                        "tertiary": "#603b00",
+                        "background": "#f7f9fb",
+                        "on-tertiary-fixed": "#2a1700",
+                        "tertiary-fixed": "#ffddb8",
+                        "text-main": "#1E293B",
+                        "on-error-container": "#93000a",
+                        "secondary": "#712edd",
+                        "on-secondary-container": "#fffbff",
+                        "surface-container": "#eceef0",
+                        "secondary-fixed": "#ebddff",
+                        "primary-fixed-dim": "#b2c5ff",
+                        "on-primary-container": "#c4d2ff",
+                        "error": "#ba1a1a",
+                        "on-background": "#191c1e",
+                        "surface-bright": "#f7f9fb"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-mobile": "16px",
+                        "margin-desktop": "40px",
+                        "sm": "12px",
+                        "xl": "32px",
+                        "xs": "8px",
+                        "base": "4px",
+                        "md": "16px",
+                        "lg": "24px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "headline-lg-mobile": ["Plus Jakarta Sans"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "body-lg": ["Inter"],
+                        "label-sm": ["JetBrains Mono"],
+                        "label-md": ["JetBrains Mono"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["22px", { "lineHeight": "30px", "fontWeight": "700" }],
+                        "headline-md": ["18px", { "lineHeight": "26px", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "14px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "label-md": ["14px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass-panel {
+            background: rgba(247, 249, 251, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(195, 198, 214, 0.4);
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-8px);
+            }
+
+            100% {
+                transform: translateY(0px);
+            }
+        }
+
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .metric-bar-fill {
+            background: linear-gradient(90deg, #6D28D9 0%, #0052CC 100%);
+            transition: width 1.5s ease-out;
+        }
+
+        body {
+            min-height: 100dvh;
+            overflow-x: hidden;
+        }
+    </style>
+</head>
+
+<body class="bg-background text-on-surface antialiased flex flex-col items-center justify-start pb-16 md:pb-12 pt-0">
+
+    <!-- Celebration Header / Hero Section -->
+    <section class="w-full relative overflow-hidden bg-surface-dark text-on-primary rounded-b-3xl shadow-md mb-lg">
+        <div class="absolute inset-0 opacity-20 pointer-events-none"
+            style="background-image: radial-gradient(#6D28D9 1px, transparent 1px); background-size: 20px 20px;"></div>
+        <div class="relative z-10 px-4 md:px-margin-desktop py-12 md:py-20 flex flex-col items-center text-center">
+            <div
+                class="inline-flex items-center justify-center w-14 h-14 md:w-16 md:h-16 rounded-full bg-success-green/20 text-success-green mb-sm animate-float">
+                <span class="material-symbols-outlined text-[28px] md:text-[32px]">workspace_premium</span>
+            </div>
+            <h1
+                class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg mb-xs px-2">
+                Simulasi Selesai!
+            </h1>
+            <p
+                class="font-body-sm md:font-body-md text-body-sm md:text-body-md text-primary-fixed-dim max-w-md mx-auto px-4">
+                Luar biasa! Anda telah berhasil menavigasi arus informasi dan membuktikan kemampuan literasi digital
+                Anda.
+            </p>
+        </div>
+    </section>
+
+    <!-- Main Content Canvas -->
+    <main
+        class="w-full max-w-4xl px-4 md:px-margin-desktop grid grid-cols-1 md:grid-cols-12 gap-md md:gap-lg relative z-20 -mt-8 md:-mt-12">
+
+        <!-- Learning Gain Summary Card -->
+        <div
+            class="md:col-span-12 glass-panel rounded-xl shadow-sm p-md md:p-lg flex flex-col md:flex-row items-center justify-between gap-md">
+            <div class="text-center md:text-left">
+                <h2 class="font-headline-md text-headline-md text-text-main mb-xs">Learning Gain</h2>
+                <p class="font-body-sm text-body-sm text-on-surface-variant">Peningkatan ketahanan kognitif Anda.</p>
+            </div>
+            <div
+                class="flex items-center justify-between md:justify-center gap-6 w-full md:w-auto bg-surface-container-low md:bg-transparent p-3 md:p-0 rounded-lg">
+                <div class="text-center">
+                    <span class="font-label-sm text-label-sm text-outline block mb-base">Pre-Test</span>
+                    <span class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">62<span
+                            class="text-body-sm text-outline">%</span></span>
+                </div>
+                <div class="flex flex-col items-center justify-center text-success-green px-sm">
+                    <span class="material-symbols-outlined mb-base animate-pulse">trending_up</span>
+                    <span class="font-label-md text-label-md bg-success-green/10 px-2 py-0.5 rounded-full">+24%</span>
+                </div>
+                <div class="text-center">
+                    <span
+                        class="font-label-sm text-label-sm text-democratic-blue block mb-base font-bold">Post-Test</span>
+                    <span class="font-headline-lg-mobile text-headline-lg-mobile text-democratic-blue font-bold">86<span
+                            class="text-body-sm text-outline">%</span></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Personal Literacy Profile Metrics -->
+        <div
+            class="md:col-span-12 bg-surface-container-lowest rounded-xl shadow-sm border border-surface-variant p-md md:p-lg">
+            <div class="flex items-center gap-xs mb-md md:mb-lg">
+                <span class="material-symbols-outlined text-digital-purple">analytics</span>
+                <h3 class="font-headline-md text-headline-md text-text-main">Personal Literacy Profile</h3>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-lg gap-y-md">
+                <!-- Metric 1 -->
+                <div class="flex flex-col gap-xs">
+                    <div class="flex justify-between items-end">
+                        <span class="font-label-md text-label-md text-on-surface">Critical Thinking</span>
+                        <span class="font-label-sm text-label-sm text-democratic-blue font-bold">90%</span>
+                    </div>
+                    <div class="w-full bg-surface-container-highest rounded-full h-2.5 overflow-hidden">
+                        <div class="metric-bar-fill h-2.5 rounded-full" style="width: 90%"></div>
+                    </div>
+                </div>
+                <!-- Metric 2 -->
+                <div class="flex flex-col gap-xs">
+                    <div class="flex justify-between items-end">
+                        <span class="font-label-md text-label-md text-on-surface">Info Verification</span>
+                        <span class="font-label-sm text-label-sm text-democratic-blue font-bold">85%</span>
+                    </div>
+                    <div class="w-full bg-surface-container-highest rounded-full h-2.5 overflow-hidden">
+                        <div class="metric-bar-fill h-2.5 rounded-full" style="width: 85%"></div>
+                    </div>
+                </div>
+                <!-- Metric 3 -->
+                <div class="flex flex-col gap-xs">
+                    <div class="flex justify-between items-end">
+                        <span class="font-label-md text-label-md text-on-surface">Perspective Openness</span>
+                        <span class="font-label-sm text-label-sm text-alert-amber font-bold">70%</span>
+                    </div>
+                    <div class="w-full bg-surface-container-highest rounded-full h-2.5 overflow-hidden">
+                        <div class="bg-alert-amber h-2.5 rounded-full" style="width: 70%"></div>
+                    </div>
+                </div>
+                <!-- Metric 4 -->
+                <div class="flex flex-col gap-xs">
+                    <div class="flex justify-between items-end">
+                        <span class="font-label-md text-label-md text-on-surface">Algorithm Awareness</span>
+                        <span class="font-label-sm text-label-sm text-democratic-blue font-bold">95%</span>
+                    </div>
+                    <div class="w-full bg-surface-container-highest rounded-full h-2.5 overflow-hidden">
+                        <div class="metric-bar-fill h-2.5 rounded-full" style="width: 95%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="md:col-span-12 flex flex-col md:flex-row gap-sm md:gap-md justify-center mt-2 w-full">
+            <button
+                class="flex items-center justify-center gap-xs px-lg py-3 bg-democratic-blue text-on-primary rounded-lg font-headline-md text-headline-md font-semibold hover:bg-primary transition-colors w-full md:w-auto shadow-sm">
+                <span class="material-symbols-outlined text-[20px]">share</span>
+                Bagikan Pencapaian
+            </button>
+            <a href="beranda.html"
+                class="flex items-center justify-center gap-xs px-lg py-3 border-2 border-democratic-blue text-democratic-blue bg-transparent rounded-lg font-headline-md text-headline-md font-semibold hover:bg-democratic-blue/5 transition-colors w-full md:w-auto text-center">
+                <span class="material-symbols-outlined text-[20px]">dashboard</span>
+                Kembali ke Dashboard
+            </a>
+        </div>
+    </main>
+
+</body>
+
+</html>
