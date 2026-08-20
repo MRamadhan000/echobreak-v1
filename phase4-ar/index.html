@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>ECHOBREAK — AR Investigation Board</title>
+
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+
+    <style>
+        * { box-sizing: border-box; }
+
+        html, body {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            overflow: hidden; background: #000;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        video.mindar-camera-video, video.camFeed {
+            object-fit: cover !important;
+            width: 100vw !important; height: 100vh !important;
+            position: fixed !important; top: 0 !important; left: 0 !important;
+            z-index: 0 !important;
+        }
+
+        a-scene {
+            width: 100vw; height: 100vh;
+            position: fixed; top: 0; left: 0; z-index: 1;
+        }
+
+        a-scene canvas {
+            position: fixed !important; top: 0 !important; left: 0 !important;
+            width: 100vw !important; height: 100vh !important;
+            z-index: 1 !important; background: transparent !important;
+        }
+
+        #start-screen {
+            position: fixed; inset: 0;
+            background: radial-gradient(ellipse at center, #171310 0%, #0a0806 100%);
+            color: #efe6d2; z-index: 20000;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            gap: 18px; text-align: center; padding: 24px;
+        }
+        #start-screen h2 {
+            font-family: 'Oswald', sans-serif; font-size: 32px; letter-spacing: 4px;
+            margin: 0; color: #ff4d3d; text-shadow: 0 0 18px rgba(255,77,61,.45);
+        }
+        #start-screen p { margin: 0; font-size: 13px; color: #a89c86; max-width: 260px; }
+        #startButton {
+            padding: 15px 42px; font-family: 'Oswald', sans-serif; font-size: 16px;
+            font-weight: 600; letter-spacing: 2px; background: #ff4d3d; color: #120a08;
+            border: none; border-radius: 4px; cursor: pointer;
+        }
+
+        #debug-panel {
+            position: fixed; top: 10px; left: 10px;
+            background: rgba(10,8,6,0.85); border: 1px solid #3a2c1c; color: #efe6d2;
+            padding: 10px 15px; border-radius: 4px; font-size: 12px;
+            z-index: 10001; pointer-events: none; line-height: 1.7;
+        }
+
+        #tap-hint {
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+            background: rgba(10,8,6,0.85); border: 1px solid #3a2c1c; color: #efe6d2;
+            padding: 8px 16px; border-radius: 20px; font-size: 12px;
+            z-index: 10001; pointer-events: none; opacity: 0; transition: opacity .4s ease;
+        }
+        #tap-hint.show { opacity: 1; }
+
+        /* ===== TOMBOL OVERLAY (HTML) ===== */
+        .overlay-btn-wrap {
+            position: fixed;
+            left: 50%;
+            bottom: 100px;
+            transform: translateX(-50%);
+            z-index: 10050;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            pointer-events: none;
+        }
+        .overlay-btn-wrap.show {
+            display: flex;
+            pointer-events: auto;
+        }
+
+        .overlay-btn {
+            font-family: 'Oswald', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            padding: 14px 40px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+        .overlay-btn:active { transform: scale(0.96); }
+
+        #unlockBtn {
+            background: #ff4d3d;
+            color: #120a08;
+            box-shadow: 0 0 0 3px rgba(255,77,61,0.35), 0 8px 24px rgba(0,0,0,0.45);
+        }
+        #unlockBtn:hover {
+            box-shadow: 0 0 0 4px rgba(255,77,61,0.5), 0 10px 28px rgba(0,0,0,0.5);
+        }
+
+        #backBtnHtml {
+            background: #26252b;
+            color: #efe6d2;
+            border: 2px solid #ff4d3d;
+            box-shadow: 0 0 0 2px rgba(255,77,61,0.25), 0 8px 24px rgba(0,0,0,0.45);
+        }
+        #backBtnHtml:hover {
+            box-shadow: 0 0 0 3px rgba(255,77,61,0.4), 0 10px 28px rgba(0,0,0,0.5);
+        }
+
+        .overlay-label {
+            font-size: 11px;
+            color: #a89c86;
+            letter-spacing: 1px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="start-screen">
+        <h2>ECHOBREAK</h2>
+        <p>Arahkan kamera ke marker untuk membuka papan investigasi</p>
+        <button id="startButton">Mulai AR</button>
+    </div>
+
+    <div id="debug-panel">
+        STATUS AR
+        <br>Marker: <span id="marker-status" style="color: yellow;">Menunggu</span>
+        <br>Plane: <span id="plane-status" style="color: yellow;">Hidden</span>
+        <br>Video: <span id="video-status" style="color: yellow;">Idle</span>
+        <br>Skenario: <span id="scenario-status" style="color: #efe6d2;">1 — Terkunci</span>
+    </div>
+
+    <div id="tap-hint">Tap tombol UNLOCK untuk membuka data</div>
+
+    <!-- ===== TOMBOL UNLOCK (HTML Overlay) ===== -->
+    <div id="unlock-overlay" class="overlay-btn-wrap">
+        <button id="unlockBtn" class="overlay-btn">UNLOCK</button>
+        <div class="overlay-label">TAP / KLIK UNTUK MEMBUKA DATA</div>
+    </div>
+
+    <!-- ===== TOMBOL KEMBALI (HTML Overlay) → redirect ke /finish ===== -->
+    <div id="back-overlay" class="overlay-btn-wrap">
+        <button id="backBtnHtml" class="overlay-btn">← KEMBALI</button>
+        <div class="overlay-label">SELESAI & KELUAR</div>
+    </div>
+
+    <a-scene mindar-image="
+            imageTargetSrc: marker.mind;
+            autoStart: false;
+        " embedded color-space="sRGB" renderer="
+            colorManagement: true;
+            alpha: true;
+        " vr-mode-ui="
+            enabled: false
+        " device-orientation-permission-ui="
+            enabled: false
+        ">
+
+        <a-assets>
+            <video id="mainVideo"
+                   src="video.mp4"
+                   preload="auto"
+                   loop="true"
+                   muted="true"
+                   playsinline
+                   webkit-playsinline
+                   crossorigin="anonymous"></video>
+            <img id="imgLeft" src="left.jpg" crossorigin="anonymous">
+            <img id="imgRight" src="right.jpg" crossorigin="anonymous">
+        </a-assets>
+
+        <a-camera position="0 0 0" look-controls="enabled: false"
+                  cursor="fuse: false; rayOrigin: mouse"
+                  raycaster="objects: .clickable; far: 10">
+        </a-camera>
+
+        <a-entity id="target" mindar-image-target="targetIndex: 0">
+
+            <a-entity id="ar-content" visible="false" scale="0.01 0.01 0.01">
+
+                <!-- ========== SKENARIO 1 ELEMENTS ========== -->
+                <a-entity id="scenario1-group">
+
+                    <!-- Bubble -->
+                    <a-plane id="bubblePlane" position="0 0 -0.01" width="0.52" height="0.42"
+                             material="shader: flat; transparent: true; side: double"></a-plane>
+
+                    <!-- Video -->
+                    <a-plane id="videoPlane" class="clickable" position="0 -0.01 0.002" width="0.38" height="0.25"
+                             material="shader: flat; src: #mainVideo; side: double; transparent: false"></a-plane>
+
+                    <!-- Lock Shield -->
+                    <a-plane id="lockShield" position="0 -0.01 0.006" width="0.38" height="0.25"
+                             material="shader: flat; transparent: true; side: double"
+                             animation__pulse="property: material.opacity; from: 1; to: 0.88; dir: alternate; loop: true; dur: 900; easing: easeInOutSine"></a-plane>
+
+                    <!-- 4 Kartu Berita (hanya di Skenario 1) -->
+                    <a-plane id="card-tl" class="news-card" 
+                             position="-0.65 0.55 -0.01" rotation="0 0 5" width="0.34" height="0.24"
+                             material="shader: flat; transparent: true; side: double"
+                             animation="property: position; from: -0.65 0.55 -0.01; to: -0.34 0.28 -0.01; dur: 2200; dir: alternate; loop: true; easing: easeInOutBack"></a-plane>
+                    
+                    <a-plane id="card-tr" class="news-card" 
+                             position="0.65 0.55 -0.01" rotation="0 0 -4" width="0.34" height="0.24"
+                             material="shader: flat; transparent: true; side: double"
+                             animation="property: position; from: 0.65 0.55 -0.01; to: 0.29 0.33 -0.01; dur: 2400; dir: alternate; loop: true; easing: easeInOutBack"></a-plane>
+                    
+                    <a-plane id="card-bl" class="news-card" 
+                             position="-0.65 -0.55 -0.01" rotation="0 0 -3" width="0.34" height="0.24"
+                             material="shader: flat; transparent: true; side: double"
+                             animation="property: position; from: -0.65 -0.55 -0.01; to: -0.31 -0.31 -0.01; dur: 2300; dir: alternate; loop: true; easing: easeInOutBack"></a-plane>
+                    
+                    <a-plane id="card-br" class="news-card" 
+                             position="0.65 -0.55 -0.01" rotation="0 0 4" width="0.34" height="0.24"
+                             material="shader: flat; transparent: true; side: double"
+                             animation="property: position; from: 0.65 -0.55 -0.01; to: 0.35 -0.27 -0.01; dur: 2500; dir: alternate; loop: true; easing: easeInOutBack"></a-plane>
+
+                </a-entity>
+
+                <!-- ========== SKENARIO 2 ELEMENTS ========== -->
+                <a-entity id="scenario2-group" visible="false">
+
+                    <!-- Gambar Kiri -->
+                    <a-plane id="imgLeftPlane" position="-0.22 0.08 0.002" width="0.38" height="0.28"
+                             material="shader: flat; src: #imgLeft; side: double; transparent: false"></a-plane>
+
+                    <!-- Divider garis tengah -->
+                    <a-plane id="dividerLine" position="0 0.08 0.004" width="0.012" height="0.32"
+                             material="shader: flat; color: #ff4d3d; side: double; transparent: true; opacity: 0.9"></a-plane>
+
+                    <!-- Gambar Kanan -->
+                    <a-plane id="imgRightPlane" position="0.22 0.08 0.002" width="0.38" height="0.28"
+                             material="shader: flat; src: #imgRight; side: double; transparent: false"></a-plane>
+
+                </a-entity>
+
+            </a-entity>
+        </a-entity>
+
+    </a-scene>
+
+    <script>
+        const scene = document.querySelector("a-scene");
+        const target = document.getElementById("target");
+        const content = document.getElementById("ar-content");
+        const mainVideo = document.getElementById("mainVideo");
+        const startScreen = document.getElementById("start-screen");
+        const startButton = document.getElementById("startButton");
+        const markerStatus = document.getElementById("marker-status");
+        const planeStatus = document.getElementById("plane-status");
+        const videoStatus = document.getElementById("video-status");
+        const scenarioStatus = document.getElementById("scenario-status");
+        const tapHint = document.getElementById("tap-hint");
+
+        const scenario1Group = document.getElementById("scenario1-group");
+        const scenario2Group = document.getElementById("scenario2-group");
+        const lockShield = document.getElementById("lockShield");
+        const bubblePlane = document.getElementById("bubblePlane");
+        const videoPlane = document.getElementById("videoPlane");
+
+        const unlockOverlay = document.getElementById("unlock-overlay");
+        const backOverlay = document.getElementById("back-overlay");
+        const unlockBtn = document.getElementById("unlockBtn");
+        const backBtnHtml = document.getElementById("backBtnHtml");
+
+        let currentScenario = 1;
+        let isUnlocked = false;
+        let isAnimating = false;
+        let markerVisible = false;
+
+        // Data 4 berita Skenario 1
+        const NEWS = {
+            "card-tl": { tag: "BERITA — 01", title: "Sinyal Aneh Terdeteksi di Jaringan Kota", body: "Warga melaporkan gangguan tak biasa sesaat sebelum video ini beredar." },
+            "card-tr": { tag: "BERITA — 02", title: "Saksi Mata: \u201CAda yang Mengawasi\u201D", body: "Keterangan saksi belum bisa dikonfirmasi pihak berwenang." },
+            "card-bl": { tag: "BERITA — 03", title: "Rekaman CCTV Hilang Sebelum Dirilis", body: "Arsip rekaman dilaporkan terhapus dari server pusat." },
+            "card-br": { tag: "BERITA — 04", title: "Otoritas Bungkam Soal Insiden Ini", body: "Belum ada pernyataan resmi hingga berita ini diturunkan." }
+        };
+
+        // (tidak ada kartu tambahan di Skenario 2)
+
+        function refreshVideoStatus() {
+            const playState = mainVideo.paused ? "Paused" : "Playing";
+            const muteState = mainVideo.muted ? "Muted" : "Unmuted";
+            videoStatus.innerText = `${playState} / ${muteState}`;
+            videoStatus.style.color = mainVideo.paused ? "yellow" : "#00ff00";
+        }
+        mainVideo.addEventListener("play", refreshVideoStatus);
+        mainVideo.addEventListener("pause", refreshVideoStatus);
+        mainVideo.addEventListener("volumechange", refreshVideoStatus);
+
+        function roundRect(ctx, x, y, w, h, r) {
+            ctx.beginPath();
+            ctx.moveTo(x + r, y);
+            ctx.arcTo(x + w, y, x + w, y + h, r);
+            ctx.arcTo(x + w, y + h, x, y + h, r);
+            ctx.arcTo(x, y + h, x, y, r);
+            ctx.arcTo(x, y, x + w, y, r);
+            ctx.closePath();
+        }
+
+        function wrapText(ctx, text, x, y, maxWidth, lineHeight, maxLines) {
+            const words = text.split(" ");
+            let line = "", lines = 0;
+            for (let i = 0; i < words.length; i++) {
+                const test = line + words[i] + " ";
+                if (ctx.measureText(test).width > maxWidth && line !== "") {
+                    ctx.fillText(line.trim(), x, y);
+                    line = words[i] + " ";
+                    y += lineHeight;
+                    lines++;
+                    if (maxLines && lines >= maxLines - 1) {
+                        ctx.fillText(line.trim() + "…", x, y);
+                        return;
+                    }
+                } else {
+                    line = test;
+                }
+            }
+            ctx.fillText(line.trim(), x, y);
+        }
+
+        function makeBubbleCanvas() {
+            const w = 640, h = 520;
+            const c = document.createElement("canvas");
+            c.width = w; c.height = h;
+            const ctx = c.getContext("2d");
+
+            const x = 15, y = 15, bw = w - 30, bh = h - 60, r = 38;
+
+            ctx.beginPath();
+            ctx.moveTo(x + r, y);
+            ctx.lineTo(x + bw - r, y);
+            ctx.arcTo(x + bw, y, x + bw, y + r, r);
+            ctx.lineTo(x + bw, y + bh - r);
+            ctx.arcTo(x + bw, y + bh, x + bw - r, y + bh, r);
+            ctx.lineTo(w / 2 + 25, y + bh);
+            ctx.lineTo(w / 2, y + bh + 35);
+            ctx.lineTo(w / 2 - 25, y + bh);
+            ctx.lineTo(x + r, y + bh);
+            ctx.arcTo(x, y + bh, x, y + bh - r, r);
+            ctx.lineTo(x, y + r);
+            ctx.arcTo(x, y, x + r, y, r);
+            ctx.closePath();
+
+            ctx.fillStyle = "#26252b";
+            ctx.fill();
+            ctx.lineWidth = 6;
+            ctx.strokeStyle = "#ff4d3d";
+            ctx.stroke();
+
+            ctx.fillStyle = "#ff4d3d";
+            ctx.beginPath();
+            ctx.arc(45, 48, 8, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = "#ff4d3d";
+            ctx.font = "600 24px Oswald, sans-serif";
+            ctx.textBaseline = "middle";
+            ctx.fillText("LIVE — ECHOBREAK", 65, 48);
+
+            const padX = 35, padY = 80, padW = w - 70, padH = h - 120;
+            ctx.fillStyle = "#26252b";
+            roundRect(ctx, padX, padY, padW, padH, 20);
+            ctx.fill();
+
+            return c;
+        }
+
+        // Kartu biasa (Skenario 1)
+        function makeCardCanvas(data, greenGlow = false) {
+            const w = 640, h = 460;
+            const c = document.createElement("canvas");
+            c.width = w; c.height = h;
+            const ctx = c.getContext("2d");
+
+            ctx.fillStyle = "#efe6d2";
+            roundRect(ctx, 8, 8, w - 16, h - 16, 12);
+            ctx.fill();
+
+            if (greenGlow) {
+                ctx.shadowColor = "rgba(0, 255, 120, 0.75)";
+                ctx.shadowBlur = 30;
+                ctx.lineWidth = 8;
+                ctx.strokeStyle = "#00ff78";
+                roundRect(ctx, 8, 8, w - 16, h - 16, 12);
+                ctx.stroke();
+
+                ctx.shadowBlur = 14;
+                ctx.lineWidth = 4;
+                ctx.strokeStyle = "#7dffb3";
+                roundRect(ctx, 12, 12, w - 24, h - 24, 10);
+                ctx.stroke();
+                ctx.shadowBlur = 0;
+            } else {
+                ctx.lineWidth = 4;
+                ctx.strokeStyle = "rgba(0,0,0,0.15)";
+                roundRect(ctx, 8, 8, w - 16, h - 16, 12);
+                ctx.stroke();
+            }
+
+            ctx.fillStyle = greenGlow ? "#00aa55" : "#d3392b";
+            ctx.font = "600 22px 'JetBrains Mono', monospace";
+            ctx.textBaseline = "alphabetic";
+            ctx.fillText(data.tag, 36, 64);
+
+            ctx.fillStyle = "#201a12";
+            ctx.font = "600 38px Oswald, sans-serif";
+            wrapText(ctx, data.title, 36, 124, w - 72, 44, 3);
+
+            ctx.fillStyle = "#5a4f3d";
+            ctx.font = "400 22px 'JetBrains Mono', monospace";
+            wrapText(ctx, data.body, 36, 300, w - 72, 30, 4);
+
+            return c;
+        }
+
+        function makeShieldCanvas() {
+            const w = 640, h = 420;
+            const c = document.createElement("canvas");
+            c.width = w; c.height = h;
+            const ctx = c.getContext("2d");
+
+            ctx.fillStyle = "rgba(18,15,12,0.92)";
+            roundRect(ctx, 6, 6, w - 12, h - 12, 16);
+            ctx.fill();
+            ctx.lineWidth = 4;
+            ctx.strokeStyle = "#ff4d3d";
+            ctx.stroke();
+
+            ctx.save();
+            roundRect(ctx, 6, 6, w - 12, h - 12, 16);
+            ctx.clip();
+            ctx.strokeStyle = "rgba(255,77,61,0.07)";
+            ctx.lineWidth = 2;
+            for (let y = 0; y < h; y += 6) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(w, y);
+                ctx.stroke();
+            }
+            ctx.restore();
+
+            const cx = w / 2, cy = h / 2 - 20;
+
+            const glow = ctx.createRadialGradient(cx, cy, 10, cx, cy, 160);
+            glow.addColorStop(0, "rgba(255,77,61,0.35)");
+            glow.addColorStop(1, "rgba(255,77,61,0)");
+            ctx.fillStyle = glow;
+            ctx.beginPath();
+            ctx.arc(cx, cy, 160, 0, Math.PI * 2);
+            ctx.fill();
+
+            const sw = 150, sh = 175;
+            ctx.beginPath();
+            ctx.moveTo(cx, cy - sh / 2);
+            ctx.lineTo(cx + sw / 2, cy - sh / 2 + 28);
+            ctx.lineTo(cx + sw / 2, cy + 12);
+            ctx.quadraticCurveTo(cx + sw / 2, cy + sh / 2, cx, cy + sh / 2 + 16);
+            ctx.quadraticCurveTo(cx - sw / 2, cy + sh / 2, cx - sw / 2, cy + 12);
+            ctx.lineTo(cx - sw / 2, cy - sh / 2 + 28);
+            ctx.closePath();
+            ctx.fillStyle = "#2a2016";
+            ctx.fill();
+            ctx.lineWidth = 6;
+            ctx.strokeStyle = "#ff4d3d";
+            ctx.stroke();
+
+            ctx.strokeStyle = "#efe6d2";
+            ctx.lineWidth = 7;
+            ctx.beginPath();
+            ctx.arc(cx, cy - 10, 28, Math.PI, 0, false);
+            ctx.stroke();
+            ctx.fillStyle = "#efe6d2";
+            roundRect(ctx, cx - 34, cy - 10, 68, 52, 7);
+            ctx.fill();
+            ctx.fillStyle = "#2a2016";
+            ctx.beginPath();
+            ctx.arc(cx, cy + 10, 7, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.textAlign = "center";
+            ctx.fillStyle = "#ff4d3d";
+            ctx.font = "600 28px Oswald, sans-serif";
+            ctx.fillText("AKSES TERKUNCI", cx, cy + sh / 2 + 42);
+
+            return c;
+        }
+
+        function applyTexture(entity, canvas) {
+            const THREE = AFRAME.THREE;
+            const setTex = () => {
+                const mesh = entity.getObject3D("mesh");
+                if (!mesh) return;
+                const tex = new THREE.CanvasTexture(canvas);
+                tex.needsUpdate = true;
+                mesh.material.map = tex;
+                mesh.material.transparent = true;
+                mesh.material.needsUpdate = true;
+            };
+            if (entity.getObject3D("mesh")) setTex();
+            else entity.addEventListener("loaded", setTex, { once: true });
+        }
+
+        async function buildTextures() {
+            if (document.fonts && document.fonts.ready) await document.fonts.ready;
+
+            applyTexture(bubblePlane, makeBubbleCanvas());
+            applyTexture(lockShield, makeShieldCanvas());
+
+            // 4 kartu Skenario 1
+            Object.keys(NEWS).forEach((id) => {
+                applyTexture(document.getElementById(id), makeCardCanvas(NEWS[id], false));
+            });
+        }
+        buildTextures();
+
+        // ============================================================
+        // FLOW
+        // ============================================================
+
+        function showUnlockOverlay() {
+            if (markerVisible && currentScenario === 1 && !isUnlocked) {
+                unlockOverlay.classList.add("show");
+            } else {
+                unlockOverlay.classList.remove("show");
+            }
+        }
+
+        function showBackOverlay() {
+            if (markerVisible && currentScenario === 2 && isUnlocked) {
+                backOverlay.classList.add("show");
+            } else {
+                backOverlay.classList.remove("show");
+            }
+        }
+
+        function resetScenario1State() {
+            currentScenario = 1;
+            isUnlocked = false;
+            isAnimating = false;
+
+            scenario1Group.setAttribute("visible", "true");
+            scenario1Group.setAttribute("scale", "1 1 1");
+            scenario2Group.setAttribute("visible", "false");
+
+            lockShield.setAttribute("visible", "true");
+            lockShield.setAttribute("scale", "1 1 1");
+            lockShield.setAttribute("material", "opacity", 1);
+            lockShield.setAttribute("material", "color", "#ffffff");
+            lockShield.removeAttribute("animation__shatter");
+            lockShield.removeAttribute("animation__fade");
+
+            bubblePlane.setAttribute("visible", "true");
+            bubblePlane.setAttribute("scale", "1 1 1");
+            videoPlane.setAttribute("visible", "true");
+            videoPlane.setAttribute("scale", "1 1 1");
+
+            scenarioStatus.innerText = "1 — Terkunci";
+            tapHint.innerText = "Tap tombol UNLOCK untuk membuka data";
+
+            backOverlay.classList.remove("show");
+            showUnlockOverlay();
+        }
+
+        function goToScenario2() {
+            if (isAnimating || isUnlocked || currentScenario !== 1) return;
+            isAnimating = true;
+
+            unlockOverlay.classList.remove("show");
+
+            // Efek pecah Skenario 1
+            lockShield.setAttribute("material", "color", "#ff8f7a");
+            lockShield.setAttribute("animation__shatter", {
+                property: "scale",
+                from: "1 1 1",
+                to: "1.8 1.8 1.8",
+                dur: 450,
+                easing: "easeInBack"
+            });
+            lockShield.setAttribute("animation__fade", {
+                property: "material.opacity",
+                from: 1,
+                to: 0,
+                dur: 450,
+                easing: "easeInQuad"
+            });
+
+            bubblePlane.setAttribute("animation__out", {
+                property: "scale", from: "1 1 1", to: "0.01 0.01 0.01", dur: 400, easing: "easeInBack"
+            });
+            videoPlane.setAttribute("animation__out", {
+                property: "scale", from: "1 1 1", to: "0.01 0.01 0.01", dur: 400, easing: "easeInBack"
+            });
+
+            mainVideo.pause();
+
+            setTimeout(() => {
+                // Hilangkan semua Skenario 1 (termasuk 4 kartu)
+                scenario1Group.setAttribute("visible", "false");
+
+                // Tampilkan Skenario 2 (gambar kiri-kanan + 2 kartu tengah glow hijau)
+                scenario2Group.setAttribute("visible", "true");
+                scenario2Group.setAttribute("scale", "0.01 0.01 0.01");
+                scenario2Group.setAttribute("animation__in", {
+                    property: "scale",
+                    from: "0.01 0.01 0.01",
+                    to: "1 1 1",
+                    dur: 500,
+                    easing: "easeOutBack"
+                });
+
+                currentScenario = 2;
+                isUnlocked = true;
+                isAnimating = false;
+
+                scenarioStatus.innerText = "2 — Terbuka";
+                tapHint.innerText = "Bukti kiri & kanan ditemukan";
+                tapHint.classList.add("show");
+                setTimeout(() => tapHint.classList.remove("show"), 2500);
+
+                showBackOverlay();
+            }, 460);
+        }
+
+        // Tombol Kembali → redirect ke /finish
+        function goToFinish() {
+            window.location.href = "/finish";
+        }
+
+        // ===== EVENT LISTENERS =====
+        unlockBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            goToScenario2();
+        });
+
+        backBtnHtml.addEventListener("click", (e) => {
+            e.preventDefault();
+            goToFinish();
+        });
+
+        // ---------- START AR ----------
+        startButton.addEventListener("click", async () => {
+            startScreen.style.display = "none";
+            mainVideo.muted = false;
+
+            const mindarSystem = scene.systems["mindar-image-system"];
+            try {
+                await mindarSystem.start();
+                markerStatus.innerText = "Mencari...";
+
+                const camVideo = document.querySelector("video:not(#mainVideo)");
+                if (camVideo) camVideo.classList.add("camFeed");
+            } catch (error) {
+                console.error("MindAR error:", error);
+                markerStatus.innerText = "ERROR";
+                markerStatus.style.color = "red";
+            }
+        });
+
+        // ---------- MARKER FOUND ----------
+        target.addEventListener("targetFound", () => {
+            markerVisible = true;
+            markerStatus.innerText = "Ditemukan ✓";
+            markerStatus.style.color = "#00ff00";
+
+            content.setAttribute("visible", "true");
+            content.setAttribute("animation", "property: scale; from: 0.01 0.01 0.01; to: 1 1 1; dur: 450; easing: easeOutBack");
+
+            planeStatus.innerText = "Visible ✓";
+            planeStatus.style.color = "#00ff00";
+
+            resetScenario1State();
+
+            mainVideo.play().catch((err) => console.warn("Autoplay video ditolak:", err));
+
+            tapHint.classList.add("show");
+            setTimeout(() => tapHint.classList.remove("show"), 3500);
+        });
+
+        // ---------- MARKER LOST ----------
+        target.addEventListener("targetLost", () => {
+            markerVisible = false;
+            markerStatus.innerText = "Hilang";
+            markerStatus.style.color = "yellow";
+
+            content.setAttribute("visible", "false");
+            planeStatus.innerText = "Hidden";
+            planeStatus.style.color = "yellow";
+
+            unlockOverlay.classList.remove("show");
+            backOverlay.classList.remove("show");
+            mainVideo.pause();
+        });
+
+        // Video control (Skenario 1)
+        let tapTimer = null;
+        const DOUBLE_TAP_DELAY = 300;
+
+        videoPlane.addEventListener("click", () => {
+            if (currentScenario !== 1) return;
+
+            if (tapTimer !== null) {
+                clearTimeout(tapTimer);
+                tapTimer = null;
+                mainVideo.muted = !mainVideo.muted;
+            } else {
+                tapTimer = setTimeout(() => {
+                    tapTimer = null;
+                    mainVideo.paused ? mainVideo.play() : mainVideo.pause();
+                }, DOUBLE_TAP_DELAY);
+            }
+        });
+    </script>
+
+</body>
+</html>

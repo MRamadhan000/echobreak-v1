@@ -123,15 +123,15 @@
         <!-- ============================== MARKER TARGET ============================== -->
         <a-entity id="target" mindar-image-target="targetIndex: 0">
 
-            <!-- Ditambahkan rotation="-90 0 0" dan position Z dinaikkan agar berdiri tegak di atas marker -->
-            <a-entity id="ar-content" visible="false" scale="0.01 0.01 0.01" rotation="-90 0 0" position="0 0 0.25">
+            <!-- Semua konten disatukan di sini supaya bisa di-scale-in bareng saat marker ketemu -->
+            <a-entity id="ar-content" visible="false" scale="0.01 0.01 0.01">
 
-                <!-- ---------- BUBBLE CHAT UTAMA (Ekor di Kanan Bawah & Lebih Besar) ---------- -->
+                <!-- ---------- BUBBLE CHAT UTAMA (Proporsi Melebar & Ekor di Bawah) ---------- -->
                 <a-plane id="bubblePlane" position="0 0 -0.01" width="0.52" height="0.42"
                          material="shader: flat; transparent: true; side: double"></a-plane>
 
-                <!-- ---------- VIDEO DI DALAM BUBBLE ---------- -->
-                <a-plane id="videoPlane" class="clickable" position="0 0 0.002" width="0.40" height="0.28"
+                <!-- ---------- VIDEO DI DALAM BUBBLE (Terperangkap dengan Padding Tinggi) ---------- -->
+                <a-plane id="videoPlane" class="clickable" position="0 -0.01 0.002" width="0.38" height="0.25"
                          material="shader: flat; src: #mainVideo; side: double; transparent: false"></a-plane>
 
                 <!-- ---------- 4 KARTU BERITA DENGAN EFEK KETABRAK / MENTAL BERANTAKAN ---------- -->
@@ -227,7 +227,7 @@
             ctx.fillText(line.trim(), x, y);
         }
 
-        // ---------- MEMBUAT BUBBLE CHAT (EKOR DI KANAN BAWAH, UKURAN BESAR, FULL ABU-ABU) ----------
+        // ---------- MEMBUAT BENTUK SPEECH BUBBLE DENGAN WARNA ABU-ABU YANG SAMA ----------
         function makeBubbleCanvas() {
             const w = 640, h = 520;
             const c = document.createElement("canvas");
@@ -236,7 +236,7 @@
 
             const x = 15, y = 15, bw = w - 30, bh = h - 60, r = 38;
 
-            // 1. Path kustom gelembung chat dengan ekor besar di sisi kanan bawah
+            // 1. Path kustom gelembung chat yang melengkung mulus + ekor di bawah
             ctx.beginPath();
             ctx.moveTo(x + r, y);
             ctx.lineTo(x + bw - r, y);
@@ -244,10 +244,10 @@
             ctx.lineTo(x + bw, y + bh - r);
             ctx.arcTo(x + bw, y + bh, x + bw - r, y + bh, r);
             
-            // Ekor bubble chat besar di sebelah kanan bawah
-            ctx.lineTo(x + bw - 85, y + bh);
-            ctx.lineTo(x + bw - 55, y + bh + 55); // Ujung ekor lebih panjang/besar keluar
-            ctx.lineTo(x + bw - 145, y + bh);
+            // Ekor bubble chat di bagian bawah tengah
+            ctx.lineTo(w / 2 + 25, y + bh);
+            ctx.lineTo(w / 2, y + bh + 35);
+            ctx.lineTo(w / 2 - 25, y + bh);
 
             ctx.lineTo(x + r, y + bh);
             ctx.arcTo(x, y + bh, x, y + bh - r, r);
@@ -255,17 +255,28 @@
             ctx.arcTo(x, y, x + r, y, r);
             ctx.closePath();
 
-            // Isi utama dan border luar bubble
+            // Isi utama bubble warna abu-abu gelap
             ctx.fillStyle = "#26252b"; 
             ctx.fill();
             ctx.lineWidth = 6;
-            ctx.strokeStyle = "#ff4d3d";
+            ctx.strokeStyle = "#ff4d3d"; // Outline luar bubble tetap merah
             ctx.stroke();
 
-            // 2. Area penuh di dalam tanpa header teks (bersih untuk video)
-            const padX = 30, padY = 30, padW = w - 60, padH = h - 90;
+            // 2. Indikator Live & Header Teks
+            ctx.fillStyle = "#ff4d3d";
+            ctx.beginPath();
+            ctx.arc(45, 48, 8, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = "#ff4d3d";
+            ctx.font = "600 24px Oswald, sans-serif";
+            ctx.textBaseline = "middle";
+            ctx.fillText("LIVE — ECHOBREAK", 65, 48);
+
+            // 3. Cekungan Dalam (Recessed Cavity) - WARNA DISAMAKAN PERSIS (#26252b)
+            const padX = 35, padY = 80, padW = w - 70, padH = h - 120;
             
-            ctx.fillStyle = "#26252b"; 
+            ctx.fillStyle = "#26252b"; // Warna abu-abu disamakan dengan background utama
             roundRect(ctx, padX, padY, padW, padH, 20);
             ctx.fill();
 
