@@ -4,17 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>ECHOBREAK — AR Bias Card Investigation</title>
+    <title>ECHOBREAK — Fase 3: Bias Card AR Scanner</title>
 
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
-        rel="stylesheet">
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap"
         rel="stylesheet">
 
     <style>
@@ -29,8 +26,8 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
-            background: #f7f9fb;
-            font-family: 'Inter', sans-serif;
+            background: #000;
+            font-family: 'JetBrains Mono', monospace;
         }
 
         video.mindar-camera-video,
@@ -63,73 +60,225 @@
             background: transparent !important;
         }
 
+        /* --- LAYAR AWAL --- */
+        #start-screen {
+            position: fixed;
+            inset: 0;
+            background: #ffffff;
+            color: #191c1e;
+            z-index: 20000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            text-align: center;
+            padding: 20px;
+        }
+
+        #start-screen .badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            letter-spacing: 2px;
+            background: #fff8e1;
+            color: #b45309;
+            border: 1px solid #f59e0b;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: 700;
+        }
+
+        #start-screen h2 {
+            font-family: 'Oswald', sans-serif;
+            font-size: clamp(22px, 6.5vw, 30px);
+            letter-spacing: 2.5px;
+            margin: 0;
+            color: #b45309;
+            text-shadow: 0 0 10px rgba(245, 158, 11, .2);
+        }
+
+        #start-screen p {
+            margin: 0;
+            font-size: clamp(11px, 3.5vw, 13px);
+            color: #434654;
+            max-width: 300px;
+            line-height: 1.4;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-top: 6px;
+            width: 100%;
+            max-width: 320px;
+            justify-content: center;
+        }
+
+        #backButton {
+            padding: 12px 20px;
+            font-family: 'Oswald', sans-serif;
+            font-size: clamp(13px, 4vw, 15px);
+            font-weight: 600;
+            letter-spacing: 1px;
+            background: #ffffff;
+            color: #b45309;
+            border: 2px solid #b45309;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            transition: all 0.2s ease;
+        }
+
+        #backButton:hover {
+            background: #fff8e1;
+        }
+
+        #backButton:active {
+            transform: scale(0.96);
+        }
+
+        #arBackButton {
+            position: fixed;
+            bottom: 16px;
+            left: 16px;
+            z-index: 20005;
+            background: #ffffff;
+            color: #b45309;
+            border: 2px solid #b45309;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: none;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: background 0.2s ease, transform 0.1s ease;
+        }
+
+        #arBackButton:hover {
+            background: #fff8e1;
+        }
+
+        #arBackButton:active {
+            transform: scale(0.96);
+        }
+
+        /* --- HEADER KONTEKS AR --- */
+        #ar-header-context {
+            position: fixed;
+            top: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 92%;
+            max-width: 440px;
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(245, 158, 11, 0.5);
+            box-shadow: 0 0 14px rgba(245, 158, 11, 0.25);
+            color: #f8fafc;
+            padding: 10px 14px;
+            border-radius: 8px;
+            z-index: 20005;
+            display: none;
+            text-align: center;
+            pointer-events: none;
+        }
+
+        #ar-header-context h4 {
+            font-family: 'Oswald', sans-serif;
+            font-size: 13px;
+            letter-spacing: 0.5px;
+            margin: 0 0 3px 0;
+            color: #fbbf24;
+            text-transform: uppercase;
+        }
+
+        #ar-header-context p {
+            font-size: 10px;
+            margin: 0;
+            color: #cbd5e1;
+            line-height: 1.35;
+        }
+
+        #startButton {
+            padding: 12px 24px;
+            font-family: 'Oswald', sans-serif;
+            font-size: clamp(13px, 4vw, 15px);
+            font-weight: 600;
+            letter-spacing: 1px;
+            background: #b45309;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            cursor: not-allowed;
+            opacity: 0.5;
+            flex: 1.2;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(180, 83, 9, 0.3);
+        }
+
+        #startButton.active {
+            cursor: pointer;
+            opacity: 1;
+        }
+
+        /* --- DEBUG PANEL --- */
         #debug-panel {
             position: fixed;
-            top: 75px;
-            left: 12px;
+            top: 85px;
+            left: 16px;
             background: rgba(15, 23, 42, 0.85);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            color: #fff;
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 10px;
-            font-family: 'JetBrains Mono', monospace;
+            border: 1px solid #f59e0b;
+            color: #e2e8f0;
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-size: 9px;
             z-index: 10001;
             pointer-events: none;
-            line-height: 1.6;
-            backdrop-filter: blur(8px);
+            line-height: 1.5;
+            max-width: 190px;
         }
     </style>
 </head>
 
 <body>
 
-    <!-- START SCREEN (PERMINTAAN IZIN & NAVIGASI AWAL) -->
-    <div id="start-screen" class="fixed inset-0 bg-[#f7f9fb] z-[20000] flex flex-col items-center justify-center p-4">
-        <div class="max-w-md w-full bg-white p-6 md:p-8 rounded-2xl shadow-xl border border-[#e0e3e5] text-center">
-            <div
-                class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#ebddff] text-[#712edd] text-xs font-semibold mb-4">
-                <span class="material-symbols-outlined text-[16px]">view_in_ar</span>
-                Fase 3: Bias Card AR Scanner
-            </div>
-            <h2 class="text-xl md:text-2xl font-bold text-[#1E293B] mb-2">Aktivasi Kamera & Sensor AR</h2>
-            <p class="text-xs md:text-sm text-[#434654] mb-6 leading-relaxed">
-                Aplikasi memerlukan izin kamera untuk menampilkan kartu teks analisis berita rebahan di atas marker.
-            </p>
-            <div class="flex gap-3">
-                <button id="backButton"
-                    class="flex-1 bg-[#f2f4f6] hover:bg-[#e6e8ea] text-[#191c1e] text-xs font-semibold py-3 px-4 rounded-xl border border-[#c3c6d6] transition-all active:scale-95 flex items-center justify-center gap-2">
-                    <span class="material-symbols-outlined text-[16px]">arrow_back</span>
-                    Kembali
-                </button>
-                <button id="startButton"
-                    class="flex-1 bg-[#0052CC] hover:bg-[#0040a2] text-white text-xs font-semibold py-3 px-4 rounded-xl shadow-md transition-all active:scale-95 flex items-center justify-center gap-2">
-                    Mulai Scan
-                    <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
-                </button>
-            </div>
-        </div>
+    <!-- Header Konteks AR -->
+    <div id="ar-header-context">
+        <h4>⚠ Fase 3: Bias Card AR Scanner</h4>
+        <p>Sensor AR menempelkan tag peringatan kuning pada berita berbias/provokatif — bandingkan versi VALID vs HOAX
+            dari isu MBG.</p>
     </div>
 
-    <!-- HUD TOP INFO & KEMBALI SAAT SCANNING AR BERLANGSUNG -->
-    <div id="ar-top-nav" class="fixed top-4 inset-x-4 z-[10002] hidden flex flex-col sm:flex-row justify-between items-center gap-2 pointer-events-none">
-        <div class="bg-slate-900/85 backdrop-blur-md border border-white/15 px-4 py-2 rounded-xl text-white text-center sm:text-left pointer-events-auto shadow-lg max-w-lg">
-            <div class="text-[10px] tracking-wider text-amber-400 font-mono uppercase font-semibold flex items-center gap-1 justify-center sm:justify-start">
-                <span class="material-symbols-outlined text-[14px]">bolt</span> Fase 3 (Bias Card AR)
-            </div>
-            <p class="text-xs text-slate-200 mt-0.5">Arahkan kamera ke marker untuk melihat kartu teks Analisis Faktual vs Provokatif.</p>
+    <!-- Tombol Kembali saat Scan AR Aktif -->
+    <a id="arBackButton" href="phase3.html">← KEMBALI</a>
+
+    <!-- Layar Awal -->
+    <div id="start-screen">
+        <div class="badge">FASE 3 · BIAS DETECTOR</div>
+        <h2>BIAS CARD AR</h2>
+        <p>Arahkan kamera ke marker untuk mengaktifkan pemindai sensor AR dan bandingkan berita VALID vs HOAX seputar
+            isu MBG</p>
+
+        <div class="button-group">
+            <a id="backButton" href="phase3.html">KEMBALI</a>
+            <button id="startButton" disabled>MENUNGGU...</button>
         </div>
-        <button id="arBackButton"
-            class="bg-[#0052CC] hover:bg-[#0040a2] text-white text-xs font-semibold py-2.5 px-4 rounded-xl shadow-lg border border-white/15 backdrop-blur-md transition-all active:scale-95 flex items-center gap-2 pointer-events-auto">
-            <span class="material-symbols-outlined text-[18px]">arrow_back</span>
-            Keluar AR
-        </button>
     </div>
 
     <div id="debug-panel">
-        STATUS SENSOR
-        <br>Marker: <span id="marker-status" style="color: #F59E0B;">Menunggu</span>
-        <br>Model 3D: <span id="plane-status" style="color: #F59E0B;">Hidden</span>
+        BIAS CARD SCANNER
+        <br>Marker: <span id="marker-status" style="color: yellow;">Menunggu</span>
+        <br>Core State: <span id="plane-status" style="color: yellow;">Hidden</span>
     </div>
 
     <a-scene mindar-image="
@@ -138,11 +287,7 @@
         " embedded color-space="sRGB" renderer="
             colorManagement: true;
             alpha: true;
-        " vr-mode-ui="
-            enabled: false
-        " device-orientation-permission-ui="
-            enabled: false
-        ">
+        " vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
 
         <a-camera position="0 0 0" look-controls="enabled: false" raycaster="objects: .clickable; far: 10"
             cursor="fuse: false; rayOrigin: mouse">
@@ -151,28 +296,32 @@
         <!-- ============================== MARKER TARGET ============================== -->
         <a-entity id="target" mindar-image-target="targetIndex: 0">
 
-            <!-- Diubah rotasinya menjadi -90 derajat pada sumbu X agar kartu rebahan/mendatar di atas marker -->
-            <a-entity id="ar-content" visible="false" scale="0.01 0.01 0.01" rotation="-90 0 0" position="0 0 0">
+            <a-entity id="ar-content" visible="false" scale="0.01 0.01 0.01">
 
-                <!-- ---------- KARTU 1: APPROVED / PRO (KIRI) ---------- -->
-                <a-entity position="-0.42 0 0"
-                    animation="property: scale; from: 0.95 0.95 0.95; to: 1.05 1.05 1.05; dur: 1600; dir: alternate; loop: true; easing: easeInOutSine">
-                    <a-plane id="approvedPlane" position="0 0 0" width="0.38" height="0.52"
-                        material="shader: flat; transparent: true; side: double"></a-plane>
-                </a-entity>
+                <!-- Title / Sensor Badge di atas -->
+                <a-plane id="titlePlane" position="0 0.62 -0.01" width="0.75" height="0.16"
+                    material="shader: flat; transparent: true; side: double"
+                    animation__pulse="property: material.opacity; from: 1; to: 0.75; dur: 900; dir: alternate; loop: true"></a-plane>
 
-                <!-- ---------- TEKS 3D VS DI TENGAH ---------- -->
-                <a-entity position="0 0 0.03"
-                    animation="property: scale; from: 0.9 0.9 0.9; to: 1.15 1.15 1.15; dur: 900; dir: alternate; loop: true; easing: easeInOutSine">
-                    <a-text value="VS" align="center" anchor="center" color="#38bdf8" width="5" shader="msdf"></a-text>
-                </a-entity>
+                <!-- Kartu VALID (Kiri) - Glow Hijau -->
+                <a-plane id="cardValid" position="-0.34 0 -0.01" width="0.60" height="0.62"
+                    material="shader: flat; transparent: true; side: double"
+                    animation="property: position; from: -0.34 0 -0.01; to: -0.30 0.02 -0.01; dur: 2200; dir: alternate; loop: true; easing: easeInOutSine"></a-plane>
 
-                <!-- ---------- KARTU 2: DANGER / KONTRA (KANAN) ---------- -->
-                <a-entity position="0.42 0 0"
-                    animation="property: scale; from: 0.96 0.96 0.96; to: 1.04 1.04 1.04; dur: 1100; dir: alternate; loop: true; easing: easeInOutSine">
-                    <a-plane id="dangerPlane" position="0 0 0" width="0.38" height="0.52"
-                        material="shader: flat; transparent: true; side: double"></a-plane>
-                </a-entity>
+                <!-- Kartu HOAX (Kanan) - Glow Merah -->
+                <a-plane id="cardHoax" position="0.34 0 -0.01" width="0.60" height="0.62"
+                    material="shader: flat; transparent: true; side: double"
+                    animation="property: position; from: 0.34 0 -0.01; to: 0.30 -0.02 -0.01; dur: 2400; dir: alternate; loop: true; easing: easeInOutSine"></a-plane>
+
+                <!-- Badge VS Dramatis di Tengah -->
+                <a-plane id="vsBadge" position="0 0 0.01" width="0.22" height="0.22"
+                    material="shader: flat; transparent: true; side: double"
+                    animation__scale="property: scale; from: 1 1 1; to: 1.12 1.12 1.12; dur: 700; dir: alternate; loop: true; easing: easeInOutSine"></a-plane>
+
+                <!-- Tag Peringatan Kuning 3D (mengambang di atas kartu hoax) -->
+                <a-plane id="warningTag" position="0.34 0.44 0.02" rotation="0 0 -6" width="0.30" height="0.14"
+                    material="shader: flat; transparent: true; side: double"
+                    animation="property: position; from: 0.34 0.44 0.02; to: 0.34 0.5 0.02; dur: 1000; dir: alternate; loop: true; easing: easeInOutSine"></a-plane>
 
             </a-entity>
         </a-entity>
@@ -186,125 +335,239 @@
         const content = document.getElementById("ar-content");
         const startScreen = document.getElementById("start-screen");
         const startButton = document.getElementById("startButton");
-        const backButton = document.getElementById("backButton");
-        const arTopNav = document.getElementById("ar-top-nav");
         const arBackButton = document.getElementById("arBackButton");
+        const arHeaderContext = document.getElementById("ar-header-context");
         const markerStatus = document.getElementById("marker-status");
         const planeStatus = document.getElementById("plane-status");
 
-        backButton.addEventListener("click", () => {
-            window.location.href = "phase3.html";
+        window.addEventListener("DOMContentLoaded", async () => {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: "environment" },
+                    audio: false
+                });
+                stream.getTracks().forEach(track => track.stop());
+
+                startButton.removeAttribute("disabled");
+                startButton.classList.add("active");
+                startButton.innerText = "MULAI SCAN";
+            } catch (error) {
+                console.warn("Izin kamera ditolak:", error);
+                startButton.innerText = "IZIN DITOLAK";
+            }
         });
 
-        arBackButton.addEventListener("click", () => {
-            window.location.href = "phase3.html";
-        });
+        // ---- Data konten kartu VALID vs HOAX ----
+        const VALID_DATA = {
+            label: "✔ TERVERIFIKASI",
+            source: "SOP Keamanan Pangan & Ahli Gizi",
+            text: "Efisiensi jadwal masak MBG perlu mempertimbangkan waktu produksi, holding time, suhu penyimpanan, dan jarak distribusi agar kualitas serta keamanan makanan tetap terjaga."
+        };
 
-        function makeTextCardCanvas(badgeText, accentColor, headerBg, titleText, descText, pointsArray) {
-            const w = 520, h = 700;
+        const HOAX_DATA = {
+            label: "🚫 BERITA BOHONG",
+            source: "Akun Anonim Medsos",
+            text: "\"Semua makanan MBG yang dimasak sejak dini hari pasti basi dan kehilangan seluruh gizinya sebelum dimakan siswa!\" — klaim ini tidak didukung bukti dan mengabaikan faktor suhu, waktu, penyimpanan, serta prosedur distribusi."
+        };
+
+        function roundRect(ctx, x, y, w, h, r) {
+            ctx.beginPath();
+            ctx.moveTo(x + r, y);
+            ctx.arcTo(x + w, y, x + w, y + h, r);
+            ctx.arcTo(x + w, y + h, x, y + h, r);
+            ctx.arcTo(x, y + h, x, y, r);
+            ctx.arcTo(x, y, x + w, y, r);
+            ctx.closePath();
+        }
+
+        function wrapText(ctx, text, x, y, maxWidth, lineHeight, maxLines) {
+            const words = text.split(" ");
+            let line = "", lines = 0;
+            for (let i = 0; i < words.length; i++) {
+                const test = line + words[i] + " ";
+                if (ctx.measureText(test).width > maxWidth && line !== "") {
+                    ctx.fillText(line.trim(), x, y);
+                    line = words[i] + " ";
+                    y += lineHeight;
+                    lines++;
+                    if (maxLines && lines >= maxLines - 1) {
+                        ctx.fillText(line.trim() + "…", x, y);
+                        return;
+                    }
+                } else {
+                    line = test;
+                }
+            }
+            ctx.fillText(line.trim(), x, y);
+        }
+
+        // Kartu Perbandingan (VALID = hijau, HOAX = merah) dengan glow terang
+        function makeComparisonCard(data, mode) {
+            const isValid = mode === "valid";
+            const glowColor = isValid ? "#00e676" : "#ff1744";
+            const accentColor = isValid ? "#00c853" : "#d50000";
+            const bgColor = isValid ? "#f0fff4" : "#fff0f0";
+
+            const w = 620, h = 640;
             const c = document.createElement("canvas");
             c.width = w; c.height = h;
             const ctx = c.getContext("2d");
 
-            const x = 16, y = 16, bw = w - 32, bh = h - 32, r = 18;
-
-            ctx.beginPath();
-            ctx.moveTo(x + r, y);
-            ctx.lineTo(x + bw - r, y);
-            ctx.arcTo(x + bw, y, x + bw, y + r, r);
-            ctx.lineTo(x + bw, y + bh - r);
-            ctx.arcTo(x + bw, y + bh, x + bw - r, y + bh, r);
-            ctx.lineTo(x + r, y + bh);
-            ctx.arcTo(x, y + bh, x, y + bh - r, r);
-            ctx.lineTo(x, y + r);
-            ctx.arcTo(x, y, x + r, y, r);
-            ctx.closePath();
-
-            ctx.fillStyle = "#ffffff";
+            // Glow luar terang (double pass supaya lebih ngejreng)
+            ctx.shadowColor = glowColor;
+            ctx.shadowBlur = 55;
+            roundRect(ctx, 26, 26, w - 52, h - 52, 28);
+            ctx.fillStyle = bgColor;
             ctx.fill();
 
-            ctx.lineWidth = 5;
-            ctx.strokeStyle = accentColor;
-            ctx.shadowColor = accentColor;
-            ctx.shadowBlur = 15;
+            ctx.shadowBlur = 35;
+            ctx.lineWidth = 10;
+            ctx.strokeStyle = glowColor;
             ctx.stroke();
+
             ctx.shadowBlur = 0;
 
-            ctx.fillStyle = headerBg;
-            ctx.beginPath();
-            ctx.roundRect(x + 12, y + 12, bw - 24, 50, [12, 12, 0, 0]);
+            // Header ribbon status (VALID / HOAX)
+            ctx.fillStyle = accentColor;
+            roundRect(ctx, 26, 26, w - 52, 90, 28);
             ctx.fill();
+            // ratakan sudut bawah ribbon jadi kotak
+            ctx.fillRect(26, 90, w - 52, 26);
 
             ctx.fillStyle = "#ffffff";
-            ctx.font = "700 16px 'Inter', sans-serif";
+            ctx.font = "800 34px Oswald, sans-serif";
+            ctx.textAlign = "center";
+            ctx.fillText(isValid ? "BERITA VALID" : "BERITA HOAX", w / 2, 82);
             ctx.textAlign = "left";
-            ctx.fillText(badgeText, x + 28, y + 43);
 
-            ctx.fillStyle = "#1e293b";
-            ctx.font = "700 18px 'Inter', sans-serif";
-            let currentY = y + 88;
-            currentY = wrapTextCustom(ctx, titleText, x + 28, currentY, bw - 56, 22);
-
-            ctx.strokeStyle = "#e2e8f0";
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.moveTo(x + 28, currentY + 8);
-            ctx.lineTo(x + bw - 28, currentY + 8);
-            ctx.stroke();
-
-            currentY += 28;
-            ctx.fillStyle = "#475569";
-            ctx.font = "400 13px 'Inter', sans-serif";
-            currentY = wrapTextCustom(ctx, descText, x + 28, currentY, bw - 56, 19);
-
-            currentY += 12;
-            ctx.fillStyle = "#f8fafc";
-            ctx.beginPath();
-            ctx.roundRect(x + 24, currentY, bw - 48, 140, 10);
-            ctx.fill();
-            ctx.strokeStyle = "#cbd5e1";
-            ctx.stroke();
-
-            let pointY = currentY + 24;
+            // Label kecil
             ctx.fillStyle = accentColor;
-            ctx.font = "700 12px 'Inter', sans-serif";
-            ctx.fillText("PANDANGAN ANALISIS:", x + 38, pointY);
+            ctx.font = "bold 20px 'JetBrains Mono', monospace";
+            ctx.fillText(data.label, 45, 165);
 
-            pointY += 20;
+            // Sumber
             ctx.fillStyle = "#334155";
-            ctx.font = "500 12px 'Inter', sans-serif";
-            pointsArray.forEach(pt => {
-                ctx.fillText("• " + pt, x + 38, pointY);
-                pointY += 22;
-            });
+            ctx.font = "16px 'JetBrains Mono', monospace";
+            ctx.fillText("Sumber: " + data.source, 45, 195);
 
-            ctx.fillStyle = "#94a3b8";
-            ctx.font = "500 10px 'JetBrains Mono', monospace";
-            ctx.fillText("ECHOBREAK VERIFIER", x + 24, y + bh - 18);
+            ctx.strokeStyle = "#cbd5e1";
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(45, 220);
+            ctx.lineTo(w - 45, 220);
+            ctx.stroke();
 
-            ctx.textAlign = "right";
-            ctx.fillText("SYSTEM OK", x + bw - 24, y + bh - 18);
+            // Isi teks
+            ctx.fillStyle = "#1e293b";
+            ctx.font = "22px 'JetBrains Mono', monospace";
+            wrapText(ctx, data.text, 45, 270, w - 90, 32, 8);
+
+            // Footer icon besar
+            ctx.font = "60px sans-serif";
+            ctx.textAlign = "center";
+            ctx.fillText(isValid ? "✅" : "⚠️", w / 2, h - 55);
+            ctx.textAlign = "left";
 
             return c;
         }
 
-        function wrapTextCustom(context, text, x, y, maxWidth, lineHeight) {
-            const words = text.split(' ');
-            let line = '';
-            for(let n = 0; n < words.length; n++) {
-                let testLine = line + words[n] + ' ';
-                let metrics = context.measureText(testLine);
-                let testWidth = metrics.width;
-                if (testWidth > maxWidth && n > 0) {
-                    context.fillText(line, x, y);
-                    line = words[n] + ' ';
-                    y += lineHeight;
-                } else {
-                    line = testLine;
-                }
-            }
-            context.fillText(line, x, y);
-            return y;
+        // Badge VS dramatis (kuning/oranye menyala)
+        function makeVsBadge() {
+            const w = 320, h = 320;
+            const c = document.createElement("canvas");
+            c.width = w; c.height = h;
+            const ctx = c.getContext("2d");
+
+            const cx = w / 2, cy = h / 2, r = 120;
+
+            ctx.shadowColor = "#ffea00";
+            ctx.shadowBlur = 60;
+            const grad = ctx.createRadialGradient(cx, cy, 20, cx, cy, r);
+            grad.addColorStop(0, "#fff176");
+            grad.addColorStop(0.6, "#ffb300");
+            grad.addColorStop(1, "#ff6f00");
+            ctx.beginPath();
+            ctx.arc(cx, cy, r, 0, Math.PI * 2);
+            ctx.fillStyle = grad;
+            ctx.fill();
+
+            ctx.shadowBlur = 25;
+            ctx.lineWidth = 8;
+            ctx.strokeStyle = "#ffffff";
+            ctx.stroke();
+
+            ctx.shadowBlur = 0;
+            ctx.fillStyle = "#7c2d12";
+            ctx.font = "900 92px Oswald, sans-serif";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText("VS", cx, cy + 6);
+            ctx.textAlign = "left";
+            ctx.textBaseline = "alphabetic";
+
+            return c;
+        }
+
+        // Title / Sensor badge di atas kedua kartu
+        function makeTitleCanvas() {
+            const w = 900, h = 190;
+            const c = document.createElement("canvas");
+            c.width = w; c.height = h;
+            const ctx = c.getContext("2d");
+
+            ctx.shadowColor = "#ffab00";
+            ctx.shadowBlur = 40;
+            roundRect(ctx, 20, 20, w - 40, h - 40, 26);
+            ctx.fillStyle = "#0f172a";
+            ctx.fill();
+
+            ctx.shadowBlur = 20;
+            ctx.lineWidth = 6;
+            ctx.strokeStyle = "#ffab00";
+            ctx.stroke();
+            ctx.shadowBlur = 0;
+
+            ctx.fillStyle = "#ffca28";
+            ctx.font = "800 40px Oswald, sans-serif";
+            ctx.textAlign = "center";
+            ctx.fillText("⚠ PEMINDAI SENSOR BIAS AKTIF ⚠", w / 2, 88);
+
+            ctx.fillStyle = "#e2e8f0";
+            ctx.font = "24px 'JetBrains Mono', monospace";
+            ctx.fillText("Membandingkan Fakta vs Hoax — Isu MBG", w / 2, 132);
+            ctx.textAlign = "left";
+
+            return c;
+        }
+
+        // Tag peringatan kuning 3D kecil
+        function makeWarningTag() {
+            const w = 460, h = 220;
+            const c = document.createElement("canvas");
+            c.width = w; c.height = h;
+            const ctx = c.getContext("2d");
+
+            ctx.shadowColor = "#ffd600";
+            ctx.shadowBlur = 45;
+            roundRect(ctx, 20, 20, w - 40, h - 40, 24);
+            ctx.fillStyle = "#fff176";
+            ctx.fill();
+
+            ctx.shadowBlur = 25;
+            ctx.lineWidth = 8;
+            ctx.strokeStyle = "#ff6f00";
+            ctx.stroke();
+            ctx.shadowBlur = 0;
+
+            ctx.fillStyle = "#7c2d12";
+            ctx.font = "800 60px sans-serif";
+            ctx.textAlign = "center";
+            ctx.fillText("⚠️", w / 2, 108);
+            ctx.font = "bold 28px 'JetBrains Mono', monospace";
+            ctx.fillText("BIAS TERDETEKSI", w / 2, 160);
+            ctx.textAlign = "left";
+
+            return c;
         }
 
         function applyTexture(entity, canvas) {
@@ -325,76 +588,55 @@
         async function buildTextures() {
             if (document.fonts && document.fonts.ready) await document.fonts.ready;
 
-            const approvedCanvas = makeTextCardCanvas(
-                "✓ FAKTA / APPROVED",
-                "#10B981",
-                "#059669",
-                "Klarifikasi Resmi Kasus Data Publik & Kebijakan",
-                "Berita ini merujuk langsung pada dokumen resmi pemerintah dan hasil riset akademis yang valid.",
-                [
-                    "Narasi objektif dan berbasis data real.",
-                    "Melibatkan konfirmasi dari narasumber ahli.",
-                    "Tidak ada unsur provokasi emosional."
-                ]
-            );
-            applyTexture(document.getElementById("approvedPlane"), approvedCanvas);
-
-            const dangerCanvas = makeTextCardCanvas(
-                "⚠ KRITIS / KONTRA (BIAS)",
-                "#EF4444",
-                "#DC2626",
-                "Isu Sensasional Tanpa Verifikasi Lapangan",
-                "Artikel menggunakan judul clickbait yang berpotensi menggiring opini keliru di tengah masyarakat.",
-                [
-                    "Mengandung bias emosional tinggi.",
-                    "Mengabaikan hak jawab pihak terkait.",
-                    "Berpotensi memicu misinformasi massal."
-                ]
-            );
-            applyTexture(document.getElementById("dangerPlane"), dangerCanvas);
+            applyTexture(document.getElementById("titlePlane"), makeTitleCanvas());
+            applyTexture(document.getElementById("cardValid"), makeComparisonCard(VALID_DATA, "valid"));
+            applyTexture(document.getElementById("cardHoax"), makeComparisonCard(HOAX_DATA, "hoax"));
+            applyTexture(document.getElementById("vsBadge"), makeVsBadge());
+            applyTexture(document.getElementById("warningTag"), makeWarningTag());
         }
         buildTextures();
 
         startButton.addEventListener("click", async () => {
+            if (!startButton.classList.contains("active")) return;
+            startScreen.style.display = "none";
+            arBackButton.style.display = "flex";
+            arHeaderContext.style.display = "block";
+
+            const mindarSystem = scene.systems["mindar-image-system"];
             try {
-                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-                stream.getTracks().forEach(track => track.stop());
-
-                startScreen.style.display = "none";
-                arTopNav.classList.remove("hidden");
-
-                const mindarSystem = scene.systems["mindar-image-system"];
                 await mindarSystem.start();
-                markerStatus.innerText = "Mencari target...";
+                markerStatus.innerText = "Mencari Marker...";
 
-                const camVideo = document.querySelector("video");
+                const camVideo = document.querySelector("video:not(#mainVideo)");
                 if (camVideo) camVideo.classList.add("camFeed");
             } catch (error) {
-                console.error("Camera permission error:", error);
-                alert("Akses kamera ditolak atau tidak tersedia. Harap izinkan akses kamera di pengaturan browser Anda.");
+                console.error("MindAR error:", error);
+                markerStatus.innerText = "GAGAL KAMERA";
+                markerStatus.style.color = "red";
             }
         });
 
         target.addEventListener("targetFound", () => {
-            markerStatus.innerText = "Terdeteksi ✓";
-            markerStatus.style.color = "#10B981";
+            markerStatus.innerText = "Ditemukan ✓";
+            markerStatus.style.color = "#00ff00";
 
             content.setAttribute("visible", "true");
             content.setAttribute("animation", "property: scale; from: 0.01 0.01 0.01; to: 1 1 1; dur: 450; easing: easeOutBack");
 
             planeStatus.innerText = "Aktif ✓";
-            planeStatus.style.color = "#10B981";
+            planeStatus.style.color = "#00ff00";
         });
 
         target.addEventListener("targetLost", () => {
-            markerStatus.innerText = "Hilang";
-            markerStatus.style.color = "#F59E0B";
+            markerStatus.innerText = "Hilang (Arahkan ke Marker)";
+            markerStatus.style.color = "yellow";
 
             content.setAttribute("visible", "false");
             planeStatus.innerText = "Hidden";
-            planeStatus.style.color = "#F59E0B";
+            planeStatus.style.color = "yellow";
         });
     </script>
 
 </body>
+
 </html>
