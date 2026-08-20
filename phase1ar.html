@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ECHOBREAK - AR Scanner</title>
+
+    <!-- A-Frame -->
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+
+    <!-- MindAR -->
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+
+    <!-- Tailwind CSS untuk Styling UI yang Konsisten -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #f7f9fb;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        /* Video kamera dari MindAR = background full screen */
+        video {
+            object-fit: cover !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            z-index: 0 !important;
+        }
+
+        a-scene {
+            width: 100vw;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        a-scene canvas {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            z-index: 1 !important;
+            background: transparent !important;
+        }
+    </style>
+</head>
+
+<body class="bg-[#f7f9fb] text-[#191c1e] text-xs sm:text-sm">
+
+    <!-- ==============================
+         START SCREEN (Latar Putih, Pengecekan Kamera di Awal)
+    ============================== -->
+    <div id="start-screen" class="fixed inset-0 bg-[#f7f9fb] text-[#191c1e] z-[20000] flex flex-col items-center justify-center p-6 text-center">
+        <div class="max-w-md w-full flex flex-col gap-4 items-center">
+            <p id="cam-status-text" class="text-xs text-[#434654] mb-1">Memeriksa izin akses kamera...</p>
+            
+            <!-- Container Button (Grid/Flex sebaris) -->
+            <div class="flex items-center gap-3 w-full">
+                <!-- Button Kembali ke Phase 1 (Secondary - Kiri) -->
+                <a href="phase1.html" class="flex-1 py-3 px-4 rounded-xl bg-[#e0e3e5] text-[#434654] font-semibold text-xs sm:text-sm flex items-center justify-center gap-1.5 hover:bg-[#d8dadc] transition-all">
+                    <span class="material-symbols-outlined text-base">arrow_back</span>
+                    <span>Kembali</span>
+                </a>
+
+                <!-- Button Lanjut Scan (Primary - Kanan) -> Disabled sampai kamera di-acc -->
+                <button id="btn-request-cam" disabled class="flex-1 py-3 px-4 rounded-xl bg-gray-300 text-gray-500 font-semibold text-xs sm:text-sm flex items-center justify-center gap-1.5 shadow-none cursor-not-allowed transition-all">
+                    <span class="material-symbols-outlined text-base">photo_camera</span>
+                    <span id="btn-text">Izinkan Kamera</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==============================
+         UI NAVIGATION DALAM MODE AR (Footer & Header)
+    ============================== -->
+    <div id="ar-ui" class="hidden fixed inset-0 z-[10002] pointer-events-none flex flex-col justify-between p-4">
+        <!-- Top Status Bar -->
+        <div class="flex justify-between items-center pointer-events-auto">
+            <div class="bg-black/70 backdrop-blur-md text-white px-3 py-1.5 rounded-lg font-mono text-[11px] border border-white/10">
+                Marker: <span id="marker-status" class="text-yellow-400 font-bold">Menunggu</span>
+            </div>
+        </div>
+
+        <!-- Bottom Actions -->
+        <div class="flex items-center gap-2 pointer-events-auto w-full max-w-sm mx-auto">
+            <a href="phase1.html" class="flex-1 py-2.5 px-3 rounded-xl bg-white/90 backdrop-blur-md text-[#434654] font-semibold text-xs flex items-center justify-center gap-1 shadow-lg hover:bg-white transition-all border border-gray-200">
+                <span class="material-symbols-outlined text-sm">arrow_back</span>
+                <span>Kembali</span>
+            </a>
+            <a href="phase2.html" class="flex-1 py-2.5 px-3 rounded-xl bg-[#0052CC] text-white font-semibold text-xs flex items-center justify-center gap-1 shadow-lg hover:bg-[#003d9b] transition-all">
+                <span>Lanjut Phase 2</span>
+                <span class="material-symbols-outlined text-sm">arrow_forward</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- ==============================
+         TAP HINT
+    ============================== -->
+    <div id="tap-hint" class="fixed bottom-20 left-1/2 -translate-x-1/2 bg-black/75 text-white py-1.5 px-3 rounded-full text-[11px] z-[10001] pointer-events-none opacity-0 transition-opacity duration-400">
+        Tap video untuk Play/Pause • Double tap untuk Mute/Unmute
+    </div>
+
+    <!-- ==============================
+         AR SCENE
+    ============================== -->
+    <a-scene mindar-image="
+            imageTargetSrc: marker.mind;
+            autoStart: false;
+        " embedded color-space="sRGB" renderer="
+            colorManagement: true;
+            alpha: true;
+        " vr-mode-ui="
+            enabled: false
+        " device-orientation-permission-ui="
+            enabled: false
+        ">
+
+        <a-assets>
+            <video id="arVideo"
+                   src="video.mp4"
+                   preload="auto"
+                   loop="true"
+                   muted="true"
+                   playsinline
+                   webkit-playsinline
+                   crossorigin="anonymous"></video>
+        </a-assets>
+
+        <a-camera position="0 0 0" look-controls="enabled: false"
+                  raycaster="objects: .clickable; far: 10"
+                  cursor="fuse: false; rayOrigin: mouse">
+        </a-camera>
+
+        <a-entity id="target" mindar-image-target="targetIndex: 0">
+            <a-plane id="arPlane"
+                     class="clickable"
+                     position="0 0 0"
+                     rotation="0 0 0"
+                     width="1"
+                     height="0.6"
+                     color="#ffffff"
+                     material="
+                        shader: flat;
+                        src: #arVideo;
+                        side: double;
+                        depthTest: false;
+                        transparent: false;
+                     "
+                     visible="false">
+            </a-plane>
+        </a-entity>
+
+    </a-scene>
+
+    <!-- ==============================
+         JAVASCRIPT LOGIC
+    ============================== -->
+    <script>
+        const scene = document.querySelector("a-scene");
+        const target = document.getElementById("target");
+        const plane = document.getElementById("arPlane");
+        const arVideo = document.getElementById("arVideo");
+        const startScreen = document.getElementById("start-screen");
+        const btnRequestCam = document.getElementById("btn-request-cam");
+        const btnText = document.getElementById("btn-text");
+        const camStatusText = document.getElementById("cam-status-text");
+        const arUi = document.getElementById("ar-ui");
+        const markerStatus = document.getElementById("marker-status");
+        const tapHint = document.getElementById("tap-hint");
+
+        let cameraGranted = false;
+
+        // Fungsi untuk meminta izin kamera langsung saat halaman dimuat (atau saat tombol diklik jika diblokir browser)
+        async function requestCameraAccess() {
+            camStatusText.innerText = "Meminta izin akses kamera...";
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+                // Matikan stream sementara karena MindAR akan mengaktifkannya lagi
+                stream.getTracks().forEach(track => track.stop());
+
+                cameraGranted = true;
+                camStatusText.innerText = "Akses kamera diberikan! Silakan lanjut scan.";
+                
+                // Ubah tombol menjadi aktif (Primary)
+                btnRequestCam.disabled = false;
+                btnRequestCam.classList.remove("bg-gray-300", "text-gray-500", "cursor-not-allowed", "shadow-none");
+                btnRequestCam.classList.add("bg-[#0052CC]", "text-white", "cursor-pointer", "shadow-md", "hover:bg-[#003d9b]");
+                btnText.innerText = "Lanjut Scan";
+            } catch (error) {
+                console.error("Izin kamera ditolak:", error);
+                cameraGranted = false;
+                camStatusText.innerText = "Akses kamera ditolak. Mohon berikan izin kamera pada browser untuk melanjutkan.";
+                
+                btnRequestCam.disabled = false;
+                btnRequestCam.classList.remove("bg-gray-300", "text-gray-500", "cursor-not-allowed", "shadow-none");
+                btnRequestCam.classList.add("bg-[#0052CC]", "text-white", "cursor-pointer", "shadow-md", "hover:bg-[#003d9b]");
+                btnText.innerText = "Coba Izinkan Lagi";
+            }
+        }
+
+        // Jalankan pengecekan kamera otomatis begitu halaman dibuka
+        window.addEventListener("DOMContentLoaded", () => {
+            requestCameraAccess();
+        });
+
+        // Ketika tombol Lanjut Scan diklik
+        btnRequestCam.addEventListener("click", async () => {
+            if (!cameraGranted) {
+                // Jika sebelumnya ditolak, coba minta izin lagi
+                await requestCameraAccess();
+                if (!cameraGranted) return;
+            }
+
+            btnRequestCam.disabled = true;
+            btnText.innerText = "Memuat AR...";
+
+            startScreen.style.display = "none";
+            arUi.classList.remove("hidden");
+
+            arVideo.muted = false;
+
+            try {
+                const mindarSystem = scene.systems["mindar-image-system"];
+                await mindarSystem.start();
+                
+                markerStatus.innerText = "Mencari...";
+
+                const video = document.querySelector("video:not(#arVideo)");
+                if (video) {
+                    video.style.zIndex = "0";
+                    video.style.position = "fixed";
+                    video.style.top = "0";
+                    video.style.left = "0";
+                    video.style.width = "100vw";
+                    video.style.height = "100vh";
+                    video.style.objectFit = "cover";
+                }
+            } catch (err) {
+                console.error("Gagal memulai MindAR sistem:", err);
+                alert("Terjadi kesalahan saat menginisialisasi AR.");
+                window.location.reload();
+            }
+        });
+
+        // MARKER FOUND
+        target.addEventListener("targetFound", () => {
+            markerStatus.innerText = "Ditemukan ✓";
+            markerStatus.className = "text-green-400 font-bold";
+
+            plane.setAttribute("visible", "true");
+
+            arVideo.play().catch((err) => {
+                console.warn("Autoplay video ditolak:", err);
+            });
+
+            tapHint.classList.add("show");
+            setTimeout(() => tapHint.classList.remove("show"), 3000);
+        });
+
+        // MARKER LOST
+        target.addEventListener("targetLost", () => {
+            markerStatus.innerText = "Hilang";
+            markerStatus.className = "text-yellow-400 font-bold";
+
+            plane.setAttribute("visible", "false");
+            arVideo.pause();
+        });
+
+        // INTERAKSI: TAP -> play/pause & DOUBLE TAP -> mute/unmute
+        let tapTimer = null;
+        const DOUBLE_TAP_DELAY = 300;
+
+        plane.addEventListener("click", () => {
+            if (tapTimer !== null) {
+                clearTimeout(tapTimer);
+                tapTimer = null;
+                arVideo.muted = !arVideo.muted;
+            } else {
+                tapTimer = setTimeout(() => {
+                    tapTimer = null;
+                    if (arVideo.paused) {
+                        arVideo.play();
+                    } else {
+                        arVideo.pause();
+                    }
+                }, DOUBLE_TAP_DELAY);
+            }
+        });
+    </script>
+</body>
+</html>
