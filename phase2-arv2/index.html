@@ -123,8 +123,8 @@
         <!-- ============================== MARKER TARGET ============================== -->
         <a-entity id="target" mindar-image-target="targetIndex: 0">
 
-            <!-- Semua konten disatukan di sini supaya bisa di-scale-in bareng saat marker ketemu -->
-            <a-entity id="ar-content" visible="false" scale="0.01 0.01 0.01">
+            <!-- Ditambahkan rotation="-90 0 0" dan position Z dinaikkan agar berdiri tegak di atas marker -->
+            <a-entity id="ar-content" visible="false" scale="0.01 0.01 0.01" rotation="-90 0 0" position="0 0 0.25">
 
                 <!-- ---------- BUBBLE CHAT UTAMA (Ekor di Kanan Bawah & Lebih Besar) ---------- -->
                 <a-plane id="bubblePlane" position="0 0 -0.01" width="0.52" height="0.42"
