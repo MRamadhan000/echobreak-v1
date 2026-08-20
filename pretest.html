@@ -128,7 +128,7 @@
         class="fixed top-0 w-full z-50 bg-surface-container/90 dark:bg-surface-container-high/90 backdrop-blur-md shadow-sm">
         <div class="flex items-center justify-between px-4 md:px-margin-desktop w-full h-16">
             <div class="flex items-center gap-3">
-                <a href="phase1.html"
+                <a href="phase1-news.html"
                     class="p-1 text-primary dark:text-primary-fixed hover:opacity-80 active:scale-95 transition-transform inline-flex items-center justify-center">
                     <span class="material-symbols-outlined text-[20px]">arrow_back</span>
                 </a>
@@ -334,8 +334,13 @@
                 </div>
             </div>
 
-            <!-- Submit Button -->
-            <div class="flex justify-end pt-2">
+            <!-- Buttons Container (Submit + Auto Fill) -->
+            <div class="flex flex-col sm:flex-row justify-end gap-3 pt-2">
+                <button type="button" onclick="autoFillAnswers()"
+                    class="w-full sm:w-auto bg-amber-500 hover:bg-amber-600 text-white text-xs md:text-sm font-semibold py-3 px-6 rounded-xl shadow-md transition-all active:scale-95 flex items-center justify-center gap-2">
+                    <span class="material-symbols-outlined text-[18px]">bolt</span>
+                    ⚡ Isi Otomatis Jawaban
+                </button>
                 <button type="submit"
                     class="w-full sm:w-auto bg-democratic-blue hover:bg-primary-container text-on-primary text-xs md:text-sm font-semibold py-3 px-8 rounded-xl shadow-md transition-all active:scale-95 flex items-center justify-center gap-2">
                     Kirim Jawaban & Lanjut ke Simulasi AR
@@ -346,6 +351,28 @@
         </form>
     </main>
 
+    <!-- Script Auto-Fill -->
+    <script>
+        function autoFillAnswers() {
+            const correctAnswers = {
+                q1: 'B',
+                q2: 'A',
+                q3: 'B',
+                q4: 'A',
+                q5: 'B',
+                q6: 'B',
+                q7: 'A',
+                q8: 'B'
+            };
+
+            for (const [name, value] of Object.entries(correctAnswers)) {
+                const radio = document.querySelector(`input[name="${name}"][value="${value}"]`);
+                if (radio) {
+                    radio.checked = true;
+                }
+            }
+        }
+    </script>
 </body>
 
 </html>
