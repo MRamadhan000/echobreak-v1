@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ECHOBREAK - AR Scanner</title>
+    <title>ECHOBREAK - AR Comments Scanner</title>
 
     <!-- A-Frame -->
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
@@ -31,7 +31,6 @@
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
         }
 
-        /* Video kamera dari MindAR = background full screen */
         video {
             object-fit: cover !important;
             width: 100vw !important;
@@ -66,21 +65,19 @@
 <body class="bg-[#f7f9fb] text-[#191c1e] text-xs sm:text-sm">
 
     <!-- ==============================
-         START SCREEN (Latar Putih, Pengecekan Kamera di Awal)
+         START SCREEN
     ============================== -->
     <div id="start-screen" class="fixed inset-0 bg-[#f7f9fb] text-[#191c1e] z-[20000] flex flex-col items-center justify-center p-6 text-center">
         <div class="max-w-md w-full flex flex-col gap-4 items-center">
+            <h1 class="font-bold text-lg text-[#0052CC]">ECHOBREAK AR Komentar</h1>
             <p id="cam-status-text" class="text-xs text-[#434654] mb-1">Memeriksa izin akses kamera...</p>
             
-            <!-- Container Button (Grid/Flex sebaris) -->
             <div class="flex items-center gap-3 w-full">
-                <!-- Button Kembali ke Phase 1 (Secondary - Kiri) -->
                 <a href="phase1.html" class="flex-1 py-3 px-4 rounded-xl bg-[#e0e3e5] text-[#434654] font-semibold text-xs sm:text-sm flex items-center justify-center gap-1.5 hover:bg-[#d8dadc] transition-all">
                     <span class="material-symbols-outlined text-base">arrow_back</span>
                     <span>Kembali</span>
                 </a>
 
-                <!-- Button Lanjut Scan (Primary - Kanan) -> Disabled sampai kamera di-acc -->
                 <button id="btn-request-cam" disabled class="flex-1 py-3 px-4 rounded-xl bg-gray-300 text-gray-500 font-semibold text-xs sm:text-sm flex items-center justify-center gap-1.5 shadow-none cursor-not-allowed transition-all">
                     <span class="material-symbols-outlined text-base">photo_camera</span>
                     <span id="btn-text">Izinkan Kamera</span>
@@ -90,17 +87,15 @@
     </div>
 
     <!-- ==============================
-         UI NAVIGATION DALAM MODE AR (Footer & Header)
+         UI NAVIGATION
     ============================== -->
     <div id="ar-ui" class="hidden fixed inset-0 z-[10002] pointer-events-none flex flex-col justify-between p-4">
-        <!-- Top Status Bar -->
         <div class="flex justify-between items-center pointer-events-auto">
             <div class="bg-black/70 backdrop-blur-md text-white px-3 py-1.5 rounded-lg font-mono text-[11px] border border-white/10">
-                Marker: <span id="marker-status" class="text-yellow-400 font-bold">Menunggu</span>
+                Status Marker: <span id="marker-status" class="text-yellow-400 font-bold">Menunggu</span>
             </div>
         </div>
 
-        <!-- Bottom Actions -->
         <div class="flex items-center gap-2 pointer-events-auto w-full max-w-sm mx-auto">
             <a href="phase1.html" class="flex-1 py-2.5 px-3 rounded-xl bg-white/90 backdrop-blur-md text-[#434654] font-semibold text-xs flex items-center justify-center gap-1 shadow-lg hover:bg-white transition-all border border-gray-200">
                 <span class="material-symbols-outlined text-sm">arrow_back</span>
@@ -117,7 +112,7 @@
          TAP HINT
     ============================== -->
     <div id="tap-hint" class="fixed bottom-20 left-1/2 -translate-x-1/2 bg-black/75 text-white py-1.5 px-3 rounded-full text-[11px] z-[10001] pointer-events-none opacity-0 transition-opacity duration-400">
-        Tap video untuk Play/Pause • Double tap untuk Mute/Unmute
+        Arahkan kamera ke marker untuk melihat opini publik MBG
     </div>
 
     <!-- ==============================
@@ -136,14 +131,14 @@
         ">
 
         <a-assets>
-            <video id="arVideo"
-                   src="video.mp4"
-                   preload="auto"
-                   loop="true"
-                   muted="true"
-                   playsinline
-                   webkit-playsinline
-                   crossorigin="anonymous"></video>
+            <!-- Canvas untuk Judul dan 6 Komentar -->
+            <canvas id="canvasTitle" width="512" height="120"></canvas>
+            <canvas id="canvas1" width="512" height="280"></canvas>
+            <canvas id="canvas2" width="512" height="280"></canvas>
+            <canvas id="canvas3" width="512" height="280"></canvas>
+            <canvas id="canvas4" width="512" height="280"></canvas>
+            <canvas id="canvas5" width="512" height="280"></canvas>
+            <canvas id="canvas6" width="512" height="280"></canvas>
         </a-assets>
 
         <a-camera position="0 0 0" look-controls="enabled: false"
@@ -151,23 +146,22 @@
                   cursor="fuse: false; rayOrigin: mouse">
         </a-camera>
 
+        <!-- TARGET MARKER (Orientasi rotation="0 0 0" menghadap lurus ke depan) -->
         <a-entity id="target" mindar-image-target="targetIndex: 0">
-            <a-plane id="arPlane"
-                     class="clickable"
-                     position="0 0 0"
-                     rotation="0 0 0"
-                     width="1"
-                     height="0.6"
-                     color="#ffffff"
-                     material="
-                        shader: flat;
-                        src: #arVideo;
-                        side: double;
-                        depthTest: false;
-                        transparent: false;
-                     "
-                     visible="false">
-            </a-plane>
+            
+            <!-- Plane Judul Utama di Paling Atas (Menghadap Depan) -->
+            <a-plane class="clickable comment-plane" position="0 0.65 0.05" rotation="0 0 0" width="1.4" height="0.25" material="src: #canvasTitle; shader: flat; transparent: true;" visible="false"></a-plane>
+
+            <!-- Baris 1 Komentar (Menghadap Depan) -->
+            <a-plane class="clickable comment-plane" position="-0.7 0.15 0.05" rotation="0 0 0" width="0.65" height="0.4" material="src: #canvas1; shader: flat; transparent: true;" visible="false"></a-plane>
+            <a-plane class="clickable comment-plane" position="0 0.15 0.05" rotation="0 0 0" width="0.65" height="0.4" material="src: #canvas2; shader: flat; transparent: true;" visible="false"></a-plane>
+            <a-plane class="clickable comment-plane" position="0.7 0.15 0.05" rotation="0 0 0" width="0.65" height="0.4" material="src: #canvas3; shader: flat; transparent: true;" visible="false"></a-plane>
+            
+            <!-- Baris 2 Komentar (Menghadap Depan) -->
+            <a-plane class="clickable comment-plane" position="-0.7 -0.35 0.05" rotation="0 0 0" width="0.65" height="0.4" material="src: #canvas4; shader: flat; transparent: true;" visible="false"></a-plane>
+            <a-plane class="clickable comment-plane" position="0 -0.35 0.05" rotation="0 0 0" width="0.65" height="0.4" material="src: #canvas5; shader: flat; transparent: true;" visible="false"></a-plane>
+            <a-plane class="clickable comment-plane" position="0.7 -0.35 0.05" rotation="0 0 0" width="0.65" height="0.4" material="src: #canvas6; shader: flat; transparent: true;" visible="false"></a-plane>
+
         </a-entity>
 
     </a-scene>
@@ -176,10 +170,130 @@
          JAVASCRIPT LOGIC
     ============================== -->
     <script>
+        const commentsData = [
+            {
+                author: "Budi Santoso",
+                tag: "[PRO]",
+                text: "Shift dini hari adalah langkah taktis paling masuk akal demi mengejar volume produksi yang masif.",
+                color: "#16a34a"
+            },
+            {
+                author: "Dr. Siti Rahma",
+                tag: "[KONTRA]",
+                text: "Bahaya holding time terlalu lama! Nutrisi makanan bisa rusak sebelum anak-anak sempat menyantapnya.",
+                color: "#dc2626"
+            },
+            {
+                author: "Ahmad Fauzi",
+                tag: "[NETRAL]",
+                text: "Programnya bagus, tapi radius distribusi dan SOP jam masak wajib dievaluasi secara berkala.",
+                color: "#d97706"
+            },
+            {
+                author: "Dewi Lestari",
+                tag: "[PRO]",
+                text: "Sangat membantu ekonomi mikro! UMKM sekitar dapur umum jadi punya pasokan bahan baku rutin harian.",
+                color: "#16a34a"
+            },
+            {
+                author: "Rian Pratama",
+                tag: "[KONTRA]",
+                text: "Takutnya ada masalah basi atau penurunan cita rasa karena jarak tempuh ke sekolah terlalu jauh.",
+                color: "#dc2626"
+            },
+            {
+                author: "Eko Prasetyo",
+                tag: "[NETRAL]",
+                text: "Kuncinya ada di teknologi cold chain management dan pembatasan jarak tempuh dapur umum.",
+                color: "#d97706"
+            }
+        ];
+
+        function drawTitleToCanvas() {
+            const canvas = document.getElementById("canvasTitle");
+            const ctx = canvas.getContext('2d');
+
+            ctx.fillStyle = "#0052CC";
+            ctx.beginPath();
+            ctx.roundRect(0, 0, 512, 120, 20);
+            ctx.fill();
+
+            ctx.fillStyle = "#ffffff";
+            ctx.font = "bold 20px Inter, sans-serif";
+            ctx.textAlign = "center";
+            ctx.fillText("Pendapat Orang Lain", 256, 45);
+            ctx.font = "16px Inter, sans-serif";
+            ctx.fillText("Terhadap Berita MBG", 256, 80);
+            ctx.textAlign = "left";
+        }
+
+        function drawCommentToCanvas(canvasId, item) {
+            const canvas = document.getElementById(canvasId);
+            const ctx = canvas.getContext('2d');
+
+            ctx.fillStyle = "#ffffff";
+            ctx.beginPath();
+            ctx.roundRect(0, 0, 512, 280, 20);
+            ctx.fill();
+
+            ctx.strokeStyle = "#e2e8f0";
+            ctx.lineWidth = 6;
+            ctx.stroke();
+
+            ctx.fillStyle = item.color;
+            ctx.beginPath();
+            ctx.roundRect(30, 25, 100, 32, 8);
+            ctx.fill();
+
+            ctx.fillStyle = "#ffffff";
+            ctx.font = "bold 15px Inter, sans-serif";
+            ctx.fillText(item.tag, 42, 47);
+
+            ctx.fillStyle = "#434654";
+            ctx.font = "bold 15px Inter, sans-serif";
+            ctx.fillText(item.author, 145, 47);
+
+            ctx.strokeStyle = "#edf2f7";
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(30, 70);
+            ctx.lineTo(482, 70);
+            ctx.stroke();
+
+            ctx.fillStyle = "#191c1e";
+            ctx.font = "16px Inter, sans-serif";
+            
+            let words = item.text.split(" ");
+            let line = "";
+            let y = 110;
+            let maxWidth = 450;
+
+            for(let n = 0; n < words.length; n++) {
+                let testLine = line + words[n] + " ";
+                let metrics = ctx.measureText(testLine);
+                let testWidth = metrics.width;
+                if (testWidth > maxWidth && n > 0) {
+                    ctx.fillText(line, 30, y);
+                    line = words[n] + " ";
+                    y += 26;
+                } else {
+                    line = testLine;
+                }
+            }
+            ctx.fillText(line, 30, y);
+        }
+
+        window.addEventListener("DOMContentLoaded", () => {
+            drawTitleToCanvas();
+            commentsData.forEach((item, index) => {
+                drawCommentToCanvas(`canvas${index + 1}`, item);
+            });
+            requestCameraAccess();
+        });
+
         const scene = document.querySelector("a-scene");
         const target = document.getElementById("target");
-        const plane = document.getElementById("arPlane");
-        const arVideo = document.getElementById("arVideo");
+        const commentPlanes = document.querySelectorAll(".comment-plane");
         const startScreen = document.getElementById("start-screen");
         const btnRequestCam = document.getElementById("btn-request-cam");
         const btnText = document.getElementById("btn-text");
@@ -190,18 +304,15 @@
 
         let cameraGranted = false;
 
-        // Fungsi untuk meminta izin kamera langsung saat halaman dimuat (atau saat tombol diklik jika diblokir browser)
         async function requestCameraAccess() {
             camStatusText.innerText = "Meminta izin akses kamera...";
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-                // Matikan stream sementara karena MindAR akan mengaktifkannya lagi
                 stream.getTracks().forEach(track => track.stop());
 
                 cameraGranted = true;
                 camStatusText.innerText = "Akses kamera diberikan! Silakan lanjut scan.";
                 
-                // Ubah tombol menjadi aktif (Primary)
                 btnRequestCam.disabled = false;
                 btnRequestCam.classList.remove("bg-gray-300", "text-gray-500", "cursor-not-allowed", "shadow-none");
                 btnRequestCam.classList.add("bg-[#0052CC]", "text-white", "cursor-pointer", "shadow-md", "hover:bg-[#003d9b]");
@@ -209,7 +320,7 @@
             } catch (error) {
                 console.error("Izin kamera ditolak:", error);
                 cameraGranted = false;
-                camStatusText.innerText = "Akses kamera ditolak. Mohon berikan izin kamera pada browser untuk melanjutkan.";
+                camStatusText.innerText = "Akses kamera ditolak. Mohon berikan izin kamera pada browser.";
                 
                 btnRequestCam.disabled = false;
                 btnRequestCam.classList.remove("bg-gray-300", "text-gray-500", "cursor-not-allowed", "shadow-none");
@@ -218,15 +329,8 @@
             }
         }
 
-        // Jalankan pengecekan kamera otomatis begitu halaman dibuka
-        window.addEventListener("DOMContentLoaded", () => {
-            requestCameraAccess();
-        });
-
-        // Ketika tombol Lanjut Scan diklik
         btnRequestCam.addEventListener("click", async () => {
             if (!cameraGranted) {
-                // Jika sebelumnya ditolak, coba minta izin lagi
                 await requestCameraAccess();
                 if (!cameraGranted) return;
             }
@@ -237,24 +341,11 @@
             startScreen.style.display = "none";
             arUi.classList.remove("hidden");
 
-            arVideo.muted = false;
-
             try {
                 const mindarSystem = scene.systems["mindar-image-system"];
                 await mindarSystem.start();
                 
-                markerStatus.innerText = "Mencari...";
-
-                const video = document.querySelector("video:not(#arVideo)");
-                if (video) {
-                    video.style.zIndex = "0";
-                    video.style.position = "fixed";
-                    video.style.top = "0";
-                    video.style.left = "0";
-                    video.style.width = "100vw";
-                    video.style.height = "100vh";
-                    video.style.objectFit = "cover";
-                }
+                markerStatus.innerText = "Mencari Marker...";
             } catch (err) {
                 console.error("Gagal memulai MindAR sistem:", err);
                 alert("Terjadi kesalahan saat menginisialisasi AR.");
@@ -262,49 +353,25 @@
             }
         });
 
-        // MARKER FOUND
         target.addEventListener("targetFound", () => {
             markerStatus.innerText = "Ditemukan ✓";
             markerStatus.className = "text-green-400 font-bold";
 
-            plane.setAttribute("visible", "true");
-
-            arVideo.play().catch((err) => {
-                console.warn("Autoplay video ditolak:", err);
+            commentPlanes.forEach(plane => {
+                plane.setAttribute("visible", "true");
             });
 
             tapHint.classList.add("show");
             setTimeout(() => tapHint.classList.remove("show"), 3000);
         });
 
-        // MARKER LOST
         target.addEventListener("targetLost", () => {
             markerStatus.innerText = "Hilang";
             markerStatus.className = "text-yellow-400 font-bold";
 
-            plane.setAttribute("visible", "false");
-            arVideo.pause();
-        });
-
-        // INTERAKSI: TAP -> play/pause & DOUBLE TAP -> mute/unmute
-        let tapTimer = null;
-        const DOUBLE_TAP_DELAY = 300;
-
-        plane.addEventListener("click", () => {
-            if (tapTimer !== null) {
-                clearTimeout(tapTimer);
-                tapTimer = null;
-                arVideo.muted = !arVideo.muted;
-            } else {
-                tapTimer = setTimeout(() => {
-                    tapTimer = null;
-                    if (arVideo.paused) {
-                        arVideo.play();
-                    } else {
-                        arVideo.pause();
-                    }
-                }, DOUBLE_TAP_DELAY);
-            }
+            commentPlanes.forEach(plane => {
+                plane.setAttribute("visible", "false");
+            });
         });
     </script>
 </body>
