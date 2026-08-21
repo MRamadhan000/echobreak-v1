@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>ECHOBREAK — Fase 1: AR Komentar Scanner</title>
+    <title>ECHOBREAK — Fase 1: Digital Exposure Simulation</title>
 
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
@@ -45,7 +45,7 @@
             background: #ffffff;
             color: #191c1e; z-index: 20000;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            gap: 16px; text-align: center; padding: 20px;
+            gap: 14px; text-align: center; padding: 24px;
         }
         #start-screen .badge {
             font-family: 'JetBrains Mono', monospace;
@@ -57,8 +57,8 @@
         }
         #start-screen h2 {
             font-family: 'Oswald', sans-serif;
-            font-size: clamp(22px, 6.5vw, 30px);
-            letter-spacing: 2.5px;
+            font-size: clamp(20px, 6vw, 28px);
+            letter-spacing: 2px;
             margin: 0; color: #0052cc;
             text-shadow: 0 0 10px rgba(0,82,204,.15);
         }
@@ -66,20 +66,42 @@
             margin: 0;
             font-size: clamp(11px, 3.5vw, 13px);
             color: #434654;
-            max-width: 300px;
-            line-height: 1.4;
+            max-width: 320px;
+            line-height: 1.5;
         }
+        #start-screen .instruction-box {
+            background: #f6f9ff;
+            border: 1px solid #cfe0ff;
+            border-radius: 10px;
+            padding: 12px 14px;
+            max-width: 320px;
+            text-align: left;
+            margin-top: 4px;
+        }
+        #start-screen .instruction-box p {
+            max-width: none;
+            color: #1f2937;
+            font-size: clamp(11px, 3.3vw, 12.5px);
+        }
+        #start-screen .instruction-box p + p { margin-top: 6px; }
+        #start-screen .instruction-box b { color: #0052cc; }
+        #start-screen .legend {
+            display: flex; gap: 14px; margin-top: 2px;
+            font-size: 11px; color: #434654;
+        }
+        #start-screen .legend span { display: inline-flex; align-items: center; gap: 5px; }
+        #start-screen .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
         #cam-status-text {
             font-size: clamp(10px, 3.2vw, 12px);
             color: #64748b;
-            margin: -6px 0 0 0;
+            margin: 0;
         }
 
         .button-group {
             display: flex;
             gap: 10px;
             align-items: center;
-            margin-top: 6px;
+            margin-top: 4px;
             width: 100%;
             max-width: 320px;
             justify-content: center;
@@ -157,38 +179,83 @@
             font-size: 10px; margin: 0; color: #cbd5e1; line-height: 1.35;
         }
 
-        /* --- TOMBOL NAVIGASI BAWAH SAAT AR AKTIF --- */
-        #ar-nav {
-            position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
-            width: 92%; max-width: 380px;
-            display: none; gap: 10px;
+        /* --- PROGRESS INDICATOR --- */
+        #progress-indicator {
+            position: fixed; top: 86px; left: 50%; transform: translateX(-50%);
             z-index: 20005;
+            background: rgba(15,23,42,0.8); border: 1px solid rgba(0,82,204,0.4);
+            border-radius: 999px; padding: 5px 14px;
+            color: #e2e8f0; font-size: 10.5px; letter-spacing: 0.5px;
+            display: none;
         }
-        #ar-nav a {
-            flex: 1;
-            padding: 10px 14px;
+
+        /* --- REVEAL INSIGHT PANEL --- */
+        #insight-reveal {
+            position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(20px);
+            width: 90%; max-width: 400px;
+            background: rgba(15, 23, 42, 0.94);
+            border: 1px solid rgba(96,165,250,0.5);
+            box-shadow: 0 0 18px rgba(0,82,204,0.35);
+            border-radius: 12px; padding: 14px 16px;
+            z-index: 20006; display: none; opacity: 0;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        #insight-reveal.show { display: block; opacity: 1; transform: translateX(-50%) translateY(0); }
+        #insight-reveal h4 {
+            font-family: 'Oswald', sans-serif; font-size: 13px; letter-spacing: 0.5px;
+            margin: 0 0 6px 0; color: #60a5fa; text-transform: uppercase;
+        }
+        #insight-reveal p {
+            font-size: 11px; line-height: 1.5; color: #e2e8f0; margin: 0;
+        }
+
+        /* --- TOMBOL KEMBALI (KIRI ATAS) SAAT AR AKTIF --- */
+        #ar-back-btn {
+            position: fixed; top: 16px; left: 16px;
+            display: none;
+            align-items: center; gap: 6px;
+            padding: 9px 14px;
             font-family: 'Oswald', sans-serif;
-            font-size: 12px;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            border-radius: 8px;
+            font-size: 12px; font-weight: 600; letter-spacing: 0.5px;
+            background: rgba(255,255,255,0.95); color: #0052cc;
+            border: 2px solid #0052cc; border-radius: 999px;
             text-decoration: none;
-            display: inline-flex; align-items: center; justify-content: center;
-            gap: 6px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+            z-index: 20006;
             transition: all 0.2s ease;
         }
-        #ar-nav a:active { transform: scale(0.96); }
-        #navBack {
-            background: #ffffff; color: #0052cc;
-            border: 2px solid #0052cc;
+        #ar-back-btn:hover { background: #f0f6ff; }
+        #ar-back-btn:active { transform: scale(0.95); }
+
+        /* --- OVERLAY TOMBOL UTAMA (BAWAH) SAAT AR AKTIF --- */
+        #news-nav {
+            position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
+            width: 92%; max-width: 380px;
+            display: none;
+            z-index: 20005;
         }
-        #navBack:hover { background: #f0f6ff; }
-        #navNext {
+        #nextNewsBtn {
+            width: 100%;
+            padding: 16px 18px;
+            font-family: 'Oswald', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            border-radius: 10px;
+            display: inline-flex; align-items: center; justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+            transition: all 0.2s ease;
+            border: none;
+            cursor: pointer;
             background: #0052cc; color: #ffffff;
-            border: 2px solid #0052cc;
         }
-        #navNext:hover { background: #003d9b; }
+        #nextNewsBtn:hover { background: #003d9b; }
+        #nextNewsBtn:active { transform: scale(0.97); }
+        #nextNewsBtn.final {
+            background: #16a34a;
+        }
+        #nextNewsBtn.final:hover { background: #128038; }
 
         /* --- DEBUG PANEL --- */
         #debug-panel {
@@ -201,12 +268,13 @@
 
         /* --- TAP HINT --- */
         #tap-hint {
-            position: fixed; bottom: 78px; left: 50%; transform: translateX(-50%);
+            position: fixed; bottom: 92px; left: 50%; transform: translateX(-50%);
             background: rgba(15,23,42,0.85); color: #fff;
             padding: 7px 14px; border-radius: 999px;
             font-size: 10.5px; z-index: 20004; pointer-events: none;
             opacity: 0; transition: opacity 0.4s ease;
             border: 1px solid rgba(0,82,204,0.4);
+            text-align: center; max-width: 80%;
         }
         #tap-hint.show { opacity: 1; }
     </style>
@@ -216,21 +284,45 @@
 
     <!-- Header Konteks AR -->
     <div id="ar-header-context">
-        <h4>Fase 1: Opini Publik AR</h4>
-        <p>Visualisasi hologram berisi ragam komentar publik — pro, kontra, dan netral — terhadap isu MBG.</p>
+        <h4>Fase 1 – Digital Exposure Simulation</h4>
+        <p>Arahkan kamera ke marker, lalu tekan tombol LANJUT untuk membuka berita satu per satu. Hijau = berita positif, Merah = berita negatif.</p>
     </div>
 
-    <!-- Navigasi bawah saat AR aktif -->
-    <div id="ar-nav">
-        <a id="navBack" href="phase1.html">← KEMBALI</a>
-        <a id="navNext" href="phase2.html">LANJUT FASE 2 →</a>
+    <!-- Progress -->
+    <div id="progress-indicator">Kartu 1 / 5</div>
+
+    <!-- Reveal Insight -->
+    <div id="insight-reveal">
+        <h4>⚠ Rekam Jejakmu Baru Saja Terbentuk</h4>
+        <p>Tanpa kamu sadari, setiap tekanan tombol tadi "mengajarkan" sistem tentang apa yang kamu sukai. Beranda media sosial bekerja dengan cara serupa: makin sering kamu berinteraksi dengan satu jenis berita, makin banyak jenis itu yang akan muncul lagi — membentuk gelembung informasi (filter bubble) tanpa kamu pernah tahu aturannya.</p>
+    </div>
+
+    <!-- Tombol Kembali (kiri atas) saat AR aktif -->
+    <a id="ar-back-btn" href="phase1.html">← Kembali</a>
+
+    <!-- Tombol Lanjut (bawah, overlay HTML/CSS, bukan objek AR) -->
+    <div id="news-nav">
+        <button id="nextNewsBtn">LANJUT →</button>
     </div>
 
     <!-- Layar Awal -->
     <div id="start-screen">
-        <div class="badge">FASE 1 · OPINI PUBLIK</div>
+        <div class="badge">FASE 1 · DIGITAL EXPOSURE SIMULATION</div>
         <h2>AR KOMENTAR SCANNER</h2>
-        <p>Arahkan kamera ke marker untuk melihat hologram opini publik terhadap berita MBG</p>
+        <p>Arahkan kamera ke marker untuk memunculkan tumpukan hologram berita seputar isu MBG.</p>
+
+        <div class="instruction-box">
+            <p><b>Apa yang harus kamu lakukan:</b></p>
+            <p>1. Arahkan kamera ke marker sampai hologram muncul.</p>
+            <p>2. Tekan tombol <b>LANJUT</b> di bawah layar untuk membaca kartu berita dan pindah ke berita berikutnya.</p>
+            <p>3. Ulangi sampai ke-5 kartu habis, lalu baca apa yang terjadi di baliknya, dan tekan LANJUT sekali lagi untuk masuk ke Fase 2.</p>
+        </div>
+
+        <div class="legend">
+            <span><i class="dot" style="background:#16a34a;"></i> Berita Positif</span>
+            <span><i class="dot" style="background:#dc2626;"></i> Berita Negatif</span>
+        </div>
+
         <p id="cam-status-text">Memeriksa izin akses kamera...</p>
 
         <div class="button-group">
@@ -245,7 +337,7 @@
         <br>Core State: <span id="plane-status" style="color: yellow;">Hidden</span>
     </div>
 
-    <div id="tap-hint">Arahkan kamera ke marker untuk melihat opini publik MBG</div>
+    <div id="tap-hint">Arahkan kamera ke marker, lalu tekan tombol LANJUT</div>
 
     <a-scene mindar-image="
             imageTargetSrc: marker.mind;
@@ -255,10 +347,7 @@
             alpha: true;
         " vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
 
-        <a-camera position="0 0 0" look-controls="enabled: false"
-                  raycaster="objects: .clickable; far: 10"
-                  cursor="fuse: false; rayOrigin: mouse">
-        </a-camera>
+        <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
         <!-- ============================== MARKER TARGET ============================== -->
         <a-entity id="target" mindar-image-target="targetIndex: 0">
@@ -266,30 +355,30 @@
             <a-entity id="ar-content" visible="false" scale="0.01 0.01 0.01">
 
                 <!-- Judul Utama -->
-                <a-plane id="titlePlane" position="0 0.62 -0.01" width="0.78" height="0.17"
+                <a-plane id="titlePlane" position="0 0.58 -0.01" width="0.72" height="0.15"
                          material="shader: flat; transparent: true; side: double"></a-plane>
 
-                <!-- Baris 1 -->
-                <a-plane id="card-1" class="comment-plane" position="-0.42 0.28 -0.01" rotation="0 0 -2" width="0.38" height="0.22"
-                         material="shader: flat; transparent: true; side: double"
-                         animation="property: position; from: -0.42 0.28 -0.01; to: -0.36 0.32 -0.01; dur: 2200; dir: alternate; loop: true; easing: easeInOutSine"></a-plane>
-                <a-plane id="card-2" class="comment-plane" position="0 0.28 -0.01" rotation="0 0 1" width="0.38" height="0.22"
-                         material="shader: flat; transparent: true; side: double"
-                         animation="property: position; from: 0 0.28 -0.01; to: 0 0.33 -0.01; dur: 2400; dir: alternate; loop: true; easing: easeInOutSine"></a-plane>
-                <a-plane id="card-3" class="comment-plane" position="0.42 0.28 -0.01" rotation="0 0 2" width="0.38" height="0.22"
-                         material="shader: flat; transparent: true; side: double"
-                         animation="property: position; from: 0.42 0.28 -0.01; to: 0.36 0.32 -0.01; dur: 2100; dir: alternate; loop: true; easing: easeInOutSine"></a-plane>
+                <!-- Stack Berita (5 kartu, index 0 = paling depan/atas). Kartu tidak lagi bisa diketuk langsung — navigasi lewat tombol overlay LANJUT di bawah layar. -->
+                <a-plane id="news-card-0" class="news-card" data-index="0"
+                         position="0 0.15 -0.01" rotation="0 0 0" width="0.62" height="0.42"
+                         material="shader: flat; transparent: true; side: double"></a-plane>
+                <a-plane id="news-card-1" class="news-card" data-index="1"
+                         position="0.02 0.13 -0.014" rotation="0 0 -3" width="0.62" height="0.42"
+                         material="shader: flat; transparent: true; side: double"></a-plane>
+                <a-plane id="news-card-2" class="news-card" data-index="2"
+                         position="-0.03 0.11 -0.018" rotation="0 0 4" width="0.62" height="0.42"
+                         material="shader: flat; transparent: true; side: double"></a-plane>
+                <a-plane id="news-card-3" class="news-card" data-index="3"
+                         position="0.045 0.09 -0.022" rotation="0 0 -5" width="0.62" height="0.42"
+                         material="shader: flat; transparent: true; side: double"></a-plane>
+                <a-plane id="news-card-4" class="news-card" data-index="4"
+                         position="-0.05 0.07 -0.026" rotation="0 0 6" width="0.62" height="0.42"
+                         material="shader: flat; transparent: true; side: double"></a-plane>
 
-                <!-- Baris 2 -->
-                <a-plane id="card-4" class="comment-plane" position="-0.42 -0.02 -0.01" rotation="0 0 2" width="0.38" height="0.22"
-                         material="shader: flat; transparent: true; side: double"
-                         animation="property: position; from: -0.42 -0.02 -0.01; to: -0.36 -0.06 -0.01; dur: 2300; dir: alternate; loop: true; easing: easeInOutSine"></a-plane>
-                <a-plane id="card-5" class="comment-plane" position="0 -0.02 -0.01" rotation="0 0 -1" width="0.38" height="0.22"
-                         material="shader: flat; transparent: true; side: double"
-                         animation="property: position; from: 0 -0.02 -0.01; to: 0 -0.07 -0.01; dur: 2500; dir: alternate; loop: true; easing: easeInOutSine"></a-plane>
-                <a-plane id="card-6" class="comment-plane" position="0.42 -0.02 -0.01" rotation="0 0 -2" width="0.38" height="0.22"
-                         material="shader: flat; transparent: true; side: double"
-                         animation="property: position; from: 0.42 -0.02 -0.01; to: 0.36 -0.06 -0.01; dur: 2000; dir: alternate; loop: true; easing: easeInOutSine"></a-plane>
+                <!-- Kartu Penutup (muncul setelah 5 kartu habis) -->
+                <a-plane id="news-card-done" visible="false"
+                         position="0 0.15 -0.01" rotation="0 0 0" width="0.62" height="0.42"
+                         material="shader: flat; transparent: true; side: double"></a-plane>
 
             </a-entity>
         </a-entity>
@@ -305,25 +394,67 @@
         const startButton = document.getElementById("startButton");
         const camStatusText = document.getElementById("cam-status-text");
         const arHeaderContext = document.getElementById("ar-header-context");
-        const arNav = document.getElementById("ar-nav");
+        const arBackBtn = document.getElementById("ar-back-btn");
+        const newsNav = document.getElementById("news-nav");
+        const nextNewsBtn = document.getElementById("nextNewsBtn");
         const markerStatus = document.getElementById("marker-status");
         const planeStatus = document.getElementById("plane-status");
         const tapHint = document.getElementById("tap-hint");
+        const progressIndicator = document.getElementById("progress-indicator");
+        const insightReveal = document.getElementById("insight-reveal");
 
-        const COMMENTS = [
-            { author: "Budi Santoso", tag: "[PRO]", color: "#16a34a",
-              text: "Shift dini hari adalah langkah taktis paling masuk akal demi mengejar volume produksi yang masif." },
-            { author: "Dr. Siti Rahma", tag: "[KONTRA]", color: "#dc2626",
-              text: "Bahaya holding time terlalu lama! Nutrisi makanan bisa rusak sebelum sempat disantap anak-anak." },
-            { author: "Ahmad Fauzi", tag: "[NETRAL]", color: "#d97706",
-              text: "Programnya bagus, tapi radius distribusi dan SOP jam masak wajib dievaluasi berkala." },
-            { author: "Dewi Lestari", tag: "[PRO]", color: "#16a34a",
-              text: "Sangat membantu ekonomi mikro! UMKM sekitar dapur umum dapat pasokan bahan baku rutin harian." },
-            { author: "Rian Pratama", tag: "[KONTRA]", color: "#dc2626",
-              text: "Takutnya ada masalah basi atau penurunan cita rasa karena jarak tempuh ke sekolah terlalu jauh." },
-            { author: "Eko Prasetyo", tag: "[NETRAL]", color: "#d97706",
-              text: "Kuncinya ada di teknologi cold chain management dan pembatasan jarak tempuh dapur umum." }
+        // ---------- DATA BERITA (dummy, konteks isu MBG) ----------
+        const NEWS = [
+            {
+                sentiment: "positif",
+                color: "#16a34a",
+                badge: "BERITA POSITIF",
+                source: "@kabarpangan",
+                title: "Distribusi MBG Capai 2 Juta Porsi per Hari",
+                body: "Warga di berbagai daerah menyambut antusias, dapur umum kini beroperasi 3 shift demi memenuhi target harian.",
+                stats: "12,4rb suka · 892 komentar"
+            },
+            {
+                sentiment: "negatif",
+                color: "#dc2626",
+                badge: "BERITA NEGATIF",
+                source: "@faktahariini",
+                title: "Belasan Siswa Keracunan Usai Santap Menu MBG",
+                body: "Dinas Kesehatan setempat menyelidiki dugaan kontaminasi bahan makanan pada salah satu dapur penyalur di Bogor.",
+                stats: "9,1rb suka · 3,4rb komentar"
+            },
+            {
+                sentiment: "positif",
+                color: "#16a34a",
+                badge: "BERITA POSITIF",
+                source: "@ekonomiwarga",
+                title: "MBG Dorong Pertumbuhan UMKM Katering Lokal",
+                body: "Ratusan UMKM di sekitar dapur umum kebagian pasokan rutin bahan baku, omzet mereka naik signifikan.",
+                stats: "7,8rb suka · 540 komentar"
+            },
+            {
+                sentiment: "negatif",
+                color: "#dc2626",
+                badge: "BERITA NEGATIF",
+                source: "@pantauanggaran",
+                title: "Anggaran MBG Dinilai Boros, DPR Minta Audit",
+                body: "Sejumlah anggota dewan mempertanyakan efisiensi distribusi dan meminta audit menyeluruh tahun ini.",
+                stats: "6,2rb suka · 1,1rb komentar"
+            },
+            {
+                sentiment: "positif",
+                color: "#16a34a",
+                badge: "BERITA POSITIF",
+                source: "@risetpendidikan",
+                title: "Anak Penerima MBG Alami Peningkatan Konsentrasi",
+                body: "Studi awal menunjukkan siswa penerima program lebih fokus mengikuti pelajaran di jam-jam akhir sekolah.",
+                stats: "15rb suka · 1,8rb komentar"
+            }
         ];
+
+        let currentIndex = 0;
+        const TOTAL = NEWS.length;
+        let arActive = false;
 
         window.addEventListener("DOMContentLoaded", async () => {
             camStatusText.innerText = "Meminta izin akses kamera...";
@@ -359,13 +490,14 @@
 
         function wrapText(ctx, text, x, y, maxWidth, lineHeight, maxLines) {
             const words = text.split(" ");
-            let line = "", lines = 0;
+            let line = "", lines = 0, lastY = y;
             for (let i = 0; i < words.length; i++) {
                 const test = line + words[i] + " ";
                 if (ctx.measureText(test).width > maxWidth && line !== "") {
                     ctx.fillText(line.trim(), x, y);
                     line = words[i] + " ";
                     y += lineHeight;
+                    lastY = y;
                     lines++;
                     if (maxLines && lines >= maxLines - 1) {
                         ctx.fillText(line.trim() + "…", x, y);
@@ -380,7 +512,7 @@
 
         // Kartu judul dengan glow biru
         function makeTitleCanvas() {
-            const w = 900, h = 200;
+            const w = 900, h = 190;
             const c = document.createElement("canvas");
             c.width = w; c.height = h;
             const ctx = c.getContext("2d");
@@ -398,61 +530,126 @@
             ctx.shadowBlur = 0;
 
             ctx.fillStyle = "#60a5fa";
-            ctx.font = "800 40px Oswald, sans-serif";
+            ctx.font = "800 36px Oswald, sans-serif";
             ctx.textAlign = "center";
-            ctx.fillText("💬 PENDAPAT ORANG LAIN", w / 2, 90);
+            ctx.fillText("📱 PILIHAN BERANDAMU", w / 2, 85);
 
             ctx.fillStyle = "#e2e8f0";
-            ctx.font = "24px 'JetBrains Mono', monospace";
-            ctx.fillText("Terhadap Berita MBG", w / 2, 132);
+            ctx.font = "22px 'JetBrains Mono', monospace";
+            ctx.fillText("Tekan tombol LANJUT di bawah", w / 2, 124);
             ctx.textAlign = "left";
 
             return c;
         }
 
-        // Kartu komentar dengan outline berwarna + glow lembut
-        function makeCommentCanvas(item) {
-            const w = 560, h = 340;
+        // Kartu berita bergaya postingan medsos, warna sesuai sentimen
+        function makeNewsCanvas(item, rank, isTop) {
+            const w = 620, h = 420;
             const c = document.createElement("canvas");
             c.width = w; c.height = h;
             const ctx = c.getContext("2d");
 
             ctx.shadowColor = item.color;
-            ctx.shadowBlur = 28;
-            roundRect(ctx, 18, 18, w - 36, h - 36, 20);
+            ctx.shadowBlur = isTop ? 30 : 14;
+            roundRect(ctx, 18, 18, w - 36, h - 36, 22);
             ctx.fillStyle = "#ffffff";
             ctx.fill();
 
             ctx.shadowBlur = 14;
-            ctx.lineWidth = 6;
+            ctx.lineWidth = 7;
             ctx.strokeStyle = item.color;
             ctx.stroke();
             ctx.shadowBlur = 0;
 
-            // Tag pill
+            // Bar warna atas
             ctx.fillStyle = item.color;
-            roundRect(ctx, 34, 34, 118, 36, 10);
+            roundRect(ctx, 18, 18, w - 36, 10, 5);
+            ctx.fill();
+
+            // Badge sentimen
+            ctx.fillStyle = item.color;
+            roundRect(ctx, 34, 46, 190, 34, 10);
             ctx.fill();
             ctx.fillStyle = "#ffffff";
-            ctx.font = "bold 17px 'JetBrains Mono', monospace";
-            ctx.fillText(item.tag, 48, 58);
+            ctx.font = "bold 16px 'JetBrains Mono', monospace";
+            ctx.fillText(item.badge, 48, 69);
 
-            // Nama
+            // Sumber
+            ctx.fillStyle = "#64748b";
+            ctx.font = "15px 'JetBrains Mono', monospace";
+            ctx.fillText(item.source, w - 180, 69);
+
+            // Judul
             ctx.fillStyle = "#0f172a";
-            ctx.font = "bold 20px 'JetBrains Mono', monospace";
-            ctx.fillText(item.author, 34, 102);
+            ctx.font = "bold 25px 'JetBrains Mono', monospace";
+            wrapText(ctx, item.title, 34, 122, w - 68, 32, 3);
 
+            // Garis pemisah
             ctx.strokeStyle = "#e2e8f0";
             ctx.lineWidth = 2;
             ctx.beginPath();
-            ctx.moveTo(34, 120);
-            ctx.lineTo(w - 34, 120);
+            ctx.moveTo(34, 215);
+            ctx.lineTo(w - 34, 215);
             ctx.stroke();
 
-            // Isi komentar
+            // Isi berita
             ctx.fillStyle = "#334155";
-            ctx.font = "19px 'JetBrains Mono', monospace";
-            wrapText(ctx, `"${item.text}"`, 34, 158, w - 68, 27, 6);
+            ctx.font = "18px 'JetBrains Mono', monospace";
+            wrapText(ctx, item.body, 34, 246, w - 68, 26, 4);
+
+            // Statistik engagement
+            ctx.fillStyle = "#94a3b8";
+            ctx.font = "15px 'JetBrains Mono', monospace";
+            ctx.fillText(item.stats, 34, h - 56);
+
+            if (isTop) {
+                ctx.fillStyle = item.color;
+                ctx.font = "bold 16px 'JetBrains Mono', monospace";
+                ctx.textAlign = "right";
+                ctx.fillText("Tekan LANJUT →", w - 34, h - 56);
+                ctx.textAlign = "left";
+            }
+
+            // Penomoran
+            ctx.fillStyle = "#cbd5e1";
+            ctx.font = "13px 'JetBrains Mono', monospace";
+            ctx.fillText(`Kartu ${rank + 1} / ${TOTAL}`, 34, h - 30);
+
+            return c;
+        }
+
+        // Kartu penutup
+        function makeDoneCanvas() {
+            const w = 620, h = 420;
+            const c = document.createElement("canvas");
+            c.width = w; c.height = h;
+            const ctx = c.getContext("2d");
+
+            ctx.shadowColor = "#0052cc";
+            ctx.shadowBlur = 30;
+            roundRect(ctx, 18, 18, w - 36, h - 36, 22);
+            ctx.fillStyle = "#0f172a";
+            ctx.fill();
+            ctx.shadowBlur = 14;
+            ctx.lineWidth = 7;
+            ctx.strokeStyle = "#60a5fa";
+            ctx.stroke();
+            ctx.shadowBlur = 0;
+
+            ctx.fillStyle = "#60a5fa";
+            ctx.font = "800 30px Oswald, sans-serif";
+            ctx.textAlign = "center";
+            ctx.fillText("✓ INTERAKSIMU TERCATAT", w / 2, 130);
+
+            ctx.fillStyle = "#e2e8f0";
+            ctx.font = "18px 'JetBrains Mono', monospace";
+            ctx.textAlign = "left";
+            wrapText(ctx, "Setiap kartu yang kamu buka tadi seolah 'mengajari' sistem tentang apa yang kamu sukai — persis seperti cara kerja beranda media sosialmu.", 60, 190, w - 120, 28, 6);
+
+            ctx.fillStyle = "#93c5fd";
+            ctx.font = "bold 16px 'JetBrains Mono', monospace";
+            ctx.textAlign = "center";
+            ctx.fillText("Tekan LANJUT untuk ke Fase 2 →", w / 2, h - 50);
 
             return c;
         }
@@ -466,6 +663,7 @@
                 tex.needsUpdate = true;
                 mesh.material.map = tex;
                 mesh.material.transparent = true;
+                mesh.material.opacity = 1;
                 mesh.material.needsUpdate = true;
             };
             if (entity.getObject3D("mesh")) setTex();
@@ -476,11 +674,110 @@
             if (document.fonts && document.fonts.ready) await document.fonts.ready;
 
             applyTexture(document.getElementById("titlePlane"), makeTitleCanvas());
-            COMMENTS.forEach((item, index) => {
-                applyTexture(document.getElementById(`card-${index + 1}`), makeCommentCanvas(item));
+            NEWS.forEach((item, index) => {
+                const card = document.getElementById(`news-card-${index}`);
+                applyTexture(card, makeNewsCanvas(item, index, index === 0));
             });
+            applyTexture(document.getElementById("news-card-done"), makeDoneCanvas());
         }
         buildTextures();
+
+        // ---------- LOGIKA STACK (murni visual, navigasi lewat tombol overlay) ----------
+        function stackOffset(rank) {
+            const dir = rank % 2 === 0 ? 1 : -1;
+            return {
+                x: dir * 0.015 * rank,
+                y: 0.15 - 0.02 * rank,
+                z: -0.01 - 0.004 * rank,
+                rotZ: dir * (3 + rank)
+            };
+        }
+
+        function updateProgress() {
+            progressIndicator.innerText = currentIndex < TOTAL
+                ? `Kartu ${currentIndex + 1} / ${TOTAL}`
+                : `Selesai · ${TOTAL} / ${TOTAL}`;
+        }
+
+        function updateNextButtonLabel() {
+            if (currentIndex >= TOTAL) {
+                nextNewsBtn.innerText = "LANJUT FASE 2 →";
+                nextNewsBtn.classList.add("final");
+            } else {
+                nextNewsBtn.innerText = "LANJUT →";
+                nextNewsBtn.classList.remove("final");
+            }
+        }
+
+        function refreshStack() {
+            for (let i = currentIndex; i < TOTAL; i++) {
+                const rank = i - currentIndex;
+                const card = document.getElementById(`news-card-${i}`);
+                const off = stackOffset(rank);
+                card.removeAttribute("animation__settle");
+                card.setAttribute("animation__settle",
+                    `property: position; to: ${off.x} ${off.y} ${off.z}; dur: 320; easing: easeOutQuad`);
+                card.setAttribute("animation__rotsettle",
+                    `property: rotation; to: 0 0 ${off.rotZ}; dur: 320; easing: easeOutQuad`);
+
+                if (i === currentIndex) {
+                    card.setAttribute("animation__scale", "property: scale; to: 1 1 1; dur: 280; easing: easeOutBack");
+                } else {
+                    card.setAttribute("animation__scale", "property: scale; to: 0.96 0.96 0.96; dur: 280; easing: easeOutQuad");
+                }
+            }
+            updateProgress();
+        }
+
+        // Membuka kartu berita teratas saat ini (dipicu tombol LANJUT overlay)
+        function advanceNews() {
+            const index = currentIndex;
+            const item = NEWS[index];
+            const card = document.getElementById(`news-card-${index}`);
+            const goRight = item.sentiment === "positif";
+            const targetX = goRight ? 0.9 : -0.9;
+
+            nextNewsBtn.disabled = true;
+
+            card.setAttribute("animation__swipe",
+                `property: position; to: ${targetX} 0.25 0.05; dur: 420; easing: easeInQuad`);
+            card.setAttribute("animation__swiperot",
+                `property: rotation; to: 0 0 ${goRight ? 35 : -35}; dur: 420; easing: easeInQuad`);
+            card.setAttribute("animation__swipefade", "property: material.opacity; to: 0; dur: 380; easing: easeInQuad");
+
+            tapHint.innerText = item.sentiment === "positif"
+                ? "Berita positif kamu buka →"
+                : "Berita negatif kamu buka →";
+            tapHint.classList.add("show");
+            setTimeout(() => tapHint.classList.remove("show"), 1400);
+
+            setTimeout(() => {
+                card.setAttribute("visible", "false");
+                currentIndex++;
+
+                if (currentIndex >= TOTAL) {
+                    const doneCard = document.getElementById("news-card-done");
+                    doneCard.setAttribute("visible", "true");
+                    doneCard.setAttribute("scale", "0.9 0.9 0.9");
+                    doneCard.setAttribute("animation__in", "property: scale; to: 1 1 1; dur: 400; easing: easeOutBack");
+                    updateProgress();
+                    insightReveal.classList.add("show");
+                } else {
+                    refreshStack();
+                }
+                updateNextButtonLabel();
+                nextNewsBtn.disabled = false;
+            }, 430);
+        }
+
+        // Tombol overlay LANJUT: buka berita berikutnya, atau pindah halaman kalau sudah mentok
+        nextNewsBtn.addEventListener("click", () => {
+            if (currentIndex < TOTAL) {
+                advanceNews();
+            } else {
+                window.location.href = "phase2.html";
+            }
+        });
 
         startButton.addEventListener("click", async () => {
             if (!startButton.classList.contains("active")) return;
@@ -498,7 +795,12 @@
 
             startScreen.style.display = "none";
             arHeaderContext.style.display = "block";
-            arNav.style.display = "flex";
+            arBackBtn.style.display = "flex";
+            newsNav.style.display = "flex";
+            progressIndicator.style.display = "block";
+            updateProgress();
+            updateNextButtonLabel();
+            arActive = true;
 
             const mindarSystem = scene.systems["mindar-image-system"];
             try {
@@ -524,6 +826,9 @@
             planeStatus.innerText = "Aktif ✓";
             planeStatus.style.color = "#00ff00";
 
+            if (currentIndex === 0) {
+                tapHint.innerText = "Tekan tombol LANJUT di bawah untuk memulai";
+            }
             tapHint.classList.add("show");
             setTimeout(() => tapHint.classList.remove("show"), 3000);
         });

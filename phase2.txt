@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>ECHOBREAK — AR Echo Chamber Investigation</title>
+
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --void: #05070d;
+            --panel: #0b1120;
+            --shield: #00d4ff;
+            --shield-dim: #0891b2;
+            --alert: #ff2d55;
+            --alert-dim: #b91c3c;
+            --core: #f8fafc;
+            --ink: #0f172a;
+            --ink-soft: #475569;
+            --amber: #f59e0b;
+            --line: rgba(0, 212, 255, 0.25);
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        html, body {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            overflow: hidden; background: #000;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        video.mindar-camera-video, video.camFeed {
+            object-fit: cover !important;
+            width: 100vw !important; height: 100vh !important;
+            position: fixed !important; top: 0 !important; left: 0 !important;
+            z-index: 0 !important;
+        }
+
+        a-scene {
+            width: 100vw; height: 100vh;
+            position: fixed; top: 0; left: 0; z-index: 1;
+        }
+
+        a-scene canvas {
+            position: fixed !important; top: 0 !important; left: 0 !important;
+            width: 100vw !important; height: 100vh !important;
+            z-index: 1 !important; background: transparent !important;
+        }
+
+        /* ============================== START SCREEN ============================== */
+        #start-screen {
+            position: fixed; inset: 0;
+            background:
+                radial-gradient(circle at 50% 38%, rgba(0, 212, 255, 0.10), transparent 55%),
+                radial-gradient(circle at 15% 90%, rgba(255, 45, 85, 0.06), transparent 45%),
+                #ffffff;
+            color: var(--ink); z-index: 20000;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            gap: 22px; text-align: center; padding: 24px;
+        }
+
+        .brand-mark {
+            display: flex; align-items: center; justify-content: center;
+            width: 74px; height: 74px; border-radius: 50%;
+            border: 1.5px solid var(--line);
+            background: rgba(0, 212, 255, 0.06);
+            position: relative;
+            margin-bottom: 2px;
+        }
+        .brand-mark::before {
+            content: ""; position: absolute; inset: -10px; border-radius: 50%;
+            border: 1px dashed rgba(0, 212, 255, 0.35);
+            animation: spin-slow 14s linear infinite;
+        }
+        .brand-mark svg { width: 32px; height: 32px; }
+        @keyframes spin-slow { to { transform: rotate(360deg); } }
+
+        #start-screen .eyebrow {
+            font-size: 10px; letter-spacing: 4px; color: var(--shield);
+            text-transform: uppercase; margin: 0; font-weight: 600;
+        }
+
+        #start-screen h2 {
+            font-family: 'Oswald', sans-serif;
+            font-size: clamp(26px, 8vw, 36px);
+            letter-spacing: 2px;
+            margin: 0; color: var(--ink);
+            font-weight: 700;
+        }
+        #start-screen h2 span { color: var(--shield-dim); }
+
+        #start-screen p.desc {
+            margin: 0; font-size: clamp(11.5px, 3.5vw, 13.5px);
+            color: var(--ink-soft); max-width: 300px; line-height: 1.55;
+        }
+
+        .status-chip {
+            display: inline-flex; align-items: center; gap: 7px;
+            font-size: 10px; letter-spacing: 1px; color: #64748b;
+            border: 1px solid rgba(15,23,42,0.15); border-radius: 20px;
+            padding: 6px 14px; text-transform: uppercase;
+            background: rgba(15,23,42,0.03);
+        }
+        .status-chip .dot {
+            width: 6px; height: 6px; border-radius: 50%; background: var(--amber);
+            box-shadow: 0 0 8px var(--amber);
+            animation: pulse-dot 1.4s ease-in-out infinite;
+        }
+        .status-chip.ready .dot { background: #22c55e; box-shadow: 0 0 8px #22c55e; animation: none; }
+        @keyframes pulse-dot { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
+
+        .button-group {
+            display: flex; gap: 10px; align-items: stretch;
+            margin-top: 8px; width: 100%; max-width: 320px; justify-content: center;
+        }
+
+        #backButton {
+            padding: 13px 18px;
+            font-family: 'Oswald', sans-serif;
+            font-size: clamp(12.5px, 4vw, 14px);
+            font-weight: 600; letter-spacing: 1px;
+            background: transparent;
+            color: var(--ink-soft);
+            border: 1.5px solid rgba(15,23,42,0.2);
+            border-radius: 9px; cursor: pointer;
+            text-decoration: none;
+            display: inline-flex; align-items: center; justify-content: center;
+            flex: 1; transition: all 0.2s ease;
+        }
+        #backButton:hover { border-color: var(--shield-dim); color: var(--shield-dim); }
+        #backButton:active { transform: scale(0.96); }
+
+        #arBackButton {
+            position: fixed; bottom: 16px; left: 16px;
+            z-index: 20005;
+            background: rgba(11, 17, 32, 0.85);
+            backdrop-filter: blur(10px);
+            color: var(--shield);
+            border: 1.5px solid var(--line);
+            padding: 9px 16px; border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px; font-weight: 600;
+            cursor: pointer; text-decoration: none;
+            display: none; align-items: center; gap: 6px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.35);
+            transition: background 0.2s ease, transform 0.1s ease;
+        }
+        #arBackButton:hover { background: rgba(0, 212, 255, 0.12); }
+        #arBackButton:active { transform: scale(0.96); }
+
+        /* ============================== AR HEADER ============================== */
+        #ar-header-context {
+            position: fixed; top: 12px; left: 50%; transform: translateX(-50%);
+            width: 92%; max-width: 420px;
+            background: rgba(5, 7, 13, 0.82);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 45, 85, 0.4);
+            box-shadow: 0 0 18px rgba(255, 45, 85, 0.18), inset 0 0 0 1px rgba(255,255,255,0.02);
+            color: var(--core); padding: 11px 16px; border-radius: 10px;
+            z-index: 20005; display: none; text-align: center;
+            pointer-events: none;
+        }
+        #ar-header-context h4 {
+            font-family: 'Oswald', sans-serif; font-size: 13px; letter-spacing: 1px;
+            margin: 0 0 4px 0; color: var(--alert); text-transform: uppercase;
+            display: flex; align-items: center; justify-content: center; gap: 6px;
+        }
+        #ar-header-context h4::before {
+            content: ""; width: 6px; height: 6px; border-radius: 50%;
+            background: var(--alert); box-shadow: 0 0 6px var(--alert);
+            display: inline-block;
+        }
+        #ar-header-context p {
+            font-size: 10.5px; margin: 0; color: #cbd5e1; line-height: 1.4;
+        }
+
+        #startButton {
+            padding: 13px 26px;
+            font-family: 'Oswald', sans-serif;
+            font-size: clamp(12.5px, 4vw, 14px);
+            font-weight: 700; letter-spacing: 1px;
+            background: linear-gradient(135deg, var(--shield), var(--shield-dim));
+            color: #04121a;
+            border: none; border-radius: 9px;
+            cursor: not-allowed; opacity: 0.4;
+            flex: 1.3;
+            transition: opacity 0.3s ease, transform 0.1s ease;
+            box-shadow: 0 4px 20px rgba(0, 212, 255, 0.25);
+        }
+        #startButton.active { cursor: pointer; opacity: 1; }
+        #startButton.active:active { transform: scale(0.97); }
+
+        /* ============================== DEBUG PANEL ============================== */
+        #debug-panel {
+            position: fixed; top: 88px; left: 16px;
+            background: rgba(5, 7, 13, 0.82); border: 1px solid var(--line); color: #cbd5e1;
+            padding: 8px 11px; border-radius: 6px; font-size: 9.5px;
+            z-index: 10001; pointer-events: none; line-height: 1.6;
+            max-width: 190px; backdrop-filter: blur(6px);
+        }
+        #debug-panel .dp-title {
+            color: var(--shield); font-weight: 700; letter-spacing: 1px; font-size: 9px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Header Konteks AR -->
+    <div id="ar-header-context">
+        <h4>Fase 2 — Dinding Algoritma</h4>
+        <p>Hologram Echo Chamber: beranda terkurung gelembung seragam, sudut pandang luar topik MBG terpental keluar.</p>
+    </div>
+
+    <!-- Tombol Kembali saat Scan AR Aktif -->
+    <a id="arBackButton" href="phase2.html">← KEMBALI</a>
+
+    <!-- Layar Awal -->
+    <div id="start-screen">
+        <div class="brand-mark">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="12" cy="12" r="8.5" stroke="#00d4ff" stroke-width="1.4" stroke-dasharray="3 3"/>
+                <circle cx="12" cy="12" r="4.2" fill="#00d4ff" fill-opacity="0.18" stroke="#00d4ff" stroke-width="1.4"/>
+                <circle cx="12" cy="12" r="1.6" fill="#00d4ff"/>
+            </svg>
+        </div>
+        <p class="eyebrow">Echobreak Investigation · Fase 02</p>
+        <h2>ECHO<span>BREAK</span> AR</h2>
+        <p class="desc">Arahkan kamera ke marker untuk membongkar simulasi dinding Echo Chamber pada topik MBG — lihat bagaimana algoritma menyaring dan memantulkan suara di luar gelembung.</p>
+
+        <span class="status-chip" id="camStatus"><span class="dot"></span> MEMERIKSA KAMERA</span>
+
+        <div class="button-group">
+            <a id="backButton" href="phase2.html">KEMBALI</a>
+            <button id="startButton" disabled>MENUNGGU...</button>
+        </div>
+    </div>
+
+    <div id="debug-panel">
+        <span class="dp-title">ECHO CHAMBER AR</span>
+        <br>Marker: <span id="marker-status" style="color:#f59e0b;">Menunggu</span>
+        <br>Core State: <span id="plane-status" style="color:#f59e0b;">Hidden</span>
+    </div>
+
+    <a-scene mindar-image="
+            imageTargetSrc: marker.mind;
+            autoStart: false;
+        " embedded color-space="sRGB" renderer="
+            colorManagement: true;
+            alpha: true;
+        " vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
+
+        <a-camera position="0 0 0" look-controls="enabled: false"
+                  raycaster="objects: .clickable; far: 10"
+                  cursor="fuse: false; rayOrigin: mouse">
+        </a-camera>
+
+        <!-- ============================== MARKER TARGET ============================== -->
+        <a-entity id="target" mindar-image-target="targetIndex: 0">
+
+            <a-entity id="ar-content" visible="false" scale="0.01 0.01 0.01">
+
+                <!-- Medan Gaya / Dinding Algoritma (di belakang bubble, berputar & berdenyut) -->
+                <a-plane id="barrierRing" position="0 0 -0.06" width="1.3" height="1.3"
+                         material="shader: flat; transparent: true; side: double"
+                         animation__spin="property: rotation; to: 0 0 360; dur: 40000; loop: true; easing: linear"
+                         animation__pulse="property: scale; from: 0.97 0.97 0.97; to: 1.04 1.04 1.04; dur: 2600; dir: alternate; loop: true; easing: easeInOutSine"></a-plane>
+
+                <!-- Core Berita Utama Echo Chamber (Tengah) -->
+                <a-plane id="bubblePlane" position="0 0 -0.01" width="0.55" height="0.44"
+                         material="shader: flat; transparent: true; side: double"></a-plane>
+
+                <!-- Kartu Komentar 1 (Kiri Atas) -->
+                <a-entity id="wrap-tl" position="-0.45 0.38 -0.01" rotation="0 0 3"
+                          animation="property: position; from: -0.45 0.38 -0.01; to: -0.27 0.23 -0.01; dur: 1900; dir: alternate; loop: true; easing: easeInOutBack">
+                    <a-plane id="card-tl" class="blocked-card" width="0.30" height="0.19"
+                             material="shader: flat; transparent: true; side: double"></a-plane>
+                    <a-plane id="spark-tl" class="spark" position="0.18 -0.10 0.001" width="0.16" height="0.16"
+                             material="shader: flat; transparent: true; side: double"
+                             animation="property: scale; from: 0.6 0.6 0.6; to: 1.3 1.3 1.3; dur: 550; dir: alternate; loop: true; easing: easeInOutSine"></a-plane>
+                </a-entity>
+
+                <!-- Kartu Komentar 2 (Kanan Atas) -->
+                <a-entity id="wrap-tr" position="0.45 0.38 -0.01" rotation="0 0 -3"
+                          animation="property: position; from: 0.45 0.38 -0.01; to: 0.27 0.23 -0.01; dur: 2100; dir: alternate; loop: true; easing: easeInOutBack">
+                    <a-plane id="card-tr" class="blocked-card" width="0.30" height="0.19"
+                             material="shader: flat; transparent: true; side: double"></a-plane>
+                    <a-plane id="spark-tr" class="spark" position="-0.18 -0.10 0.001" width="0.16" height="0.16"
+                             material="shader: flat; transparent: true; side: double"
+                             animation="property: scale; from: 0.6 0.6 0.6; to: 1.3 1.3 1.3; dur: 600; dir: alternate; loop: true; easing: easeInOutSine"></a-plane>
+                </a-entity>
+
+                <!-- Kartu Komentar 3 (Kiri Tengah) -->
+                <a-entity id="wrap-ml" position="-0.48 0.02 -0.01" rotation="0 0 2"
+                          animation="property: position; from: -0.48 0.02 -0.01; to: -0.29 0.02 -0.01; dur: 2300; dir: alternate; loop: true; easing: easeInOutBack">
+                    <a-plane id="card-ml" class="blocked-card" width="0.30" height="0.19"
+                             material="shader: flat; transparent: true; side: double"></a-plane>
+                    <a-plane id="spark-ml" class="spark" position="0.19 0 0.001" width="0.16" height="0.16"
+                             material="shader: flat; transparent: true; side: double"
+                             animation="property: scale; from: 0.6 0.6 0.6; to: 1.3 1.3 1.3; dur: 500; dir: alternate; loop: true; easing: easeInOutSine"></a-plane>
+                </a-entity>
+
+                <!-- Kartu Komentar 4 (Kanan Tengah) -->
+                <a-entity id="wrap-mr" position="0.48 0.02 -0.01" rotation="0 0 -2"
+                          animation="property: position; from: 0.48 0.02 -0.01; to: 0.29 0.02 -0.01; dur: 2000; dir: alternate; loop: true; easing: easeInOutBack">
+                    <a-plane id="card-mr" class="blocked-card" width="0.30" height="0.19"
+                             material="shader: flat; transparent: true; side: double"></a-plane>
+                    <a-plane id="spark-mr" class="spark" position="-0.19 0 0.001" width="0.16" height="0.16"
+                             material="shader: flat; transparent: true; side: double"
+                             animation="property: scale; from: 0.6 0.6 0.6; to: 1.3 1.3 1.3; dur: 650; dir: alternate; loop: true; easing: easeInOutSine"></a-plane>
+                </a-entity>
+
+                <!-- Kartu Komentar 5 (Kiri Bawah) -->
+                <a-entity id="wrap-bl" position="-0.45 -0.38 -0.01" rotation="0 0 -2"
+                          animation="property: position; from: -0.45 -0.38 -0.01; to: -0.27 -0.21 -0.01; dur: 2200; dir: alternate; loop: true; easing: easeInOutBack">
+                    <a-plane id="card-bl" class="blocked-card" width="0.30" height="0.19"
+                             material="shader: flat; transparent: true; side: double"></a-plane>
+                    <a-plane id="spark-bl" class="spark" position="0.18 0.10 0.001" width="0.16" height="0.16"
+                             material="shader: flat; transparent: true; side: double"
+                             animation="property: scale; from: 0.6 0.6 0.6; to: 1.3 1.3 1.3; dur: 580; dir: alternate; loop: true; easing: easeInOutSine"></a-plane>
+                </a-entity>
+
+                <!-- Kartu Komentar 6 (Kanan Bawah) -->
+                <a-entity id="wrap-br" position="0.45 -0.38 -0.01" rotation="0 0 2"
+                          animation="property: position; from: 0.45 -0.38 -0.01; to: 0.27 -0.21 -0.01; dur: 2400; dir: alternate; loop: true; easing: easeInOutBack">
+                    <a-plane id="card-br" class="blocked-card" width="0.30" height="0.19"
+                             material="shader: flat; transparent: true; side: double"></a-plane>
+                    <a-plane id="spark-br" class="spark" position="-0.18 0.10 0.001" width="0.16" height="0.16"
+                             material="shader: flat; transparent: true; side: double"
+                             animation="property: scale; from: 0.6 0.6 0.6; to: 1.3 1.3 1.3; dur: 520; dir: alternate; loop: true; easing: easeInOutSine"></a-plane>
+                </a-entity>
+
+            </a-entity>
+        </a-entity>
+
+    </a-scene>
+
+    <!-- ============================== JAVASCRIPT ============================== -->
+    <script>
+        const scene = document.querySelector("a-scene");
+        const target = document.getElementById("target");
+        const content = document.getElementById("ar-content");
+        const startScreen = document.getElementById("start-screen");
+        const startButton = document.getElementById("startButton");
+        const arBackButton = document.getElementById("arBackButton");
+        const arHeaderContext = document.getElementById("ar-header-context");
+        const markerStatus = document.getElementById("marker-status");
+        const planeStatus = document.getElementById("plane-status");
+        const camStatus = document.getElementById("camStatus");
+
+        window.addEventListener("DOMContentLoaded", async () => {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: "environment" },
+                    audio: false
+                });
+                stream.getTracks().forEach(track => track.stop());
+
+                startButton.removeAttribute("disabled");
+                startButton.classList.add("active");
+                startButton.innerText = "MULAI AR";
+                camStatus.classList.add("ready");
+                camStatus.innerHTML = "<span class='dot'></span> KAMERA SIAP";
+            } catch (error) {
+                console.warn("Izin kamera ditolak:", error);
+                startButton.innerText = "IZIN DITOLAK";
+                camStatus.innerHTML = "<span class='dot'></span> IZIN KAMERA DITOLAK";
+            }
+        });
+
+        const COMMENTS = {
+            "card-tl": { author: "Dr. Siti Rahma", tag: "KONTRA", text: "Nutrisi bisa rusak jika holding time terlalu lama!" },
+            "card-tr": { author: "Budi Santoso", tag: "PRO", text: "Shift dini hari sangat taktis mengejar volume masif." },
+            "card-ml": { author: "Rian Pratama", tag: "KONTRA", text: "Takutnya basi karena jarak sekolah terlalu jauh." },
+            "card-mr": { author: "Dewi Lestari", tag: "PRO", text: "Bagus untuk pasokan bahan baku rutin UMKM harian." },
+            "card-bl": { author: "Ahmad Fauzi", tag: "NETRAL", text: "Radius distribusi dan SOP jam masak wajib dievaluasi." },
+            "card-br": { author: "Eko Prasetyo", tag: "NETRAL", text: "Kuncinya di manajemen cold chain yang ketat." }
+        };
+
+        const TAG_COLOR = { PRO: "#16a34a", KONTRA: "#dc2626", NETRAL: "#d97706" };
+
+        function roundRect(ctx, x, y, w, h, r) {
+            ctx.beginPath();
+            ctx.moveTo(x + r, y);
+            ctx.arcTo(x + w, y, x + w, y + h, r);
+            ctx.arcTo(x + w, y + h, x, y + h, r);
+            ctx.arcTo(x, y + h, x, y, r);
+            ctx.arcTo(x, y, x + w, y, r);
+            ctx.closePath();
+        }
+
+        function wrapText(ctx, text, x, y, maxWidth, lineHeight, maxLines) {
+            const words = text.split(" ");
+            let line = "", lines = 0;
+            for (let i = 0; i < words.length; i++) {
+                const test = line + words[i] + " ";
+                if (ctx.measureText(test).width > maxWidth && line !== "") {
+                    ctx.fillText(line.trim(), x, y);
+                    line = words[i] + " ";
+                    y += lineHeight;
+                    lines++;
+                    if (maxLines && lines >= maxLines - 1) {
+                        ctx.fillText(line.trim() + "…", x, y);
+                        return;
+                    }
+                } else {
+                    line = test;
+                }
+            }
+            ctx.fillText(line.trim(), x, y);
+        }
+
+        // ---------- Dinding / Medan Gaya Algoritma (barrier ring) ----------
+        function makeBarrierCanvas() {
+            const size = 900;
+            const c = document.createElement("canvas");
+            c.width = size; c.height = size;
+            const ctx = c.getContext("2d");
+            const cx = size / 2, cy = size / 2;
+
+            ctx.strokeStyle = "rgba(0, 212, 255, 0.55)";
+            ctx.lineWidth = 3;
+            ctx.setLineDash([26, 18]);
+            ctx.beginPath();
+            ctx.arc(cx, cy, size * 0.46, 0, Math.PI * 2);
+            ctx.stroke();
+
+            ctx.setLineDash([]);
+            ctx.strokeStyle = "rgba(0, 212, 255, 0.22)";
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.arc(cx, cy, size * 0.40, 0, Math.PI * 2);
+            ctx.stroke();
+
+            // tick marks like a radar / HUD
+            const ticks = 48;
+            for (let i = 0; i < ticks; i++) {
+                const a = (i / ticks) * Math.PI * 2;
+                const r1 = size * 0.46;
+                const r2 = i % 4 === 0 ? size * 0.485 : size * 0.47;
+                ctx.strokeStyle = i % 4 === 0 ? "rgba(0,212,255,0.6)" : "rgba(0,212,255,0.25)";
+                ctx.lineWidth = i % 4 === 0 ? 2.5 : 1.2;
+                ctx.beginPath();
+                ctx.moveTo(cx + Math.cos(a) * r1, cy + Math.sin(a) * r1);
+                ctx.lineTo(cx + Math.cos(a) * r2, cy + Math.sin(a) * r2);
+                ctx.stroke();
+            }
+
+            return c;
+        }
+
+        // ---------- Percikan tolakan di tepi kartu (spark) ----------
+        function makeSparkCanvas() {
+            const size = 240;
+            const c = document.createElement("canvas");
+            c.width = size; c.height = size;
+            const ctx = c.getContext("2d");
+            const cx = size / 2, cy = size / 2;
+
+            const grad = ctx.createRadialGradient(cx, cy, 2, cx, cy, size / 2);
+            grad.addColorStop(0, "rgba(255,255,255,0.95)");
+            grad.addColorStop(0.25, "rgba(255,45,85,0.85)");
+            grad.addColorStop(1, "rgba(255,45,85,0)");
+            ctx.fillStyle = grad;
+            ctx.beginPath();
+            ctx.arc(cx, cy, size / 2, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.strokeStyle = "rgba(255,255,255,0.9)";
+            ctx.lineWidth = 3;
+            for (let i = 0; i < 6; i++) {
+                const a = (i / 6) * Math.PI * 2;
+                ctx.beginPath();
+                ctx.moveTo(cx + Math.cos(a) * size * 0.10, cy + Math.sin(a) * size * 0.10);
+                ctx.lineTo(cx + Math.cos(a) * size * 0.32, cy + Math.sin(a) * size * 0.32);
+                ctx.stroke();
+            }
+            return c;
+        }
+
+        // ---------- Bubble Chat Utama (berita terkurung) ----------
+        function makeBubbleCanvas() {
+            const w = 680, h = 560;
+            const c = document.createElement("canvas");
+            c.width = w; c.height = h;
+            const ctx = c.getContext("2d");
+
+            // aura medan gaya di belakang bubble
+            ctx.save();
+            const aura = ctx.createRadialGradient(w/2, h/2 - 20, 40, w/2, h/2 - 20, w * 0.62);
+            aura.addColorStop(0, "rgba(0,212,255,0.28)");
+            aura.addColorStop(1, "rgba(0,212,255,0)");
+            ctx.fillStyle = aura;
+            ctx.fillRect(0, 0, w, h);
+            ctx.restore();
+
+            // shadow untuk bubble
+            ctx.save();
+            ctx.shadowColor = "rgba(0,212,255,0.55)";
+            ctx.shadowBlur = 42;
+            ctx.shadowOffsetY = 6;
+
+            const bodyTop = 70, bodyH = h - 150;
+            roundRect(ctx, 30, bodyTop, w - 60, bodyH, 34);
+            ctx.fillStyle = "#ffffff";
+            ctx.fill();
+            ctx.restore();
+
+            ctx.lineWidth = 6;
+            ctx.strokeStyle = "#00d4ff";
+            roundRect(ctx, 30, bodyTop, w - 60, bodyH, 34);
+            ctx.stroke();
+
+            // ekor bubble chat (kanan bawah — bubble "lebar ke kanan")
+            const tailBaseX = w - 168;
+            ctx.beginPath();
+            ctx.moveTo(tailBaseX, bodyTop + bodyH - 4);
+            ctx.lineTo(tailBaseX + 52, bodyTop + bodyH + 40);
+            ctx.lineTo(tailBaseX + 78, bodyTop + bodyH - 4);
+            ctx.fillStyle = "#ffffff";
+            ctx.fill();
+            ctx.lineWidth = 6;
+            ctx.strokeStyle = "#00d4ff";
+            ctx.stroke();
+            ctx.clearRect(tailBaseX + 4, bodyTop + bodyH - 8, 70, 14);
+
+            // padlock icon badge
+            const bx = w / 2, by = bodyTop - 6;
+            ctx.beginPath();
+            ctx.arc(bx, by, 30, 0, Math.PI * 2);
+            ctx.fillStyle = "#0b1120";
+            ctx.fill();
+            ctx.lineWidth = 4;
+            ctx.strokeStyle = "#00d4ff";
+            ctx.stroke();
+            ctx.strokeStyle = "#00d4ff";
+            ctx.lineWidth = 3.4;
+            ctx.beginPath();
+            ctx.arc(bx, by - 3, 9, Math.PI, 0);
+            ctx.stroke();
+            ctx.fillStyle = "#00d4ff";
+            roundRect(ctx, bx - 12, by - 3, 24, 18, 4);
+            ctx.fill();
+
+            // eyebrow
+            ctx.fillStyle = "#0891b2";
+            ctx.font = "bold 18px 'JetBrains Mono', monospace";
+            ctx.textAlign = "left";
+            ctx.fillText("TERKURUNG DALAM GELEMBUNG", 62, 128);
+
+            // headline
+            ctx.fillStyle = "#0f172a";
+            ctx.font = "bold 34px Oswald, sans-serif";
+            wrapText(ctx, "Menakar Efisiensi Jam Masak dan Logistik Program MBG", 62, 182, w - 124, 42, 2);
+
+            ctx.strokeStyle = "#e2e8f0";
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(62, 288);
+            ctx.lineTo(w - 62, 288);
+            ctx.stroke();
+
+            ctx.fillStyle = "#475569";
+            ctx.font = "19px 'JetBrains Mono', monospace";
+            wrapText(ctx, "Program Makan Bergizi Gratis memicu perdebatan teknis penjadwalan memasak sejak dini hari — tapi hanya satu sisi cerita yang tampil di beranda.", 62, 328, w - 124, 27, 4);
+
+            // footer stat pill
+            const pillY = h - 66;
+            roundRect(ctx, 62, pillY, w - 124, 44, 22);
+            ctx.fillStyle = "rgba(255,45,85,0.08)";
+            ctx.fill();
+            ctx.strokeStyle = "rgba(255,45,85,0.55)";
+            ctx.lineWidth = 2;
+            roundRect(ctx, 62, pillY, w - 124, 44, 22);
+            ctx.stroke();
+
+            ctx.fillStyle = "#dc2626";
+            ctx.font = "bold 17px 'JetBrains Mono', monospace";
+            ctx.textAlign = "center";
+            ctx.fillText("0% SUDUT PANDANG LUAR TEMBUS BERANDA", w / 2, pillY + 28);
+            ctx.textAlign = "left";
+
+            return c;
+        }
+
+        // ---------- Kartu Komentar yang Terpental ----------
+        function makeCardCanvas(data) {
+            const w = 540, h = 340;
+            const c = document.createElement("canvas");
+            c.width = w; c.height = h;
+            const ctx = c.getContext("2d");
+            const accent = TAG_COLOR[data.tag] || "#64748b";
+
+            ctx.save();
+            ctx.shadowColor = "rgba(0,0,0,0.35)";
+            ctx.shadowBlur = 18;
+            ctx.shadowOffsetY = 4;
+            roundRect(ctx, 16, 16, w - 32, h - 32, 18);
+            ctx.fillStyle = "#f8fafc";
+            ctx.fill();
+            ctx.restore();
+
+            ctx.lineWidth = 3;
+            ctx.strokeStyle = "rgba(15,23,42,0.14)";
+            roundRect(ctx, 16, 16, w - 32, h - 32, 18);
+            ctx.stroke();
+
+            // left accent bar (tag color)
+            roundRect(ctx, 16, 16, 8, h - 32, 4);
+            ctx.fillStyle = accent;
+            ctx.fill();
+
+            // diagonal "TERPENTAL" stamp
+            ctx.save();
+            ctx.translate(w - 108, 66);
+            ctx.rotate(-0.28);
+            ctx.strokeStyle = "rgba(220,38,38,0.55)";
+            ctx.lineWidth = 3;
+            roundRect(ctx, -70, -20, 140, 36, 8);
+            ctx.stroke();
+            ctx.fillStyle = "rgba(220,38,38,0.65)";
+            ctx.font = "bold 17px 'JetBrains Mono', monospace";
+            ctx.textAlign = "center";
+            ctx.fillText("TERPENTAL", 0, 6);
+            ctx.restore();
+            ctx.textAlign = "left";
+
+            ctx.fillStyle = "#0f172a";
+            ctx.font = "bold 21px 'JetBrains Mono', monospace";
+            ctx.fillText(data.author, 44, 60);
+
+            // tag pill
+            ctx.font = "bold 13px 'JetBrains Mono', monospace";
+            const tagW = ctx.measureText(data.tag).width + 26;
+            roundRect(ctx, 44, 74, tagW, 24, 12);
+            ctx.fillStyle = accent + "22";
+            ctx.fill();
+            ctx.strokeStyle = accent;
+            ctx.lineWidth = 1.5;
+            roundRect(ctx, 44, 74, tagW, 24, 12);
+            ctx.stroke();
+            ctx.fillStyle = accent;
+            ctx.fillText(data.tag, 44 + 13, 91);
+
+            ctx.fillStyle = "#334155";
+            ctx.font = "18px 'JetBrains Mono', monospace";
+            wrapText(ctx, `"${data.text}"`, 44, 150, w - 88, 26, 3);
+
+            ctx.strokeStyle = "#e2e8f0";
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.moveTo(44, 258);
+            ctx.lineTo(w - 44, 258);
+            ctx.stroke();
+
+            ctx.fillStyle = "#dc2626";
+            ctx.font = "bold 14px 'JetBrains Mono', monospace";
+            ctx.fillText("✕  GAGAL MENEMBUS DINDING ALGORITMA", 44, 288);
+
+            return c;
+        }
+
+        function applyTexture(entity, canvas) {
+            const THREE = AFRAME.THREE;
+            const setTex = () => {
+                const mesh = entity.getObject3D("mesh");
+                if (!mesh) return;
+                const tex = new THREE.CanvasTexture(canvas);
+                tex.needsUpdate = true;
+                mesh.material.map = tex;
+                mesh.material.transparent = true;
+                mesh.material.needsUpdate = true;
+            };
+            if (entity.getObject3D("mesh")) setTex();
+            else entity.addEventListener("loaded", setTex, { once: true });
+        }
+
+        async function buildTextures() {
+            if (document.fonts && document.fonts.ready) await document.fonts.ready;
+
+            applyTexture(document.getElementById("barrierRing"), makeBarrierCanvas());
+            applyTexture(document.getElementById("bubblePlane"), makeBubbleCanvas());
+
+            const sparkTex = makeSparkCanvas();
+            Object.keys(COMMENTS).forEach((id) => {
+                applyTexture(document.getElementById(id), makeCardCanvas(COMMENTS[id]));
+                const sparkId = "spark-" + id.split("-")[1];
+                const sparkEl = document.getElementById(sparkId);
+                if (sparkEl) applyTexture(sparkEl, sparkTex);
+            });
+        }
+        buildTextures();
+
+        startButton.addEventListener("click", async () => {
+            if (!startButton.classList.contains("active")) return;
+            startScreen.style.display = "none";
+            arBackButton.style.display = "flex";
+            arHeaderContext.style.display = "block";
+
+            const mindarSystem = scene.systems["mindar-image-system"];
+            try {
+                await mindarSystem.start();
+                markerStatus.innerText = "Mencari Marker...";
+
+                const camVideo = document.querySelector("video:not(#mainVideo)");
+                if (camVideo) camVideo.classList.add("camFeed");
+            } catch (error) {
+                console.error("MindAR error:", error);
+                markerStatus.innerText = "GAGAL KAMERA";
+                markerStatus.style.color = "#ff2d55";
+            }
+        });
+
+        target.addEventListener("targetFound", () => {
+            markerStatus.innerText = "Ditemukan ✓";
+            markerStatus.style.color = "#22c55e";
+
+            content.setAttribute("visible", "true");
+            content.setAttribute("animation", "property: scale; from: 0.01 0.01 0.01; to: 1 1 1; dur: 450; easing: easeOutBack");
+
+            planeStatus.innerText = "Aktif ✓";
+            planeStatus.style.color = "#22c55e";
+        });
+
+        target.addEventListener("targetLost", () => {
+            markerStatus.innerText = "Hilang (Arahkan ke Marker)";
+            markerStatus.style.color = "#f59e0b";
+
+            content.setAttribute("visible", "false");
+            planeStatus.innerText = "Hidden";
+            planeStatus.style.color = "#f59e0b";
+        });
+    </script>
+
+</body>
+
+</html>

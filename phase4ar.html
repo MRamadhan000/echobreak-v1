@@ -41,8 +41,6 @@
 
         /* ============================================================
            SKENARIO 1 — LAYAR AWAL & KONTEKS
-           Layar pembuka sebelum kamera AR aktif, sekaligus meminta izin
-           kamera. Tombol "MULAI AR" hanya aktif jika izin kamera berhasil.
            ============================================================ */
         #start-screen {
             position: fixed; inset: 0;
@@ -129,6 +127,10 @@
             pointer-events: none;
             transition: border-color 0.4s ease, box-shadow 0.4s ease;
         }
+        #ar-header-context.reinforced {
+            border: 1px solid rgba(245, 158, 11, 0.5);
+            box-shadow: 0 0 12px rgba(245, 158, 11, 0.25);
+        }
         #ar-header-context.unlocked {
             border: 1px solid rgba(34, 197, 94, 0.5);
             box-shadow: 0 0 12px rgba(34, 197, 94, 0.25);
@@ -138,6 +140,7 @@
             margin: 0 0 3px 0; color: #f87171; text-transform: uppercase;
             transition: color 0.4s ease;
         }
+        #ar-header-context.reinforced h4 { color: #fbbf24; }
         #ar-header-context.unlocked h4 { color: #4ade80; }
         #ar-header-context p {
             font-size: 10px; margin: 0; color: #cbd5e1; line-height: 1.35;
@@ -166,8 +169,10 @@
 
         /* ============================================================
            SKENARIO 2 — TOMBOL UNLOCK (UI HTML DI LAPISAN PALING DEPAN)
-           Muncul begitu marker terdeteksi. Nonaktif (abu-abu) sampai
-           marker ketemu, lalu berubah warna merah->hijau saat diklik.
+           Klik pertama = memunculkan berita rekomendasi algoritma DI DALAM
+           lingkaran bubble utama (bubble ikut membesar; tombol TETAP
+           berstatus UNLOCK).
+           Klik kedua = benar-benar membongkar tembok algoritma.
            ============================================================ */
         #unlockPanel {
             position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
@@ -220,6 +225,7 @@
             max-width: 190px;
             transition: border-color 0.4s ease;
         }
+        #debug-panel.reinforced { border-color: #f59e0b; }
         #debug-panel.unlocked { border-color: #22c55e; }
     </style>
 </head>
@@ -233,12 +239,10 @@
     </div>
 
     <!-- Tombol kembali saat AR aktif -->
-    <a id="arBackButton" href="phase3.html">← KEMBALI</a>
+    <a id="arBackButton" href="phase4.html">← KEMBALI</a>
 
     <!-- ============================================================
          SKENARIO 3 — TOMBOL KEMBALI (UI HTML)
-         Selalu tersedia baik sebelum maupun sesudah unlock, supaya user
-         bisa keluar dari halaman AR kapan saja tanpa tergantung state.
          ============================================================ -->
     <div id="start-screen">
         <h2>ECHOBREAK AR</h2>
@@ -271,10 +275,7 @@
             alpha: true;
         " vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
 
-        <a-camera position="0 0 0" look-controls="enabled: false"
-                  raycaster="objects: .clickable; far: 10"
-                  cursor="fuse: false; rayOrigin: mouse">
-        </a-camera>
+        <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
         <!-- ============================== MARKER TARGET ============================== -->
         <a-entity id="target" mindar-image-target="targetIndex: 0">
@@ -282,19 +283,31 @@
             <a-entity id="ar-content" visible="false" scale="0.01 0.01 0.01">
 
                 <!--
-                    SKENARIO 1 — CORE BERITA TERKUNCI
-                    Plane utama menampilkan versi "terkunci": judul buram,
-                    badge merah "TERKUNCI". Ikon gembok terpisah (lockIcon)
-                    ditumpuk di depannya supaya bisa dianimasikan sendiri
-                    tanpa mengganggu tekstur bubble utama.
+                    SKENARIO 1+TAMBAHAN — BUBBLE GROUP
+                    Satu lingkaran/bubble berisi berita utama (tengah, terkunci)
+                    plus 4 berita rekomendasi algoritma yang muncul DI DALAM
+                    lingkaran yang sama. Seluruh grup ini ikut membesar (scale)
+                    saat 4 berita tambahan itu muncul, supaya terasa bubble-nya
+                    "menggembung" menampung lebih banyak konten sejenis.
                 -->
-                <a-plane id="bubblePlane" position="0 0 -0.01" width="0.52" height="0.42"
-                         material="shader: flat; transparent: true; side: double"></a-plane>
+                <a-entity id="bubbleGroup">
+                    <a-plane id="bubblePlane" position="0 0 -0.01" width="0.52" height="0.42"
+                             material="shader: flat; transparent: true; side: double"></a-plane>
 
-                <a-plane id="lockIcon" position="0 0 -0.005" width="0.14" height="0.14"
-                         material="shader: flat; transparent: true; side: double"></a-plane>
+                    <a-plane id="lockIcon" position="0 0 -0.005" width="0.14" height="0.14"
+                             material="shader: flat; transparent: true; side: double"></a-plane>
 
-                <!-- Kartu komentar yang gagal menembus tembok (6 buah, tersebar di sekeliling) -->
+                    <!--
+                        SKENARIO TAMBAHAN — 4 BERITA REKOMENDASI ALGORITMA
+                        Dimunculkan lewat JS (buildReinforceEntities) setelah klik
+                        UNLOCK pertama: kartu kecil DI DALAM lingkaran bubble utama,
+                        masing-masing ditautkan dengan garis + panah ke berita utama
+                        di tengah. Ditambahkan sebagai child #bubbleGroup supaya ikut
+                        membesar/mengecil bersama bubble.
+                    -->
+                </a-entity>
+
+                <!-- Kartu komentar yang gagal menembus tembok (6 buah, DI LUAR bubble, tersebar di sekeliling) -->
                 <a-plane id="card-tl" class="blocked-card"
                          position="-0.45 0.38 -0.01" rotation="0 0 3" width="0.30" height="0.19"
                          material="shader: flat; transparent: true; side: double"
@@ -335,6 +348,7 @@
         const scene = document.querySelector("a-scene");
         const target = document.getElementById("target");
         const content = document.getElementById("ar-content");
+        const bubbleGroup = document.getElementById("bubbleGroup");
         const startScreen = document.getElementById("start-screen");
         const startButton = document.getElementById("startButton");
         const arBackButton = document.getElementById("arBackButton");
@@ -351,7 +365,11 @@
 
         const CARD_IDS = ["card-tl", "card-tr", "card-ml", "card-mr", "card-bl", "card-br"];
 
-        // appState: 'locked' -> 'unlocking' -> 'unlocked'
+        // Seberapa besar bubble utama "menggembung" saat 4 berita rekomendasi
+        // algoritma muncul di dalamnya.
+        const GROW_SCALE = 1.32;
+
+        // appState: 'locked' -> 'revealing' -> 'revealed' -> 'unlocking' -> 'unlocked'
         let appState = "locked";
         let markerVisible = false;
 
@@ -379,6 +397,36 @@
             "card-mr": { author: "Dewi Lestari", tag: "[PRO] TERPENTAL", text: "Bagus untuk pasokan bahan baku rutin UMKM harian." },
             "card-bl": { author: "Ahmad Fauzi", tag: "[NETRAL] TERPENTAL", text: "Radius distribusi dan SOP jam masak wajib dievaluasi." },
             "card-br": { author: "Eko Prasetyo", tag: "[NETRAL] TERPENTAL", text: "Kuncinya di manajemen cold chain yang ketat." }
+        };
+
+        // Posisi dasar (from/to) animasi pantulan tiap kartu komentar fase 1.
+        // Disimpan terpisah supaya bisa dihitung ulang (di-scale) saat bubble
+        // utama membesar/mengecil — makin besar bubble-nya, makin jauh kartu
+        // ini terpental, karena tembok algoritmanya makin "kuat".
+        const BLOCKED_CARD_BASE = {
+            "card-tl": { to: [-0.28, 0.24] },
+            "card-tr": { to: [0.28, 0.24] },
+            "card-ml": { to: [-0.30, 0.02] },
+            "card-mr": { to: [0.30, 0.02] },
+            "card-bl": { to: [-0.28, -0.22] },
+            "card-br": { to: [0.28, -0.22] }
+        };
+
+        // ---------- SKENARIO TAMBAHAN: data 4 berita rekomendasi algoritma ----------
+        // Posisinya diletakkan DI DALAM batas bubble utama (bubblePlane 0.52 x 0.42),
+        // tersusun melingkar di sekeliling berita utama yang ada di tengah.
+        const REINFORCE_POSITIONS = [
+            { id: "reinforce-card-1", x: 0.17, y: 0.135 },
+            { id: "reinforce-card-2", x: -0.17, y: 0.135 },
+            { id: "reinforce-card-3", x: 0.17, y: -0.135 },
+            { id: "reinforce-card-4", x: -0.17, y: -0.135 }
+        ];
+
+        const REINFORCE_CONTENT = {
+            "reinforce-card-1": { tag: "🔥 DIREKOMENDASIKAN", text: "Kenapa MBG Solusi Tercepat Atasi Gizi Buruk" },
+            "reinforce-card-2": { tag: "🔥 DIREKOMENDASIKAN", text: "10 Alasan Kritikus MBG Tak Paham Data Lapangan" },
+            "reinforce-card-3": { tag: "🔥 DIREKOMENDASIKAN", text: "Warganet: Yang Nyinyir Nggak Pernah ke Dapur" },
+            "reinforce-card-4": { tag: "🔥 DIREKOMENDASIKAN", text: "Analisis: Suara Kontra Didominasi Akun Buzzer" }
         };
 
         function roundRect(ctx, x, y, w, h, r) {
@@ -457,7 +505,6 @@
             ctx.lineTo(w - 45, 220);
             ctx.stroke();
 
-            // Teks isi disamarkan (blok abu-abu) untuk kesan "terkunci/tersensor"
             ctx.fillStyle = "#cbd5e1";
             for (let i = 0; i < 4; i++) {
                 const yy = 250 + i * 34;
@@ -571,6 +618,54 @@
             return c;
         }
 
+        // ---------- SKENARIO TAMBAHAN: canvas kartu rekomendasi algoritma (kecil, di dalam bubble) ----------
+        function makeReinforceCardCanvas(data) {
+            const w = 420, h = 260;
+            const c = document.createElement("canvas");
+            c.width = w; c.height = h;
+            const ctx = c.getContext("2d");
+
+            ctx.shadowColor = "#f59e0b";
+            ctx.shadowBlur = 22;
+            ctx.fillStyle = "#fffbeb";
+            roundRect(ctx, 14, 14, w - 28, h - 28, 18);
+            ctx.fill();
+            ctx.lineWidth = 5;
+            ctx.strokeStyle = "#f59e0b";
+            ctx.stroke();
+            ctx.shadowBlur = 0;
+
+            ctx.fillStyle = "#b45309";
+            ctx.font = "bold 15px 'JetBrains Mono', monospace";
+            ctx.fillText(data.tag, 28, 52);
+
+            ctx.fillStyle = "#1e293b";
+            ctx.font = "bold 20px Oswald, sans-serif";
+            wrapText(ctx, data.text, 28, 96, w - 56, 26, 4);
+
+            return c;
+        }
+
+        // Ikon panah kecil (menunjuk ke +x secara default, lalu dirotasi via JS)
+        function makeArrowCanvas() {
+            const s = 160;
+            const c = document.createElement("canvas");
+            c.width = s; c.height = s;
+            const ctx = c.getContext("2d");
+
+            ctx.shadowColor = "#f59e0b";
+            ctx.shadowBlur = 10;
+            ctx.fillStyle = "#f59e0b";
+            ctx.beginPath();
+            ctx.moveTo(30, s / 2 - 26);
+            ctx.lineTo(30, s / 2 + 26);
+            ctx.lineTo(130, s / 2);
+            ctx.closePath();
+            ctx.fill();
+
+            return c;
+        }
+
         // Canvas ikon gembok (dua versi: terkunci & terbuka)
         function makeLockCanvas(open) {
             const s = 260;
@@ -584,7 +679,6 @@
             ctx.shadowColor = glowColor;
             ctx.shadowBlur = 26;
 
-            // Badan gembok
             ctx.fillStyle = "#ffffff";
             roundRect(ctx, 60, 120, 140, 110, 18);
             ctx.fill();
@@ -592,23 +686,19 @@
             ctx.strokeStyle = bodyColor;
             ctx.stroke();
 
-            // Shackle (bagian atas gembok) — posisi berbeda kalau "open"
             ctx.beginPath();
             ctx.lineWidth = 16;
             ctx.strokeStyle = bodyColor;
             ctx.lineCap = "round";
             if (open) {
-                // Shackle terangkat/terbuka ke samping
                 ctx.arc(150, 95, 45, Math.PI * 1.05, Math.PI * 2.0, false);
             } else {
-                // Shackle tertutup rapat
                 ctx.arc(130, 115, 45, Math.PI, Math.PI * 2, false);
             }
             ctx.stroke();
 
             ctx.shadowBlur = 0;
 
-            // Lubang kunci
             ctx.fillStyle = bodyColor;
             ctx.beginPath();
             ctx.arc(130, 165, 12, 0, Math.PI * 2);
@@ -616,7 +706,6 @@
             roundRect(ctx, 124, 170, 12, 26, 4);
             ctx.fill();
 
-            // Label kecil
             ctx.fillStyle = bodyColor;
             ctx.font = "bold 22px 'JetBrains Mono', monospace";
             ctx.textAlign = "center";
@@ -653,7 +742,7 @@
                 const mesh = getMesh(entity);
                 if (!mesh) return;
                 const t = Math.min(1, (now - start) / duration);
-                const eased = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2; // easeInOutQuad
+                const eased = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
                 mesh.material.opacity = from + (to - from) * eased;
                 mesh.material.transparent = true;
                 mesh.material.needsUpdate = true;
@@ -663,6 +752,77 @@
             requestAnimationFrame(step);
         }
 
+        // Tween opacity untuk entity garis (a-frame "line" primitive)
+        function tweenLineOpacity(entity, from, to, duration, onDone) {
+            const start = performance.now();
+            function step(now) {
+                const t = Math.min(1, (now - start) / duration);
+                const eased = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+                const val = from + (to - from) * eased;
+                entity.setAttribute("line", "opacity", val);
+                if (t < 1) requestAnimationFrame(step);
+                else if (onDone) onDone();
+            }
+            requestAnimationFrame(step);
+        }
+
+        // ---------- Update tujuan pantulan kartu komentar fase 1 ----------
+        // Dipanggil saat bubble membesar (growFactor > 1) atau mengecil lagi
+        // (growFactor = 1). Kartu jadi terpental lebih jauh saat bubble besar,
+        // karena "tembok"-nya makin sulit ditembus.
+        function updateBlockedCardBounce(growFactor) {
+            CARD_IDS.forEach(id => {
+                const base = BLOCKED_CARD_BASE[id];
+                const el = document.getElementById(id);
+                if (!base || !el) return;
+                const toX = (base.to[0] * growFactor).toFixed(3);
+                const toY = (base.to[1] * growFactor).toFixed(3);
+                el.setAttribute("animation", "to", `${toX} ${toY} -0.01`);
+            });
+        }
+
+        // ---------- SKENARIO TAMBAHAN: buat entity kartu + garis + panah secara dinamis ----------
+        // Semua ditaruh sebagai child #bubbleGroup supaya posisinya ikut
+        // membesar/mengecil bersama bubble utama, dan tetap berada DI DALAM
+        // batas lingkaran bubble (bukan menempel di luar).
+        function buildReinforceEntities() {
+            REINFORCE_POSITIONS.forEach(pos => {
+                const dx = 0 - pos.x, dy = 0 - pos.y;
+                const angleDeg = Math.atan2(dy, dx) * 180 / Math.PI;
+
+                // Kartu berita rekomendasi, di dalam bubble
+                const card = document.createElement("a-plane");
+                card.setAttribute("id", pos.id);
+                card.setAttribute("position", `${pos.x} ${pos.y} -0.008`);
+                card.setAttribute("width", "0.16");
+                card.setAttribute("height", "0.11");
+                card.setAttribute("material", "shader: flat; transparent: true; side: double");
+                card.setAttribute("visible", "false");
+                bubbleGroup.appendChild(card);
+
+                // Garis penghubung dari kartu ke berita utama (bubblePlane, di tengah)
+                const line = document.createElement("a-entity");
+                line.setAttribute("id", `${pos.id}-line`);
+                line.setAttribute("line", `start: ${pos.x} ${pos.y} -0.006; end: 0 0 -0.011; color: #f59e0b; opacity: 0`);
+                line.setAttribute("visible", "false");
+                bubbleGroup.appendChild(line);
+
+                // Ikon panah di tengah garis, mengarah ke berita utama
+                const arrowX = pos.x + dx * 0.5;
+                const arrowY = pos.y + dy * 0.5;
+                const arrow = document.createElement("a-plane");
+                arrow.setAttribute("id", `${pos.id}-arrow`);
+                arrow.setAttribute("position", `${arrowX} ${arrowY} -0.007`);
+                arrow.setAttribute("rotation", `0 0 ${angleDeg}`);
+                arrow.setAttribute("width", "0.06");
+                arrow.setAttribute("height", "0.06");
+                arrow.setAttribute("material", "shader: flat; transparent: true; side: double");
+                arrow.setAttribute("visible", "false");
+                bubbleGroup.appendChild(arrow);
+            });
+        }
+        buildReinforceEntities();
+
         async function buildTextures() {
             if (document.fonts && document.fonts.ready) await document.fonts.ready;
 
@@ -671,14 +831,19 @@
             CARD_IDS.forEach((id) => {
                 applyTexture(document.getElementById(id), makeCardCanvas(COMMENTS[id]));
             });
+            REINFORCE_POSITIONS.forEach((pos) => {
+                applyTexture(document.getElementById(pos.id), makeReinforceCardCanvas(REINFORCE_CONTENT[pos.id]), 0);
+                applyTexture(document.getElementById(`${pos.id}-arrow`), makeArrowCanvas(), 0);
+            });
         }
         buildTextures();
 
         // ---------- Update panel konteks & debug sesuai skenario aktif ----------
-        function setContext(title, body, unlocked) {
+        function setContext(title, body, state) {
             ctxTitle.innerText = title;
             ctxBody.innerText = body;
-            arHeaderContext.classList.toggle("unlocked", unlocked);
+            arHeaderContext.classList.toggle("reinforced", state === "reinforced");
+            arHeaderContext.classList.toggle("unlocked", state === "unlocked");
         }
 
         function refreshUnlockButtonState() {
@@ -690,16 +855,31 @@
                 unlockHint.innerText = "Tembok berhasil dibongkar";
                 return;
             }
-            if (markerVisible && appState === "locked") {
+            if (appState === "revealing" || appState === "unlocking") {
+                unlockButton.disabled = true;
+                unlockButton.classList.remove("ready");
+                unlockHint.innerText = "Sedang memproses…";
+                return;
+            }
+            if (appState === "revealed") {
+                // Status tombol TETAP "UNLOCK" — klik kedua baru benar-benar membongkar
                 unlockButton.disabled = false;
                 unlockButton.classList.add("ready");
                 unlockButton.innerText = "🔒 UNLOCK";
-                unlockHint.innerText = "Tekan untuk membongkar tembok algoritma";
+                unlockHint.innerText = "Tekan sekali lagi untuk membongkar sepenuhnya";
+                return;
+            }
+            // locked
+            if (markerVisible) {
+                unlockButton.disabled = false;
+                unlockButton.classList.add("ready");
+                unlockButton.innerText = "🔒 UNLOCK";
+                unlockHint.innerText = "Tekan untuk melihat rekomendasi algoritma";
             } else {
                 unlockButton.disabled = true;
                 unlockButton.classList.remove("ready");
                 unlockButton.innerText = "🔒 UNLOCK";
-                unlockHint.innerText = appState === "locked" ? "Arahkan kamera ke marker dulu" : "Sedang membuka…";
+                unlockHint.innerText = "Arahkan kamera ke marker dulu";
             }
         }
 
@@ -752,16 +932,73 @@
         });
 
         // ============================================================
-        // SKENARIO 2 — URUTAN ANIMASI UNLOCK
-        // 1) Ikon gembok memantul & berputar, lalu berganti jadi versi
+        // SKENARIO TAMBAHAN — KLIK UNLOCK PERTAMA
+        // Memunculkan 4 kartu berita "rekomendasi algoritma" DI DALAM
+        // lingkaran bubble utama, masing-masing ditautkan dengan garis +
+        // panah ke berita utama di tengah. Bubble utama ikut MEMBESAR
+        // (scale) untuk menampung 4 berita tambahan itu, dan kartu komentar
+        // di fase 1 yang terpental jadi mental LEBIH JAUH lagi karena
+        // tembok algoritmanya makin kuat. Status tombol TETAP "UNLOCK".
+        // ============================================================
+        function runReinforceSequence() {
+            if (appState !== "locked" || !markerVisible) return;
+            appState = "revealing";
+            refreshUnlockButtonState();
+
+            lockStatus.innerText = "⚠ DIPERKUAT";
+            lockStatus.style.color = "#f59e0b";
+            debugPanel.classList.add("reinforced");
+            setContext(
+                "Fase 4: Algoritma Memperkuat Gelembungmu",
+                "Gelembung berita utama membesar dan kini memuat 4 berita rekomendasi algoritma di dalamnya — sudut pandang yang sama diperkuat berkali-kali. Tekan UNLOCK sekali lagi untuk membongkar tembok ini.",
+                "reinforced"
+            );
+
+            // Bubble utama menggembung untuk menampung 4 berita tambahan
+            bubbleGroup.setAttribute("animation__grow",
+                `property: scale; to: ${GROW_SCALE} ${GROW_SCALE} ${GROW_SCALE}; dur: 550; easing: easeOutBack`);
+
+            // Tembok makin besar -> komentar luar mental lebih jauh
+            updateBlockedCardBounce(GROW_SCALE);
+
+            REINFORCE_POSITIONS.forEach((pos, i) => {
+                const card = document.getElementById(pos.id);
+                const line = document.getElementById(`${pos.id}-line`);
+                const arrow = document.getElementById(`${pos.id}-arrow`);
+
+                setTimeout(() => {
+                    card.setAttribute("visible", "true");
+                    card.setAttribute("scale", "0.5 0.5 0.5");
+                    card.setAttribute("animation__pop", "property: scale; to: 1 1 1; dur: 380; easing: easeOutBack");
+                    tweenOpacity(card, 0, 1, 380);
+
+                    line.setAttribute("visible", "true");
+                    tweenLineOpacity(line, 0, 0.85, 420);
+
+                    arrow.setAttribute("visible", "true");
+                    tweenOpacity(arrow, 0, 1, 420);
+                }, i * 220);
+            });
+
+            const totalDelay = REINFORCE_POSITIONS.length * 220 + 450;
+            setTimeout(() => {
+                appState = "revealed";
+                refreshUnlockButtonState();
+            }, totalDelay);
+        }
+
+        // ============================================================
+        // SKENARIO 2 — KLIK UNLOCK KEDUA: URUTAN ANIMASI UNLOCK PENUH
+        // 1) 4 kartu rekomendasi + garis + panah memudar & hancur, sambil
+        //    bubble utama mengempis kembali ke ukuran normal.
+        // 2) Ikon gembok memantul & berputar, lalu berganti jadi versi
         //    terbuka (hijau) dengan flash pulsa.
-        // 2) Keenam kartu komentar memudar (fade-out) satu per satu
-        //    dengan jeda (stagger), lalu disembunyikan.
-        // 3) Bubble utama di-crossfade ke tekstur "data asli" (fade-in).
-        // 4) State berpindah ke 'unlocked' dan UI diperbarui.
+        // 3) Keenam kartu komentar yang terpental ikut memudar (stagger).
+        // 4) Bubble utama di-crossfade ke tekstur "data asli" (fade-in).
+        // 5) State berpindah ke 'unlocked' dan UI diperbarui.
         // ============================================================
         function runUnlockSequence() {
-            if (appState !== "locked" || !markerVisible) return;
+            if (appState !== "revealed" || !markerVisible) return;
             appState = "unlocking";
             refreshUnlockButtonState();
 
@@ -769,25 +1006,40 @@
             lockStatus.style.color = "#facc15";
             setContext(
                 "Fase 4: Membongkar Tembok Algoritma",
-                "Sistem sedang menembus filter echo chamber dan menghapus komentar yang sebelumnya diblokir...",
-                false
+                "Sistem sedang menembus filter echo chamber dan menghapus komentar serta rekomendasi yang sebelumnya memperkuat gelembungmu...",
+                "none"
             );
+
+            // Bubble mengempis kembali ke ukuran normal — gelembung "meletus"
+            bubbleGroup.setAttribute("animation__shrink",
+                "property: scale; to: 1 1 1; dur: 500; easing: easeInOutQuad");
+            updateBlockedCardBounce(1);
+
+            // Langkah 1: hancurkan 4 kartu rekomendasi + garis + panah
+            REINFORCE_POSITIONS.forEach((pos, i) => {
+                const card = document.getElementById(pos.id);
+                const line = document.getElementById(`${pos.id}-line`);
+                const arrow = document.getElementById(`${pos.id}-arrow`);
+                setTimeout(() => {
+                    tweenOpacity(card, 1, 0, 400, () => card.setAttribute("visible", "false"));
+                    tweenOpacity(arrow, 1, 0, 400, () => arrow.setAttribute("visible", "false"));
+                    tweenLineOpacity(line, 0.85, 0, 400, () => line.setAttribute("visible", "false"));
+                }, i * 130);
+            });
 
             const lockIcon = document.getElementById("lockIcon");
 
-            // Langkah 1: animasi gembok memantul + berputar
+            // Langkah 2: animasi gembok memantul + berputar
             lockIcon.setAttribute("animation__pulse",
                 "property: scale; from: 1 1 1; to: 1.35 1.35 1.35; dur: 350; dir: alternate; loop: 1; easing: easeOutBack");
             lockIcon.setAttribute("animation__spin",
                 "property: rotation; from: 0 0 0; to: 0 0 25; dur: 350; dir: alternate; loop: 1; easing: easeInOutQuad");
 
             setTimeout(() => {
-                // Ganti tekstur gembok jadi versi terbuka (hijau)
                 applyTexture(lockIcon, makeLockCanvas(true));
                 lockIcon.setAttribute("animation__open",
                     "property: scale; from: 1.1 1.1 1.1; to: 1.5 1.5 1.5; dur: 500; easing: easeOutQuad");
 
-                // Setelah muncul sekilas, gembok memudar & lenyap
                 setTimeout(() => {
                     tweenOpacity(lockIcon, 1, 0, 500, () => {
                         lockIcon.setAttribute("visible", "false");
@@ -795,36 +1047,35 @@
                 }, 550);
             }, 400);
 
-            // Langkah 2: kartu komentar memudar satu per satu (stagger fade-out)
-            let cardsDone = 0;
+            // Langkah 3: kartu komentar memudar satu per satu (stagger fade-out)
             CARD_IDS.forEach((id, i) => {
                 const el = document.getElementById(id);
                 setTimeout(() => {
                     tweenOpacity(el, 1, 0, 550, () => {
                         el.setAttribute("visible", "false");
-                        el.removeAttribute("animation"); // hentikan animasi posisi loop-nya
-                        cardsDone++;
+                        el.removeAttribute("animation");
                     });
                 }, 300 + i * 160);
             });
 
-            // Langkah 3: crossfade bubble utama ke data asli
+            // Langkah 4: crossfade bubble utama ke data asli
             const bubble = document.getElementById("bubblePlane");
-            const dataRevealDelay = 300 + CARD_IDS.length * 160 + 550 + 150; // setelah kartu terakhir selesai
+            const dataRevealDelay = 300 + CARD_IDS.length * 160 + 550 + 150;
 
             setTimeout(() => {
                 tweenOpacity(bubble, 1, 0, 260, () => {
                     applyTexture(bubble, makeUnlockedBubbleCanvas(), 0);
                     tweenOpacity(bubble, 0, 1, 700, () => {
-                        // Langkah 4: selesai, state -> unlocked
+                        // Langkah 5: selesai, state -> unlocked
                         appState = "unlocked";
                         lockStatus.innerText = "🔓 TERBUKA";
                         lockStatus.style.color = "#4ade80";
+                        debugPanel.classList.remove("reinforced");
                         debugPanel.classList.add("unlocked");
                         setContext(
                             "Fase 4: Data Asli Terungkap",
                             "Tembok algoritma berhasil dibongkar. Statistik dan fakta lengkap tentang jam masak & distribusi MBG kini ditampilkan.",
-                            true
+                            "unlocked"
                         );
                         refreshUnlockButtonState();
                     });
@@ -832,7 +1083,14 @@
             }, dataRevealDelay);
         }
 
-        unlockButton.addEventListener("click", runUnlockSequence);
+        // Klik pertama = reinforce, klik kedua = unlock penuh
+        unlockButton.addEventListener("click", () => {
+            if (appState === "locked") {
+                runReinforceSequence();
+            } else if (appState === "revealed") {
+                runUnlockSequence();
+            }
+        });
     </script>
 
 </body>

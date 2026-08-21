@@ -109,33 +109,46 @@
 <body class="font-sans antialiased flex flex-col pb-20 md:pb-10 pt-16 md:pt-0">
 
     <!-- TopAppBar -->
-    <header class="fixed top-0 w-full z-50 bg-surface-container/90 backdrop-blur-md shadow-sm">
-        <div class="flex items-center justify-between px-4 md:px-8 w-full h-16">
-            <div class="flex items-center gap-2">
-                <button onclick="location.href='phase3.html'" class="p-1 text-primary hover:opacity-80 active:scale-95 transition-transform cursor-pointer">
+    <header class="fixed top-0 w-full z-50 bg-surface-container/90 backdrop-blur-md shadow-sm border-b border-outline-variant/20">
+        <div class="flex items-center justify-between px-4 md:px-8 w-full h-16 max-w-7xl mx-auto">
+            <div class="flex items-center gap-3">
+                <button onclick="location.href='phase3.html'" class="p-1.5 rounded-full text-primary hover:bg-surface-variant/50 active:scale-95 transition-all cursor-pointer flex items-center justify-center">
                     <span class="material-symbols-outlined text-[20px] md:text-[24px]">arrow_back</span>
                 </button>
-                <h1 class="font-bold text-democratic-blue text-base md:text-lg">EchoBreak</h1>
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-lg bg-democratic-blue flex items-center justify-center text-on-primary shadow-sm">
+                        <span class="material-symbols-outlined text-[18px]">hub</span>
+                    </div>
+                    <h1 class="font-bold text-democratic-blue text-base md:text-lg tracking-tight">EchoBreak</h1>
+                </div>
             </div>
+
             <!-- Desktop Navigation -->
-            <nav class="hidden md:flex items-center gap-2">
-                <a class="text-on-surface-variant hover:bg-surface-variant/50 px-3 py-1.5 rounded-full transition-all flex items-center gap-2 text-sm font-medium" href="#">
+            <nav class="hidden md:flex items-center gap-1 bg-surface-container-high/60 p-1 rounded-full border border-outline-variant/30">
+                <a class="text-on-surface-variant hover:bg-surface-variant/50 px-4 py-1.5 rounded-full transition-all flex items-center gap-2 text-sm font-medium" href="index.html">
                     <span class="material-symbols-outlined text-[18px]">home</span>
                     <span>Beranda</span>
                 </a>
-                <a class="bg-secondary-fixed text-on-secondary-fixed-variant px-3 py-1.5 rounded-full transition-all flex items-center gap-2 text-sm font-medium" href="#">
-                    <span class="material-symbols-outlined text-[18px]">apps</span>
+                <a class="bg-secondary-fixed text-on-secondary-fixed-variant px-4 py-1.5 rounded-full transition-all flex items-center gap-2 text-sm font-semibold shadow-xs" href="modules.html">
+                    <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">apps</span>
                     <span>Modul</span>
                 </a>
-                <a class="text-on-surface-variant hover:bg-surface-variant/50 px-3 py-1.5 rounded-full transition-all flex items-center gap-2 text-sm font-medium" href="#">
+                <a class="text-on-surface-variant hover:bg-surface-variant/50 px-4 py-1.5 rounded-full transition-all flex items-center gap-2 text-sm font-medium" href="progress.html">
                     <span class="material-symbols-outlined text-[18px]">analytics</span>
                     <span>Progres</span>
                 </a>
-                <a class="text-on-surface-variant hover:bg-surface-variant/50 px-3 py-1.5 rounded-full transition-all flex items-center gap-2 text-sm font-medium" href="#">
+                <a class="text-on-surface-variant hover:bg-surface-variant/50 px-4 py-1.5 rounded-full transition-all flex items-center gap-2 text-sm font-medium" href="profile.html">
                     <span class="material-symbols-outlined text-[18px]">person</span>
                     <span>Profil</span>
                 </a>
             </nav>
+
+            <!-- Right action / Profile button for desktop/tablet consistency -->
+            <div class="flex items-center gap-2">
+                <a href="profile.html" class="hidden md:flex w-9 h-9 rounded-full bg-surface-container-highest items-center justify-center text-on-surface-variant hover:bg-primary-fixed hover:text-primary transition-all border border-outline-variant/40">
+                    <span class="material-symbols-outlined text-[20px]">person</span>
+                </a>
+            </div>
         </div>
     </header>
 
@@ -144,8 +157,7 @@
         
         <!-- Page Header -->
         <div class="md:col-span-12 mb-2 md:mb-4 text-center md:text-left">
-            <p class="text-digital-purple uppercase tracking-wider mb-1 text-[10px] md:text-xs font-semibold">Modul 1 • Kesimpulan</p>
-            <h2 class="text-primary font-bold text-xl md:text-3xl mb-1">Fase 4: Keputusan Demokratis</h2>
+            <h2 class="text-primary font-bold text-xl md:text-3xl mb-1">Fase 4: Democratic Decision Simulation</h2>
             <p class="text-on-surface-variant max-w-3xl text-xs md:text-base">Tinjau kembali perjalanan Anda dari paparan awal hingga mencapai pemahaman yang komprehensif. Informasi yang berkualitas membentuk keputusan yang objektif.</p>
         </div>
 
@@ -160,7 +172,7 @@
                     Gunakan kamera perangkat untuk memindai bukti fisik atau lingkungan secara interaktif melalui mode augmented reality.
                 </p>
             </div>
-            <a href="phase4ar.html" class="w-full sm:w-auto bg-digital-purple text-on-secondary font-semibold py-2.5 px-6 rounded-lg hover:bg-secondary-container transition-colors shadow-sm flex items-center justify-center gap-2 text-xs md:text-sm flex-shrink-0">
+            <a href="phase4ar.html" class="w-full sm:w-auto bg-digital-purple text-on-secondary font-semibold py-2.5 px-6 rounded-lg hover:bg-secondary-container transition-colors shadow-sm flex items-center justify-center gap-2 text-xs md:text-sm flex-shrink-0 cursor-pointer">
                 <span class="material-symbols-outlined text-[16px]">qr_code_scanner</span>
                 Scan AR Sekarang
             </a>
@@ -269,21 +281,21 @@
     </main>
 
     <!-- BottomNavBar (Mobile Only) -->
-    <nav class="fixed bottom-0 w-full z-50 md:hidden border-t border-outline-variant bg-surface/95 backdrop-blur-lg shadow-lg">
+    <nav class="fixed bottom-0 w-full z-50 md:hidden border-t border-outline-variant/30 bg-surface/95 backdrop-blur-lg shadow-lg">
         <div class="flex justify-around items-center w-full py-2 px-3">
-            <a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant/50 rounded-lg p-1 transition-all" href="#">
+            <a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant/50 rounded-lg p-1 transition-all" href="index.html">
                 <span class="material-symbols-outlined mb-0.5 text-[20px]">home</span>
                 <span class="text-[10px]">Beranda</span>
             </a>
-            <a class="flex flex-col items-center justify-center bg-secondary-fixed text-on-secondary-fixed-variant rounded-full px-4 py-1 active:scale-90 transition-all duration-200" href="#">
+            <a class="flex flex-col items-center justify-center bg-secondary-fixed text-on-secondary-fixed-variant rounded-full px-4 py-1 active:scale-90 transition-all duration-200" href="modules.html">
                 <span class="material-symbols-outlined mb-0.5 text-[20px]" style="font-variation-settings: 'FILL' 1;">apps</span>
                 <span class="text-[10px] font-medium">Modul</span>
             </a>
-            <a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant/50 rounded-lg p-1 transition-all" href="#">
+            <a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant/50 rounded-lg p-1 transition-all" href="progress.html">
                 <span class="material-symbols-outlined mb-0.5 text-[20px]">analytics</span>
                 <span class="text-[10px]">Progres</span>
             </a>
-            <a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant/50 rounded-lg p-1 transition-all" href="#">
+            <a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant/50 rounded-lg p-1 transition-all" href="profile.html">
                 <span class="material-symbols-outlined mb-0.5 text-[20px]">person</span>
                 <span class="text-[10px]">Profil</span>
             </a>
@@ -305,9 +317,8 @@
                     
                     this.classList.add('ring-2', 'ring-offset-2');
                     
-                    // Ambil teks keputusan dari tombol yang ditekan
                     const text = this.querySelector('span').textContent.trim();
-                    selectedDecision = text; // Simpan ke variabel
+                    selectedDecision = text;
 
                     if(text.includes('Tidak Setuju')) {
                          this.classList.add('ring-alert-amber');
@@ -320,17 +331,13 @@
             });
         });
 
-        // Fungsi validasi dan pindah halaman
         function submitDecision() {
             if (!selectedDecision) {
                 alert('Harap pilih salah satu keputusan terlebih dahulu sebelum mengirim!');
                 return;
             }
 
-            // Opsional: Simpan pilihan ke localStorage agar bisa dibaca di halaman posttest.html
             localStorage.setItem('userDecision', selectedDecision);
-
-            // Pindah ke halaman posttest.html
             window.location.href = 'posttest.html';
         }
     </script>
