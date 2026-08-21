@@ -326,83 +326,56 @@
 
                 <!-- Kartu komentar yang gagal menembus tembok (6 buah, DI LUAR bubble)
                      tiap kartu punya "impact flash" di titik ia menyentuh dinding -->
-                <!--
-                    Kartu komentar 6 buah — DI LUAR bubble, terpental di permukaan lingkaran.
-
-                    SKENARIO 1 (merah, radius=0.40):
-                      from = jauh di luar lingkaran merah
-                      to   = tepat di permukaan lingkaran merah (radial projection)
-                      Rumus: to = from × (R / |from|)
-
-                      card-tl: from(-0.72, 0.60) |from|=0.937 → to(-0.307, 0.256)
-                      card-tr: from( 0.72, 0.60) |from|=0.937 → to( 0.307, 0.256)
-                      card-ml: from(-0.75, 0.00) |from|=0.750 → to(-0.400, 0.000)
-                      card-mr: from( 0.75, 0.00) |from|=0.750 → to( 0.400, 0.000)
-                      card-bl: from(-0.72,-0.60) |from|=0.937 → to(-0.307,-0.256)
-                      card-br: from( 0.72,-0.60) |from|=0.937 → to( 0.307,-0.256)
-
-                    SKENARIO 2 (kuning, radius=0.40×1.32≈0.528):
-                      Diupdate oleh updateBlockedCardBounce(growFactor) di JS.
-                      to_new = toBase × growFactor — tetap radial, menyentuh
-                      permukaan lingkaran kuning yang lebih besar.
-                -->
-
-                <!-- card-tl: from(-0.72, 0.60) → to(-0.307, 0.256) tepat di lingkaran merah -->
                 <a-plane id="card-tl" class="blocked-card"
-                         position="-0.72 0.60 -0.01" rotation="0 0 3" width="0.30" height="0.19"
+                         position="-0.45 0.38 -0.01" rotation="0 0 3" width="0.30" height="0.19"
                          material="shader: flat; transparent: true; side: double"
-                         animation="property: position; from: -0.72 0.60 -0.01; to: -0.307 0.256 -0.01; dur: 2000; dir: alternate; loop: true; easing: easeInOutSine"></a-plane>
-                <a-circle id="impact-tl" position="-0.307 0.256 -0.02" radius="0.05"
+                         animation="property: position; from: -0.45 0.38 -0.01; to: -0.28 0.24 -0.01; dur: 2000; dir: alternate; loop: true; easing: easeInOutBack"></a-plane>
+                <a-circle id="impact-tl" position="-0.28 0.24 -0.02" radius="0.05"
                           material="shader: flat; transparent: true; side: double; opacity: 0" color="#e0f2fe"
                           animation="property: material.opacity; from: 0; to: 0.95; dur: 2000; dir: alternate; loop: true; easing: easeOutQuad"
                           animation__scale="property: scale; from: 0.3 0.3 0.3; to: 1.6 1.6 1.6; dur: 2000; dir: alternate; loop: true; easing: easeOutQuad"></a-circle>
 
-                <!-- card-tr: from(0.72, 0.60) → to(0.307, 0.256) tepat di lingkaran merah -->
                 <a-plane id="card-tr" class="blocked-card"
-                         position="0.72 0.60 -0.01" rotation="0 0 -3" width="0.30" height="0.19"
+                         position="0.45 0.38 -0.01" rotation="0 0 -3" width="0.30" height="0.19"
                          material="shader: flat; transparent: true; side: double"
-                         animation="property: position; from: 0.72 0.60 -0.01; to: 0.307 0.256 -0.01; dur: 2200; dir: alternate; loop: true; easing: easeInOutSine"></a-plane>
-                <a-circle id="impact-tr" position="0.307 0.256 -0.02" radius="0.05"
+                         animation="property: position; from: 0.45 0.38 -0.01; to: 0.28 0.24 -0.01; dur: 2200; dir: alternate; loop: true; easing: easeInOutBack"></a-plane>
+                <a-circle id="impact-tr" position="0.28 0.24 -0.02" radius="0.05"
                           material="shader: flat; transparent: true; side: double; opacity: 0" color="#e0f2fe"
                           animation="property: material.opacity; from: 0; to: 0.95; dur: 2200; dir: alternate; loop: true; easing: easeOutQuad"
                           animation__scale="property: scale; from: 0.3 0.3 0.3; to: 1.6 1.6 1.6; dur: 2200; dir: alternate; loop: true; easing: easeOutQuad"></a-circle>
 
-                <!-- card-ml: from(-0.75, 0.00) → to(-0.400, 0.000) tepat di lingkaran merah -->
                 <a-plane id="card-ml" class="blocked-card"
-                         position="-0.75 0.00 -0.01" rotation="0 0 2" width="0.30" height="0.19"
+                         position="-0.48 0.02 -0.01" rotation="0 0 2" width="0.30" height="0.19"
                          material="shader: flat; transparent: true; side: double"
-                         animation="property: position; from: -0.75 0.00 -0.01; to: -0.400 0.000 -0.01; dur: 2400; dir: alternate; loop: true; easing: easeInOutSine"></a-plane>
-                <a-circle id="impact-ml" position="-0.400 0.000 -0.02" radius="0.05"
+                         animation="property: position; from: -0.48 0.02 -0.01; to: -0.30 0.02 -0.01; dur: 2400; dir: alternate; loop: true; easing: easeInOutBack"></a-plane>
+                <a-circle id="impact-ml" position="-0.30 0.02 -0.02" radius="0.05"
                           material="shader: flat; transparent: true; side: double; opacity: 0" color="#e0f2fe"
                           animation="property: material.opacity; from: 0; to: 0.95; dur: 2400; dir: alternate; loop: true; easing: easeOutQuad"
                           animation__scale="property: scale; from: 0.3 0.3 0.3; to: 1.6 1.6 1.6; dur: 2400; dir: alternate; loop: true; easing: easeOutQuad"></a-circle>
 
-                <!-- card-mr: from(0.75, 0.00) → to(0.400, 0.000) tepat di lingkaran merah -->
                 <a-plane id="card-mr" class="blocked-card"
-                         position="0.75 0.00 -0.01" rotation="0 0 -2" width="0.30" height="0.19"
+                         position="0.48 0.02 -0.01" rotation="0 0 -2" width="0.30" height="0.19"
                          material="shader: flat; transparent: true; side: double"
-                         animation="property: position; from: 0.75 0.00 -0.01; to: 0.400 0.000 -0.01; dur: 2100; dir: alternate; loop: true; easing: easeInOutSine"></a-plane>
-                <a-circle id="impact-mr" position="0.400 0.000 -0.02" radius="0.05"
+                         animation="property: position; from: 0.48 0.02 -0.01; to: 0.30 0.02 -0.01; dur: 2100; dir: alternate; loop: true; easing: easeInOutBack"></a-plane>
+                <a-circle id="impact-mr" position="0.30 0.02 -0.02" radius="0.05"
                           material="shader: flat; transparent: true; side: double; opacity: 0" color="#e0f2fe"
                           animation="property: material.opacity; from: 0; to: 0.95; dur: 2100; dir: alternate; loop: true; easing: easeOutQuad"
                           animation__scale="property: scale; from: 0.3 0.3 0.3; to: 1.6 1.6 1.6; dur: 2100; dir: alternate; loop: true; easing: easeOutQuad"></a-circle>
 
-                <!-- card-bl: from(-0.72,-0.60) → to(-0.307,-0.256) tepat di lingkaran merah -->
                 <a-plane id="card-bl" class="blocked-card"
-                         position="-0.72 -0.60 -0.01" rotation="0 0 -2" width="0.30" height="0.19"
+                         position="-0.45 -0.38 -0.01" rotation="0 0 -2" width="0.30" height="0.19"
                          material="shader: flat; transparent: true; side: double"
-                         animation="property: position; from: -0.72 -0.60 -0.01; to: -0.307 -0.256 -0.01; dur: 2300; dir: alternate; loop: true; easing: easeInOutSine"></a-plane>
-                <a-circle id="impact-bl" position="-0.307 -0.256 -0.02" radius="0.05"
+                         animation="property: position; from: -0.45 -0.38 -0.01; to: -0.28 -0.22 -0.01; dur: 2300; dir: alternate; loop: true; easing: easeInOutBack"></a-plane>
+                <a-circle id="impact-bl" position="-0.28 -0.22 -0.02" radius="0.05"
                           material="shader: flat; transparent: true; side: double; opacity: 0" color="#e0f2fe"
                           animation="property: material.opacity; from: 0; to: 0.95; dur: 2300; dir: alternate; loop: true; easing: easeOutQuad"
                           animation__scale="property: scale; from: 0.3 0.3 0.3; to: 1.6 1.6 1.6; dur: 2300; dir: alternate; loop: true; easing: easeOutQuad"></a-circle>
 
-                <!-- card-br: from(0.72,-0.60) → to(0.307,-0.256) tepat di lingkaran merah -->
                 <a-plane id="card-br" class="blocked-card"
-                         position="0.72 -0.60 -0.01" rotation="0 0 2" width="0.30" height="0.19"
+                         position="0.45 -0.38 -0.01" rotation="0 0 2" width="0.30" height="0.19"
                          material="shader: flat; transparent: true; side: double"
-                         animation="property: position; from: 0.72 -0.60 -0.01; to: 0.307 -0.256 -0.01; dur: 2500; dir: alternate; loop: true; easing: easeInOutSine"></a-plane>
-                <a-circle id="impact-br" position="0.307 -0.256 -0.02" radius="0.05"
+                         animation="property: position; from: 0.45 -0.38 -0.01; to: 0.28 -0.22 -0.01; dur: 2500; dir: alternate; loop: true; easing: easeInOutBack"></a-plane>
+                <a-circle id="impact-br" position="0.28 -0.22 -0.02" radius="0.05"
                           material="shader: flat; transparent: true; side: double; opacity: 0" color="#e0f2fe"
                           animation="property: material.opacity; from: 0; to: 0.95; dur: 2500; dir: alternate; loop: true; easing: easeOutQuad"
                           animation__scale="property: scale; from: 0.3 0.3 0.3; to: 1.6 1.6 1.6; dur: 2500; dir: alternate; loop: true; easing: easeOutQuad"></a-circle>
@@ -437,9 +410,6 @@
         // Seberapa besar bubble utama "menggembung" saat 4 berita rekomendasi
         // algoritma muncul di dalamnya.
         const GROW_SCALE = 1.32;
-
-        // Radius lingkaran merah (chamberWall) dalam satuan unit A-Frame
-        const WALL_RADIUS = 0.40;
 
         // Warna aksen chamber wall per-state (selaras dengan skema warna UI lain)
         const ACCENT = {
@@ -478,30 +448,16 @@
             "card-br": { author: "Eko Prasetyo", tag: "[NETRAL] TERPENTAL", text: "Kuncinya di manajemen cold chain yang ketat." }
         };
 
-        /**
-         * Posisi dasar kartu komentar untuk animasi pantulan.
-         * 
-         * "from"   = posisi awal kartu (jauh di luar lingkaran merah & kuning)
-         * "toBase" = posisi "to" saat growFactor=1 (lingkaran MERAH, radius=WALL_RADIUS)
-         *            = titik tepat di permukaan lingkaran merah, dihitung radial:
-         *              toBase = from × (WALL_RADIUS / |from|)
-         * 
-         * Saat growFactor>1 (skenario 2, lingkaran KUNING):
-         *   radius_kuning = WALL_RADIUS × growFactor
-         *   toNew = toBase × growFactor  (tetap radial, menyentuh permukaan kuning)
-         * 
-         * Posisi "from" lebih besar dari kedua radius (aman di luar keduanya):
-         *   |from_tl|=|from_tr|=|from_bl|=|from_br| = sqrt(0.72²+0.60²) ≈ 0.937
-         *   |from_ml|=|from_mr| = 0.75
-         *   Radius kuning maks = 0.40×1.32 = 0.528 < 0.75 < 0.937  ✓
-         */
+        // Posisi dasar (to) animasi pantulan tiap kartu komentar, dipakai juga
+        // sebagai titik tumpu "impact flash" — makin besar bubble-nya (growFactor),
+        // makin jauh kartu ini terpental & makin jauh pula titik impact-nya.
         const BLOCKED_CARD_BASE = {
-            "card-tl": { from: [-0.72,  0.60], toBase: [-0.307,  0.256] },
-            "card-tr": { from: [ 0.72,  0.60], toBase: [ 0.307,  0.256] },
-            "card-ml": { from: [-0.75,  0.00], toBase: [-0.400,  0.000] },
-            "card-mr": { from: [ 0.75,  0.00], toBase: [ 0.400,  0.000] },
-            "card-bl": { from: [-0.72, -0.60], toBase: [-0.307, -0.256] },
-            "card-br": { from: [ 0.72, -0.60], toBase: [ 0.307, -0.256] }
+            "card-tl": { to: [-0.28, 0.24] },
+            "card-tr": { to: [0.28, 0.24] },
+            "card-ml": { to: [-0.30, 0.02] },
+            "card-mr": { to: [0.30, 0.02] },
+            "card-bl": { to: [-0.28, -0.22] },
+            "card-br": { to: [0.28, -0.22] }
         };
 
         // ---------- data 4 berita rekomendasi algoritma (di dalam chamber) ----------
@@ -963,44 +919,19 @@
             requestAnimationFrame(step);
         }
 
-        /**
-         * Update posisi pantulan (to) dan impact flash kartu komentar.
-         * 
-         * growFactor = 1.0 → Skenario 1, lingkaran MERAH (radius = WALL_RADIUS = 0.40)
-         *   Kartu bergerak dari posisi "from" (jauh di luar) menuju tepat di permukaan
-         *   lingkaran merah, terpental kembali ke luar. toNew = toBase × 1.0
-         * 
-         * growFactor = GROW_SCALE → Skenario 2, lingkaran KUNING lebih besar
-         *   Lingkaran kuning = WALL_RADIUS × growFactor. Kartu berada di luar lingkaran
-         *   kuning dan mendekat ke permukaannya, terpental di sana.
-         *   toNew = toBase × growFactor (posisi radial tepat di permukaan lingkaran kuning)
-         */
+        // Update tujuan pantulan + titik impact kartu komentar. Dipanggil saat
+        // bubble membesar (growFactor > 1) atau mengecil lagi (growFactor = 1).
         function updateBlockedCardBounce(growFactor) {
             CARD_IDS.forEach(id => {
                 const base = BLOCKED_CARD_BASE[id];
                 const el = document.getElementById(id);
                 const impactEl = document.getElementById("impact-" + id.split("-")[1]);
                 if (!base || !el) return;
-
-                // "to" baru = toBase × growFactor (tepat di permukaan lingkaran)
-                const toX = (base.toBase[0] * growFactor).toFixed(3);
-                const toY = (base.toBase[1] * growFactor).toFixed(3);
-
-                // "from" tetap sama (sudah di luar kedua radius)
-                const fromX = base.from[0].toFixed(3);
-                const fromY = base.from[1].toFixed(3);
-
-                // Rebuild animasi dengan from & to yang benar
-                el.setAttribute("animation", `property: position; from: ${fromX} ${fromY} -0.01; to: ${toX} ${toY} -0.01; dur: ${getDur(id)}; dir: alternate; loop: true; easing: easeInOutSine`);
-
-                // Pindahkan impact flash ke titik persentuhan baru
+                const toX = (base.to[0] * growFactor).toFixed(3);
+                const toY = (base.to[1] * growFactor).toFixed(3);
+                el.setAttribute("animation", "to", `${toX} ${toY} -0.01`);
                 if (impactEl) impactEl.setAttribute("position", `${toX} ${toY} -0.02`);
             });
-        }
-
-        function getDur(id) {
-            const durs = { "card-tl": 2000, "card-tr": 2200, "card-ml": 2400, "card-mr": 2100, "card-bl": 2300, "card-br": 2500 };
-            return durs[id] || 2000;
         }
 
         // Ganti warna chamber wall/glow/scan sesuai state (locked/reinforced/unlocked)
